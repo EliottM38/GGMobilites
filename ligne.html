@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Ligne — GGMobilités</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+<style>
+.lhero{background:var(--badge,#185FA5);padding:1.5rem 2rem;position:relative;overflow:hidden}
+.lhero::before{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none}
+.lhero-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;position:relative}
+.ligne-icon-wrap{width:68px;height:68px;border-radius:12px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;padding:4px}
+.ligne-icon-wrap span{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white}
+.lhero-info h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white;margin-bottom:4px}
+.lhero-info p{font-size:13px;color:white;opacity:0.8;display:flex;align-items:center;gap:8px}
+.lhero-pill{background:rgba(255,255,255,0.2);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;color:white;opacity:1}
+.lhero-btns{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+.hbtn{padding:8px 14px;border-radius:9px;font-size:12px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;border:1px solid rgba(255,255,255,0.35);color:white;background:rgba(255,255,255,0.15);transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.hbtn:hover{background:rgba(255,255,255,0.28)}
+.hbtn.primary{background:white;color:var(--badge,#185FA5);border-color:white;font-weight:700}
+.dir-tabs{background:white;border-bottom:2px solid var(--bordure);position:sticky;top:64px;z-index:50}
+.dir-tabs-in{max-width:1200px;margin:0 auto;display:flex;align-items:stretch}
+.dir-tab{padding:0 1.5rem;height:52px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;border:none;background:transparent;color:var(--texte-sec);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;white-space:nowrap}
+.dir-tab:hover{color:var(--texte)}
+.dir-tab.active{color:var(--badge,#185FA5);border-bottom-color:var(--badge,#185FA5)}
+.dir-tab-badge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;color:white;background:var(--badge,#185FA5)}
+.cbar{background:white;border-bottom:1px solid var(--bordure);padding:9px 2rem}
+.cbar-in{max-width:1200px;margin:0 auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.csel{padding:6px 10px;border-radius:8px;border:1px solid var(--bordure);background:var(--fond);color:var(--texte);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer}
+.csel:focus{outline:none;border-color:var(--badge,#185FA5)}
+.clbl{font-size:11px;color:var(--texte-sec);font-weight:600}
+.ctabs{display:flex;background:var(--fond);border-radius:10px;padding:3px;border:1px solid var(--bordure);margin-left:auto}
+.ctab{padding:5px 13px;border-radius:7px;font-size:12px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;border:none;background:transparent;color:var(--texte-sec);transition:all 0.2s}
+.ctab.active{background:var(--badge,#185FA5);color:white}
+.lbody{max-width:1200px;margin:0 auto;padding:1.5rem 2rem 4rem;display:grid;grid-template-columns:380px 1fr;gap:2rem;align-items:start}
+@media(max-width:960px){.lbody{grid-template-columns:1fr}}
+.lpanel{background:#1C1C2E;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.18);position:sticky;top:148px}
+.lpanel-head{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:10px}
+.lpanel-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:white}
+.live-dot-wrap{display:flex;align-items:center;gap:6px;margin-left:auto}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#00C878;flex-shrink:0;position:relative}
+.live-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:#00C878;opacity:0;animation:livepulse 2s ease-out infinite}
+@keyframes livepulse{0%{opacity:0.5;transform:scale(1)}100%{opacity:0;transform:scale(2.8)}}
+.live-txt{font-size:10px;color:#00C878;font-weight:700;text-transform:uppercase;letter-spacing:0.08em}
+.arret-label{padding:7px 18px;font-size:11px;color:rgba(255,255,255,0.45);border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:6px}
+.arret-label strong{color:rgba(255,255,255,0.85)}
+.pitem{padding:15px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:14px}
+.pitem:last-child{border-bottom:none}
+.pitem.first{background:rgba(255,255,255,0.03)}
+.pitem-left{flex:1;min-width:0}
+.pitem-dir{font-size:14px;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pitem-sub{font-size:11px;color:rgba(255,255,255,0.38);margin-top:3px}
+.pitem-times{display:flex;align-items:stretch;flex-shrink:0}
+.ptime-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:60px;padding:0 14px}
+.ptime-wrap+.ptime-wrap{border-left:1px solid rgba(255,255,255,0.08)}
+.ptime-val{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1;color:white}
+.ptime-val.proche{color:#FFB347}
+.ptime-val.urgent{color:#FF5252}
+.ptime-unit{font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px}
+.fsvc{padding:2rem;text-align:center}
+.fsvc-icon{font-size:32px;margin-bottom:8px}
+.fsvc-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:white;margin-bottom:4px}
+.fsvc-sub{font-size:12px;color:rgba(255,255,255,0.38)}
+.asrch{width:100%;padding:10px 15px 10px 38px;border-radius:10px;border:1px solid var(--bordure);background:white;color:var(--texte);font-size:13px;font-family:'DM Sans',sans-serif}
+.asrch:focus{outline:none;border-color:var(--badge,#185FA5)}
+.alist{background:white;border:1px solid var(--bordure);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.arow{display:flex;align-items:stretch;cursor:pointer;border-bottom:1px solid var(--bordure);transition:background 0.12s;min-height:46px}
+.arow:last-child{border-bottom:none}
+.arow:hover{background:var(--bleu-pale)}
+.arow.sel{background:var(--bleu-pale);border-left:3px solid var(--badge,#185FA5)}
+.atl{width:38px;display:flex;flex-direction:column;align-items:center;padding:10px 0;flex-shrink:0;align-self:stretch}
+.adot{width:10px;height:10px;border-radius:50%;border:2.5px solid var(--badge,#185FA5);background:white;flex-shrink:0}
+.adot.t{background:var(--badge,#185FA5);width:12px;height:12px}
+.atrait{width:2px;flex:1;background:var(--badge,#185FA5);opacity:0.4;min-height:14px}
+.ainfo{flex:1;padding:10px 8px}.aname{font-size:13px;font-weight:500;color:var(--texte)}
+.anext{padding:10px 14px;text-align:right;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.amins{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--badge,#185FA5)}
+.ah{font-size:10px;color:var(--texte-sec)}
+.hcomplet{background:white;border:1px solid var(--bordure);border-radius:14px;overflow:hidden;margin-top:1rem}
+.hst{padding:8px 14px;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--texte-sec);border-bottom:1px solid var(--bordure);background:var(--fond)}
+.hpills{padding:10px 12px;display:flex;flex-wrap:wrap;gap:4px}
+.hpill{padding:3px 9px;border-radius:5px;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;background:var(--fond);border:1px solid var(--bordure);color:var(--texte-sec);cursor:pointer;transition:all 0.12s}
+.hpill:hover,.hpill.cur{background:var(--badge,#185FA5);color:white;border-color:var(--badge,#185FA5)}
+.btn-pdf{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;background:var(--or);color:#0F1923;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none}
+.btn-pdf:hover{background:var(--or-clair)}
+.swrap{position:relative;margin-bottom:1rem}
+.sicon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</a>
+<div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a><a href="tad.html">TAD</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+</div></nav>
+<div class="accent-bar"></div>
+<div class="lhero"><div class="lhero-in">
+  <div class="ligne-icon-wrap"><span id="hero-code">—</span></div>
+  <div class="lhero-info">
+    <h1 id="hero-titre">Ligne</h1>
+    <p><span id="hero-sub">Chargement...</span><span class="lhero-pill" id="hero-jour">...</span></p>
+  </div>
+  <div class="lhero-btns">
+    <button class="hbtn primary" onclick="genPDF()">📄 Fiche horaire</button>
+    <a href="reseau.html" class="hbtn">← Retour</a>
+  </div>
+</div></div>
+<div class="dir-tabs"><div class="dir-tabs-in" id="dir-tabs-in"></div></div>
+<div class="cbar"><div class="cbar-in">
+  <span class="clbl">Jour</span>
+  <select class="csel" id="sel-jour" onchange="reload()">
+    <option value="auto">Aujourd'hui</option>
+    <option value="semaine">Lun–Ven</option>
+    <option value="samedi">Samedi</option>
+    <option value="dimanche">Dimanche</option>
+  </select>
+  <div class="ctabs">
+    <button class="ctab active" id="tb-live" onclick="setVue('live')">⚡ En direct</button>
+    <button class="ctab" id="tb-full" onclick="setVue('full')">🕐 Horaire complet</button>
+  </div>
+</div></div>
+<div class="lbody">
+  <div>
+    <div class="lpanel">
+      <div class="lpanel-head">
+        <span class="lpanel-title">Prochains passages</span>
+        <div class="live-dot-wrap"><div class="live-dot"></div><span class="live-txt">En direct</span></div>
+      </div>
+      <div id="live-content"><div class="fsvc"><div class="fsvc-icon">⏳</div><div class="fsvc-title">Chargement...</div></div></div>
+    </div>
+  </div>
+  <div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-family:Syne,sans-serif;font-size:15px;font-weight:700;color:var(--texte)"><span id="nb-arrets">0</span> arrêts</div>
+      <button class="btn-pdf" onclick="genPDF()">📄 Télécharger la fiche</button>
+    </div>
+    <div class="swrap"><span class="sicon">🔍</span><input class="asrch" id="asrch" placeholder="Rechercher un arrêt..." oninput="filtrer()" style="padding-left:38px"></div>
+    <div class="alist" id="alist"></div>
+    <div id="vue-full" style="display:none"></div>
+  </div>
+</div>
+<footer><div class="accent-bar"></div><div style="padding:2.5rem 2rem"><div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</div><p class="footer-desc">Réseau de transport de Grenoble et sa région.</p></div><div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan interactif</a><a href="infotrafic.html">Infotrafic</a></div><div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="agences.html">Agences</a></div><div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a></div></div><div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div></div></footer>
+<script>
+// ── CHARGEMENT DYNAMIQUE DE LA LIGNE ────────────────────────────────
+const CODE = new URLSearchParams(location.search).get("code") || "";
+let DIRS = [], DATA_DIR = {}, BADGE = "#185FA5", LIGNE_NOM = "";
+let dirIdx=0,lg=null,arretSel=null,vue="live",ivl=null;
+const PC={};
+
+const JB_ID="69d95af5aaba882197e64b7e", JB_KEY="$2a$10$0apNc/nNCMR.8/TGHyYHxO5hePLCGZ9bJua1DrAKkJdLf8y8TGbdm";
+
+async function initLigne(){
+  if(!CODE){
+    document.getElementById("hero-titre").textContent="Ligne introuvable";
+    document.getElementById("hero-sub").textContent="Aucun code de ligne fourni dans l'URL.";
+    return;
+  }
+  try{
+    // 1. Couleur + nom de la ligne (JSONBin, géré depuis l'admin > Lignes)
+    const jb = await fetch(`https://api.jsonbin.io/v3/b/${JB_ID}/latest`, {headers:{"X-Master-Key":JB_KEY}}).then(r=>r.json()).catch(()=>null);
+    const lignes = jb?.record?.lignes || [];
+    const meta = lignes.find(l=>l.code===CODE);
+    if(meta){BADGE=meta.couleur||BADGE; LIGNE_NOM=meta.nom||"";}
+    document.documentElement.style.setProperty("--badge", BADGE);
+
+    // 2. Horaires (lines.json, flat: {code, direction, jour, arrets})
+    const res = await fetch("lines.json");
+    const all = await res.json();
+    const mine = all.filter(l=>l.code===CODE);
+    if(!mine.length){
+      document.getElementById("hero-titre").textContent="Ligne "+CODE;
+      document.getElementById("hero-sub").textContent="Aucune donnée d'horaire disponible pour cette ligne.";
+      document.getElementById("live-content").innerHTML='<div class="fsvc"><div class="fsvc-icon">🌙</div><div class="fsvc-title">Pas de données</div></div>';
+      return;
+    }
+    DIRS = [...new Set(mine.map(l=>l.direction))];
+    mine.forEach(l=>{
+      if(!DATA_DIR[l.direction]) DATA_DIR[l.direction]={};
+      DATA_DIR[l.direction][l.jour]={arrets:l.arrets};
+    });
+
+    document.getElementById("page-title").textContent="Ligne "+CODE+" — GGMobilités";
+    document.getElementById("hero-code").textContent=CODE;
+    document.getElementById("hero-titre").textContent="Ligne "+CODE;
+    document.getElementById("hero-sub").textContent=LIGNE_NOM||DIRS.join(" ↔ ");
+    document.getElementById("dir-tabs-in").innerHTML=DIRS.map((d,i)=>
+      '<button class="dir-tab'+(i===0?" active":"")+'" id="dtab-'+i+'" onclick="setDir('+i+')"><span class="dir-tab-badge">'+CODE+'</span> → '+d+'</button>'
+    ).join("");
+
+    reload();
+  }catch(err){
+    console.error("Erreur chargement ligne:", err);
+    document.getElementById("hero-titre").textContent="Erreur";
+    document.getElementById("hero-sub").textContent="Impossible de charger les données de cette ligne.";
+  }
+}
+
+function perturb(k){if(!(k in PC)){const r=Math.random();PC[k]=r<.70?0:r<.85?Math.floor(Math.random()*2)+1:r<.95?Math.floor(Math.random()*3)+3:-1;setTimeout(()=>delete PC[k],180000);}return PC[k];}
+function jourType(){const s=document.getElementById("sel-jour").value;if(s!=="auto")return s;const j=new Date().getDay();return j===6?"samedi":j===0?"dimanche":"semaine";}
+function mAv(h,p){p=p||0;const[hh,mm]=h.split(":").map(Number);const diff=(hh*60+mm+p)-(new Date().getHours()*60+new Date().getMinutes());return Math.round(diff<-720?diff+1440:diff);}
+function hFmt(h,p){p=p||0;const[hh,mm]=h.split(":").map(Number);const t=hh*60+mm+p,r=((t%1440)+1440)%1440;return String(Math.floor(r/60)).padStart(2,"0")+":"+String(r%60).padStart(2,"0");}
+function hNow(){const n=new Date();return String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");}
+function getLigne(dir,jour){const d=DATA_DIR[dir]||{};return d[jour]||d["semaine"]||null;}
+function setDir(i){dirIdx=i;document.querySelectorAll(".dir-tab").forEach((t,j)=>t.classList.toggle("active",i===j));arretSel=null;reload();}
+function reload(){
+  const jour=jourType(),dir=DIRS[dirIdx];
+  lg=getLigne(dir,jour);
+  document.getElementById("hero-jour").textContent={semaine:"Lun–Ven",samedi:"Samedi",dimanche:"Dimanche"}[jour]||jour;
+  document.getElementById("nb-arrets").textContent=lg?.arrets?.length||0;
+  arretSel=null;
+  if(!lg?.arrets?.length){
+    document.getElementById("live-content").innerHTML='<div class="fsvc"><div class="fsvc-icon">🌙</div><div class="fsvc-title">Pas de service</div><div class="fsvc-sub">Aucune circulation ce jour.</div></div>';
+    document.getElementById("alist").innerHTML="";return;
+  }
+  renderA();renderL();
+  if(ivl)clearInterval(ivl);
+  ivl=setInterval(()=>{renderL();renderA();},30000);
+}
+function renderL(){
+  if(!lg?.arrets?.length)return;
+  const div=document.getElementById("live-content"),dir=DIRS[dirIdx];
+  const ref=arretSel!==null?lg.arrets[arretSel]:lg.arrets[0];
+  const pvs=[];
+  for(let i=0;i<ref.passages.length;i++){const p=perturb(ref.nom+"-"+i),m=mAv(ref.passages[i],p);if(m>=-1&&m<=180)pvs.push({mins:m,hA:hFmt(ref.passages[i],p),p});}
+  pvs.sort((a,b)=>a.mins-b.mins);
+  if(!pvs.length){div.innerHTML='<div class="fsvc"><div class="fsvc-icon">🌙</div><div class="fsvc-title">Fin de service</div><div class="fsvc-sub">Prochain service demain.</div></div>';return;}
+  const makeT=pv=>{
+    const val=pv.mins<=0?"0":pv.mins<=60?String(pv.mins):pv.hA;
+    const unit=pv.mins<=0?"arrêt":pv.mins<=60?"min":"";
+    const cls=pv.mins<=2?"urgent":pv.mins<=8?"proche":"";
+    return '<div class="ptime-wrap"><div class="ptime-val '+cls+'">'+val+'</div><div class="ptime-unit">'+unit+'</div>'+(pv.p>0?'<div style="font-size:9px;color:#FFB347;margin-top:1px">+'+pv.p+'m</div>':'')+'</div>';
+  };
+  const top2=pvs.slice(0,2),next2=pvs.slice(2,4);
+  let html='<div class="arret-label">🚏 <strong>'+ref.nom+'</strong><span style="margin-left:auto;font-size:10px;color:rgba(255,255,255,0.3)">'+hNow()+'</span></div>';
+  html+='<div class="pitem first"><div class="pitem-left"><div class="pitem-dir">'+dir+'</div>'+(top2[1]?'<div class="pitem-sub">puis à '+top2[1].hA+'</div>':'')+'</div><div class="pitem-times">'+top2.map(makeT).join('')+'</div></div>';
+  if(next2.length)html+='<div class="pitem"><div class="pitem-left"><div class="pitem-dir" style="color:rgba(255,255,255,0.5);font-size:13px">'+dir+'</div><div class="pitem-sub">Suivants</div></div><div class="pitem-times">'+next2.map(makeT).join('')+'</div></div>';
+  div.innerHTML=html;
+}
+function renderA(){
+  if(!lg?.arrets?.length)return;
+  const q=(document.getElementById("asrch")?.value||"").toLowerCase();
+  let html="";
+  lg.arrets.forEach((a,i)=>{
+    if(q&&!a.nom.toLowerCase().includes(q))return;
+    const isT=i===0||i===lg.arrets.length-1,isSel=arretSel===i;
+    const pvs=a.passages.map((h,pi)=>{const p=perturb(a.nom+"-"+pi);return{mins:mAv(h,p),hA:hFmt(h,p)};}).filter(x=>x.mins>=0&&x.mins<=180).sort((a,b)=>a.mins-b.mins);
+    const pv=pvs[0],mstr=pv?(pv.mins<=60?pv.mins+" min":pv.hA):"—";
+    html+='<div class="arow'+(isSel?" sel":"")+'" onclick="selA('+i+')">'
+      +'<div class="atl"><div class="adot'+(isT?" t":"")+'"></div>'+(i===lg.arrets.length-1?"":'<div class="atrait"></div>')+'</div>'
+      +'<div class="ainfo"><div class="aname">'+a.nom+'</div></div>'
+      +'<div class="anext"><div class="amins">'+mstr+'</div><div class="ah">'+(pv?.hA||"")+'</div></div>'
+      +'</div>';
+  });
+  document.getElementById("alist").innerHTML=html;
+}
+function selA(i){arretSel=i;renderA();renderL();if(vue==="full")renderFull(i);}
+function filtrer(){renderA();}
+function setVue(v){
+  vue=v;
+  document.getElementById("tb-live").classList.toggle("active",v==="live");
+  document.getElementById("tb-full").classList.toggle("active",v==="full");
+  document.getElementById("vue-full").style.display=v==="full"?"block":"none";
+  if(v==="full")renderFull(arretSel);
+}
+function renderFull(idx){
+  if(!lg?.arrets?.length)return;
+  const arret=idx!=null?lg.arrets[idx]:lg.arrets[0];
+  const hNowM=new Date().getHours()*60+new Date().getMinutes();
+  const tranches={};
+  arret.passages.forEach(h=>{const k=String(parseInt(h.split(":")[0])%24).padStart(2,"0")+"h";if(!tranches[k])tranches[k]=[];tranches[k].push(h);});
+  let html='<div class="hcomplet"><div class="hst">Horaire — '+arret.nom+'</div>';
+  Object.entries(tranches).forEach(([t,hs])=>{html+='<div class="hst" style="background:transparent;font-size:10px">'+t+'</div><div class="hpills">';hs.forEach(h=>{const[hh,mm]=h.split(":").map(Number);const cur=Math.abs(hh*60+mm-hNowM)<5;html+='<div class="hpill'+(cur?" cur":"")+'">'+h+'</div>';});html+="</div>";});
+  html+="</div>";document.getElementById("vue-full").innerHTML=html;
+}
+function genPDF(){window.open("generer-pdf.html?code="+CODE+"&direction="+encodeURIComponent(DIRS[dirIdx]||"")+"&jour="+jourType(),"_blank");}
+initLigne();
+</script>
+</body>
+</html>
