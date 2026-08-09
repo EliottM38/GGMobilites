@@ -1,4 +1,4 @@
-export default function handler(req, res) {
+module.exports = (req, res) => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
@@ -7,7 +7,6 @@ export default function handler(req, res) {
     return;
   }
 
-  // Cache court côté navigateur/CDN : la config change rarement.
   res.setHeader("Cache-Control", "public, max-age=300");
   res.status(200).json({ supabaseUrl, supabaseAnonKey });
-}
+};
