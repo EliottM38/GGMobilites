@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer une ligne — Admin GGMobilités</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#0B0B14;--panel:#15151F;--bord:#26263a;--tx:#F2F2F7;--txs:#8A8A9C;--accent:#185FA5;--danger:#E4032E;--ok:#00C878}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:'DM Sans',Arial,sans-serif;font-size:14px}
+h1,h2,h3{font-family:'Syne',Arial,sans-serif;margin:0}
+a{color:inherit}
+.topbar{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--bord);position:sticky;top:0;background:var(--bg);z-index:100}
+.topbar h1{font-size:16px;font-weight:800}
+.topbar a.back{color:var(--txs);text-decoration:none;font-size:13px}
+#login-gate{max-width:360px;margin:80px auto;padding:28px;background:var(--panel);border:1px solid var(--bord);border-radius:14px}
+#login-gate h2{margin-bottom:16px}
+#login-gate input{width:100%;padding:10px 12px;margin-bottom:10px;background:#0F0F18;border:1px solid var(--bord);border-radius:8px;color:var(--tx)}
+#login-gate button{width:100%;padding:11px;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif}
+#err-login{color:var(--danger);font-size:12px;margin-top:8px;min-height:16px}
+#app{display:none;max-width:1300px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 420px;gap:22px}
+.card{background:var(--panel);border:1px solid var(--bord);border-radius:14px;padding:18px;margin-bottom:18px}
+.card h3{font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+label{display:block;font-size:11px;color:var(--txs);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+input[type=text],input[type=url],input[type=time],input[type=number],select{width:100%;padding:9px 11px;background:#0F0F18;border:1px solid var(--bord);border-radius:8px;color:var(--tx);font-size:13px;margin-bottom:12px;font-family:inherit}
+input[type=color]{height:40px;width:100%;padding:3px;border-radius:8px;border:1px solid var(--bord);background:#0F0F18;cursor:pointer;margin-bottom:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+#map{height:460px;border-radius:12px;border:1px solid var(--bord)}
+.sens-tabs{display:flex;gap:6px;margin-bottom:12px}
+.sens-tab{padding:7px 16px;border-radius:8px;border:1px solid var(--bord);background:transparent;color:var(--txs);cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:12px}
+.sens-tab.active{background:var(--accent);color:white;border-color:var(--accent)}
+.stop-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#0F0F18;border:1px solid var(--bord);border-radius:8px;margin-bottom:6px}
+.stop-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.stop-row input{margin:0;flex:1;padding:6px 9px;font-size:12px}
+.icon-btn{background:transparent;border:1px solid var(--bord);color:var(--txs);border-radius:6px;padding:5px 8px;cursor:pointer;font-size:12px;flex-shrink:0}
+.icon-btn:hover{color:var(--tx);border-color:var(--tx)}
+.icon-btn.del:hover{color:var(--danger);border-color:var(--danger)}
+.hint{font-size:11px;color:var(--txs);margin-bottom:10px;line-height:1.5}
+.freq-row,.file-row{display:grid;grid-template-columns:1fr auto auto auto auto auto;gap:6px;align-items:end;margin-bottom:8px}
+.file-row{grid-template-columns:1fr 1fr auto}
+.btn-add{background:transparent;border:1px dashed var(--bord);color:var(--txs);border-radius:8px;padding:9px;cursor:pointer;width:100%;font-size:12px;margin-bottom:6px}
+.btn-add:hover{color:var(--tx);border-color:var(--accent)}
+.btn-save{position:sticky;bottom:20px;width:100%;padding:15px;background:var(--ok);color:#0B0B14;border:none;border-radius:10px;font-weight:800;font-family:'Syne',sans-serif;font-size:14px;cursor:pointer;box-shadow:0 6px 24px rgba(0,200,120,0.3)}
+.btn-save:disabled{opacity:.5;cursor:default}
+#msg{font-size:12px;margin-top:10px;min-height:16px}
+#msg.ok{color:var(--ok)}
+#msg.err{color:var(--danger)}
+@media(max-width:1000px){#app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="login-gate">
+  <h2>Connexion admin</h2>
+  <input type="text" id="l-email" placeholder="Email">
+  <input type="text" id="l-pass" placeholder="Mot de passe" style="-webkit-text-security:disc">
+  <button onclick="doLogin()">Se connecter</button>
+  <div id="err-login"></div>
+</div>
+
+<div class="topbar" id="topbar" style="display:none">
+  <a href="admin.html" class="back">← Admin</a>
+  <h1>Créer une ligne</h1>
+</div>
+
+<div id="app">
+  <div>
+    <div class="card">
+      <h3>🚌 Informations générales</h3>
+      <div class="row3">
+        <div><label>Code (ex: 12)</label><input type="text" id="f-code"></div>
+        <div><label>Nom de la ligne</label><input type="text" id="f-nom" placeholder="Ex: Chrono 4"></div>
+        <div><label>Couleur</label><input type="color" id="f-couleur" value="#185FA5"></div>
+      </div>
+      <div class="row2">
+        <div><label>Terminus A</label><input type="text" id="f-term-a" placeholder="Ex: Gares"></div>
+        <div><label>Terminus B</label><input type="text" id="f-term-b" placeholder="Ex: Échirolles"></div>
+      </div>
+      <label>Icône de la ligne (lien URL vers une image)</label>
+      <input type="url" id="f-icone" placeholder="https://...">
+    </div>
+
+    <div class="card">
+      <h3>🗺️ Tracé et arrêts sur la carte</h3>
+      <div class="sens-tabs">
+        <button class="sens-tab active" id="stab-aller" onclick="setSens('aller')">Sens Aller (A → B)</button>
+        <button class="sens-tab" id="stab-retour" onclick="setSens('retour')">Sens Retour (B → A)</button>
+      </div>
+      <div class="hint">Cliquez sur la carte pour ajouter un arrêt à la suite (le tracé se dessine automatiquement en reliant les arrêts dans l'ordre). Renommez chaque arrêt dans la liste à droite.</div>
+      <div id="map"></div>
+    </div>
+
+    <div class="card">
+      <h3>⏱️ Fréquences (créneaux + intervalle)</h3>
+      <div id="freq-list"></div>
+      <button class="btn-add" onclick="addFreqRow()">+ Ajouter un créneau</button>
+    </div>
+
+    <div class="card">
+      <h3>📎 Fichiers / infos spéciales</h3>
+      <div id="file-list"></div>
+      <button class="btn-add" onclick="addFileRow()">+ Ajouter un fichier / lien</button>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h3>📍 Arrêts — <span id="sens-label">Aller</span></h3>
+      <div id="stops-list"><div class="hint">Aucun arrêt. Cliquez sur la carte.</div></div>
+    </div>
+    <button class="btn-save" id="btn-save" onclick="saveLigne()">Enregistrer la ligne</button>
+    <div id="msg"></div>
+  </div>
+</div>
+
+<script>
+let supabase, map, marker0;
+let sens = "aller";
+const stops = { aller: [], retour: [] };   // [{lat,lng,nom}]
+const polylines = { aller: null, retour: null };
+const markersLayer = { aller: null, retour: null };
+let freqRows = [];
+let fileRows = [];
+
+async function initSupabase(){
+  const cfg = await fetch("/api/config").then(r=>r.json());
+  supabase = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  const { data:{ session } } = await supabase.auth.getSession();
+  if(session) showApp();
+}
+
+async function doLogin(){
+  const email = document.getElementById("l-email").value.trim();
+  const pass = document.getElementById("l-pass").value;
+  const errEl = document.getElementById("err-login");
+  errEl.textContent = "";
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  if(error){ errEl.textContent = "Connexion impossible : " + error.message; return; }
+  const { data: adminRow } = await supabase.from("admins").select("id").eq("id", data.user.id).maybeSingle();
+  if(!adminRow){ errEl.textContent = "Ce compte n'a pas les droits admin."; await supabase.auth.signOut(); return; }
+  showApp();
+}
+
+function showApp(){
+  document.getElementById("login-gate").style.display="none";
+  document.getElementById("topbar").style.display="flex";
+  document.getElementById("app").style.display="grid";
+  initMap();
+  addFreqRow();
+  renderStops();
+}
+
+function initMap(){
+  map = L.map("map").setView([45.1885, 5.7245], 13); // Grenoble
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    attribution:'© OpenStreetMap contributors', maxZoom:19
+  }).addTo(map);
+  markersLayer.aller = L.layerGroup().addTo(map);
+  markersLayer.retour = L.layerGroup();
+  map.on("click", e => {
+    stops[sens].push({ lat: e.latlng.lat, lng: e.latlng.lng, nom: "Arrêt " + (stops[sens].length+1) });
+    redrawSens();
+    renderStops();
+  });
+}
+
+function setSens(s){
+  sens = s;
+  document.getElementById("stab-aller").classList.toggle("active", s==="aller");
+  document.getElementById("stab-retour").classList.toggle("active", s==="retour");
+  document.getElementById("sens-label").textContent = s==="aller" ? "Aller" : "Retour";
+  if(s==="aller"){ map.removeLayer(markersLayer.retour); markersLayer.aller.addTo(map); }
+  else { map.removeLayer(markersLayer.aller); markersLayer.retour.addTo(map); }
+  renderStops();
+}
+
+function redrawSens(){
+  const layer = markersLayer[sens];
+  layer.clearLayers();
+  const latlngs = [];
+  stops[sens].forEach((s,i)=>{
+    latlngs.push([s.lat, s.lng]);
+    const m = L.circleMarker([s.lat,s.lng], {radius:7, color:"#fff", weight:2, fillColor: sens==="aller" ? "#185FA5" : "#E4032E", fillOpacity:1}).addTo(layer);
+    m.bindTooltip(String(i+1), {permanent:true, direction:"top", className:"stop-tt"});
+  });
+  if(polylines[sens]) layer.removeLayer(polylines[sens]);
+  if(latlngs.length>1){
+    polylines[sens] = L.polyline(latlngs, {color: sens==="aller" ? "#185FA5" : "#E4032E", weight:4, opacity:.8}).addTo(layer);
+  }
+}
+
+function renderStops(){
+  const el = document.getElementById("stops-list");
+  const list = stops[sens];
+  if(!list.length){ el.innerHTML = '<div class="hint">Aucun arrêt. Cliquez sur la carte.</div>'; return; }
+  el.innerHTML = list.map((s,i)=>`
+    <div class="stop-row">
+      <div class="stop-num">${i+1}</div>
+      <input type="text" value="${s.nom.replace(/"/g,"&quot;")}" onchange="renameStop(${i}, this.value)">
+      <button class="icon-btn" onclick="moveStop(${i},-1)" title="Monter">↑</button>
+      <button class="icon-btn" onclick="moveStop(${i},1)" title="Descendre">↓</button>
+      <button class="icon-btn del" onclick="removeStop(${i})" title="Supprimer">✕</button>
+    </div>`).join("");
+}
+function renameStop(i, val){ stops[sens][i].nom = val; }
+function removeStop(i){ stops[sens].splice(i,1); redrawSens(); renderStops(); }
+function moveStop(i, dir){
+  const arr = stops[sens]; const j = i+dir;
+  if(j<0 || j>=arr.length) return;
+  [arr[i],arr[j]] = [arr[j],arr[i]];
+  redrawSens(); renderStops();
+}
+
+// ── FRÉQUENCES ──────────────────────────────────────────────
+function addFreqRow(){
+  freqRows.push({sens:"aller", jour:"semaine", debut:"07:00", fin:"09:00", intervalle:10});
+  renderFreq();
+}
+function delFreqRow(i){ freqRows.splice(i,1); renderFreq(); }
+function renderFreq(){
+  const el = document.getElementById("freq-list");
+  el.innerHTML = freqRows.map((f,i)=>`
+    <div class="freq-row">
+      <select onchange="freqRows[${i}].sens=this.value">
+        <option value="aller" ${f.sens==="aller"?"selected":""}>Aller</option>
+        <option value="retour" ${f.sens==="retour"?"selected":""}>Retour</option>
+      </select>
+      <select onchange="freqRows[${i}].jour=this.value">
+        <option value="semaine" ${f.jour==="semaine"?"selected":""}>Lun-Ven</option>
+        <option value="samedi" ${f.jour==="samedi"?"selected":""}>Samedi</option>
+        <option value="dimanche" ${f.jour==="dimanche"?"selected":""}>Dimanche</option>
+      </select>
+      <input type="time" value="${f.debut}" onchange="freqRows[${i}].debut=this.value" style="margin:0">
+      <input type="time" value="${f.fin}" onchange="freqRows[${i}].fin=this.value" style="margin:0">
+      <input type="number" min="1" value="${f.intervalle}" onchange="freqRows[${i}].intervalle=parseInt(this.value)" style="margin:0" title="Intervalle en minutes">
+      <button class="icon-btn del" onclick="delFreqRow(${i})">✕</button>
+    </div>`).join("");
+}
+
+// ── FICHIERS ────────────────────────────────────────────────
+function addFileRow(){ fileRows.push({nom:"", url:""}); renderFiles(); }
+function delFileRow(i){ fileRows.splice(i,1); renderFiles(); }
+function renderFiles(){
+  const el = document.getElementById("file-list");
+  el.innerHTML = fileRows.map((f,i)=>`
+    <div class="file-row">
+      <input type="text" placeholder="Nom (ex: Fiche horaire PDF)" value="${f.nom.replace(/"/g,"&quot;")}" onchange="fileRows[${i}].nom=this.value" style="margin:0">
+      <input type="url" placeholder="https://..." value="${f.url.replace(/"/g,"&quot;")}" onchange="fileRows[${i}].url=this.value" style="margin:0">
+      <button class="icon-btn del" onclick="delFileRow(${i})">✕</button>
+    </div>`).join("");
+}
+
+// ── SAUVEGARDE ──────────────────────────────────────────────
+async function saveLigne(){
+  const msg = document.getElementById("msg");
+  const btn = document.getElementById("btn-save");
+  const code = document.getElementById("f-code").value.trim();
+  const nom = document.getElementById("f-nom").value.trim();
+  const couleur = document.getElementById("f-couleur").value;
+  const termA = document.getElementById("f-term-a").value.trim();
+  const termB = document.getElementById("f-term-b").value.trim();
+  const icone = document.getElementById("f-icone").value.trim();
+
+  if(!code || !nom || !termA || !termB){
+    msg.className="err"; msg.textContent="Code, nom et les deux terminus sont obligatoires."; return;
+  }
+  if(!stops.aller.length){
+    msg.className="err"; msg.textContent="Ajoutez au moins un arrêt sur le sens Aller."; return;
+  }
+
+  btn.disabled = true; msg.className=""; msg.textContent="Enregistrement en cours...";
+  try{
+    const { error: e1 } = await supabase.from("lignes").insert({
+      code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur
+    });
+    if(e1) throw e1;
+
+    for(const s of ["aller","retour"]){
+      if(!stops[s].length) continue;
+      const arretIds = [];
+      for(const st of stops[s]){
+        const { data: a, error: ea } = await supabase.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng }).select("id").single();
+        if(ea) throw ea;
+        arretIds.push(a.id);
+      }
+      const laRows = arretIds.map((id, idx) => ({ ligne_code: code, arret_id: id, sens: s, ordre: idx }));
+      const { error: ela } = await supabase.from("ligne_arrets").insert(laRows);
+      if(ela) throw ela;
+
+      const points = stops[s].map(st => ({ lat: st.lat, lng: st.lng }));
+      const { error: et } = await supabase.from("traces").insert({ ligne_code: code, sens: s, points });
+      if(et) throw et;
+    }
+
+    const validFreq = freqRows.filter(f=>f.debut && f.fin && f.intervalle);
+    if(validFreq.length){
+      const freqInsert = validFreq.map(f => ({ ligne_code: code, sens: f.sens, jour: f.jour, heure_debut: f.debut, heure_fin: f.fin, intervalle_minutes: f.intervalle }));
+      const { error: ef } = await supabase.from("frequences").insert(freqInsert);
+      if(ef) throw ef;
+    }
+
+    const validFiles = fileRows.filter(f=>f.nom && f.url);
+    if(validFiles.length){
+      const fileInsert = validFiles.map(f => ({ ligne_code: code, nom: f.nom, url: f.url }));
+      const { error: efi } = await supabase.from("fichiers_ligne").insert(fileInsert);
+      if(efi) throw efi;
+    }
+
+    msg.className="ok"; msg.textContent="Ligne enregistrée ! Redirection...";
+    setTimeout(()=> location.href = "ligne.html?code=" + encodeURIComponent(code), 1200);
+  }catch(err){
+    console.error(err);
+    msg.className="err"; msg.textContent="Erreur : " + (err.message || JSON.stringify(err));
+    btn.disabled = false;
+  }
+}
+
+initSupabase();
+</script>
+</body>
+</html>
