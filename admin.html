@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — GGMobilités</title>
@@ -97,10 +98,10 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
 <div class="lw" id="lw">
   <div class="lc">
     <div class="ll"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"><div><div class="lt">GGMobilités Admin</div><div class="ls">Espace administration</div></div></div>
-    <div class="fd"><label>Identifiant</label><input type="text" id="lu" placeholder="identifiant" autocomplete="username"></div>
+    <div class="fd"><label>Email</label><input type="text" id="lu" placeholder="votre@email.fr" autocomplete="username"></div>
     <div class="fd"><label>Mot de passe</label><input type="password" id="lp" placeholder="••••••••" autocomplete="current-password"></div>
     <div class="em" id="lerr">Identifiant ou mot de passe incorrect.</div>
-    <button class="bor" style="width:100%;margin-top:1.25rem" onclick="tryLogin()">Se connecter</button>
+    <button class="bor" style="width:100%;margin-top:1.25rem" id="btn-login" onclick="tryLogin()">Se connecter</button>
     <div style="text-align:center;margin-top:1rem"><a href="index.html" style="font-size:12px;color:var(--txs);text-decoration:none">← Retour au site</a></div>
   </div>
 </div>
@@ -303,7 +304,8 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
 
       <div class="pn" id="pn-cpt">
         <h2>Comptes administrateurs</h2>
-        <div class="stl">Comptes existants</div>
+        <div class="ib"><strong>⚠️ La connexion utilise désormais Supabase Auth.</strong> Cette liste ci-dessous est un ancien système qui n'a plus d'effet sur qui peut se connecter. Pour donner l'accès admin à quelqu'un : créez son compte dans Supabase (Authentication → Add user), puis ajoutez son UUID dans la table <code>admins</code> (SQL Editor : <code>insert into public.admins (id, role) values ('UUID', 'admin');</code>).</div>
+        <div class="stl">Comptes existants (ancien système, informatif uniquement)</div>
         <div id="cpt-list" style="margin-bottom:2rem"></div>
         <div class="stl">Nouveau compte</div>
         <div class="fc">
@@ -429,20 +431,54 @@ async function ghLoadLines(){
   }
 }
 
-// ── AUTH ──────────────────────────────────────────────────────────────
-function tryLogin(){
-  const u=document.getElementById("lu").value.trim();
-  const p=document.getElementById("lp").value;
-  const c=db.comptes.find(x=>x.user===u&&x.pass===p);
-  if(!c){document.getElementById("lerr").style.display="block";return;}
-  curUser=c;
+// ── AUTH (Supabase) ──────────────────────────────────────────────────
+let supabaseClient=null;
+async function initSupabaseAuth(){
+  try{
+    const cfg=await fetch("/api/config").then(r=>r.json());
+    if(!cfg.supabaseUrl||!cfg.supabaseAnonKey){console.error("Config Supabase manquante");return;}
+    supabaseClient=window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    const {data:{session}}=await supabaseClient.auth.getSession();
+    if(session){
+      const ok=await checkAdminAndEnter(session.user);
+      if(!ok) await supabaseClient.auth.signOut();
+    }
+  }catch(e){console.error("Erreur init Supabase:",e);}
+}
+async function checkAdminAndEnter(user){
+  const {data:adminRow}=await supabaseClient.from("admins").select("id,role").eq("id",user.id).maybeSingle();
+  if(!adminRow) return false;
+  curUser={nom:user.email.split("@")[0],role:adminRow.role,email:user.email};
   document.getElementById("lw").style.display="none";
   document.getElementById("adm").style.display="flex";
-  document.getElementById("alab").textContent=c.nom+" · "+ROLES[c.role];
+  document.getElementById("alab").textContent=curUser.nom+" · "+(ROLES[curUser.role]||curUser.role);
   document.getElementById("a-dt").value=new Date().toISOString().split("T")[0];
   ghLoadLines();
+  return true;
 }
-function logout(){
+async function tryLogin(){
+  const btn=document.getElementById("btn-login");
+  const u=document.getElementById("lu").value.trim();
+  const p=document.getElementById("lp").value;
+  document.getElementById("lerr").style.display="none";
+  if(!supabaseClient){document.getElementById("lerr").textContent="Connexion au serveur indisponible, réessayez.";document.getElementById("lerr").style.display="block";return;}
+  btn.disabled=true;
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email:u,password:p});
+  if(error){
+    document.getElementById("lerr").textContent="Identifiant ou mot de passe incorrect.";
+    document.getElementById("lerr").style.display="block";
+    btn.disabled=false;return;
+  }
+  const ok=await checkAdminAndEnter(data.user);
+  if(!ok){
+    await supabaseClient.auth.signOut();
+    document.getElementById("lerr").textContent="Ce compte n'a pas les droits admin.";
+    document.getElementById("lerr").style.display="block";
+  }
+  btn.disabled=false;
+}
+async function logout(){
+  if(supabaseClient) await supabaseClient.auth.signOut();
   curUser=null;
   document.getElementById("lw").style.display="flex";
   document.getElementById("adm").style.display="none";
@@ -779,6 +815,7 @@ function renderAll(){
 }
 
 loadDB();
+initSupabaseAuth();
 </script>
 </body>
 </html>
