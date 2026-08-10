@@ -117,7 +117,7 @@ input[type=color]{height:40px;width:100%;padding:3px;border-radius:8px;border:1p
 </div>
 
 <script>
-let supabase, map, marker0;
+let supabaseClient, map, marker0;
 let sens = "aller";
 const stops = { aller: [], retour: [] };   // [{lat,lng,nom}]
 const polylines = { aller: null, retour: null };
@@ -127,8 +127,8 @@ let fileRows = [];
 
 async function initSupabase(){
   const cfg = await fetch("/api/config").then(r=>r.json());
-  supabase = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-  const { data:{ session } } = await supabase.auth.getSession();
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  const { data:{ session } } = await supabaseClient.auth.getSession();
   if(session) showApp();
 }
 
@@ -137,10 +137,10 @@ async function doLogin(){
   const pass = document.getElementById("l-pass").value;
   const errEl = document.getElementById("err-login");
   errEl.textContent = "";
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
   if(error){ errEl.textContent = "Connexion impossible : " + error.message; return; }
-  const { data: adminRow } = await supabase.from("admins").select("id").eq("id", data.user.id).maybeSingle();
-  if(!adminRow){ errEl.textContent = "Ce compte n'a pas les droits admin."; await supabase.auth.signOut(); return; }
+  const { data: adminRow } = await supabaseClient.from("admins").select("id").eq("id", data.user.id).maybeSingle();
+  if(!adminRow){ errEl.textContent = "Ce compte n'a pas les droits admin."; await supabaseClient.auth.signOut(); return; }
   showApp();
 }
 
@@ -273,7 +273,7 @@ async function saveLigne(){
 
   btn.disabled = true; msg.className=""; msg.textContent="Enregistrement en cours...";
   try{
-    const { error: e1 } = await supabase.from("lignes").insert({
+    const { error: e1 } = await supabaseClient.from("lignes").insert({
       code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur
     });
     if(e1) throw e1;
@@ -282,30 +282,30 @@ async function saveLigne(){
       if(!stops[s].length) continue;
       const arretIds = [];
       for(const st of stops[s]){
-        const { data: a, error: ea } = await supabase.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng }).select("id").single();
+        const { data: a, error: ea } = await supabaseClient.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng }).select("id").single();
         if(ea) throw ea;
         arretIds.push(a.id);
       }
       const laRows = arretIds.map((id, idx) => ({ ligne_code: code, arret_id: id, sens: s, ordre: idx }));
-      const { error: ela } = await supabase.from("ligne_arrets").insert(laRows);
+      const { error: ela } = await supabaseClient.from("ligne_arrets").insert(laRows);
       if(ela) throw ela;
 
       const points = stops[s].map(st => ({ lat: st.lat, lng: st.lng }));
-      const { error: et } = await supabase.from("traces").insert({ ligne_code: code, sens: s, points });
+      const { error: et } = await supabaseClient.from("traces").insert({ ligne_code: code, sens: s, points });
       if(et) throw et;
     }
 
     const validFreq = freqRows.filter(f=>f.debut && f.fin && f.intervalle);
     if(validFreq.length){
       const freqInsert = validFreq.map(f => ({ ligne_code: code, sens: f.sens, jour: f.jour, heure_debut: f.debut, heure_fin: f.fin, intervalle_minutes: f.intervalle }));
-      const { error: ef } = await supabase.from("frequences").insert(freqInsert);
+      const { error: ef } = await supabaseClient.from("frequences").insert(freqInsert);
       if(ef) throw ef;
     }
 
     const validFiles = fileRows.filter(f=>f.nom && f.url);
     if(validFiles.length){
       const fileInsert = validFiles.map(f => ({ ligne_code: code, nom: f.nom, url: f.url }));
-      const { error: efi } = await supabase.from("fichiers_ligne").insert(fileInsert);
+      const { error: efi } = await supabaseClient.from("fichiers_ligne").insert(fileInsert);
       if(efi) throw efi;
     }
 
