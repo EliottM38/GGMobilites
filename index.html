@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accueil — GGMobilités</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
+      GGMobilités
+    </a>
+    <div class="nav-links"><a href="index.html" class="active">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a><a href="tad.html">TAD</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div>
+</div>
+</nav>
+<div class="accent-bar"></div>
+
+<div class="hero">
+  <div class="hero-inner">
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val">14</div><div class="hero-stat-label">Lignes</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">4 296</div><div class="hero-stat-label">Passages/jour</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">5h – 1h</div><div class="hero-stat-label">Amplitude</div></div>
+      </div>
+    </div>
+    <div class="hero-widget">
+      <div class="live-chip" style="margin-bottom:0.75rem"><span class="live-dot"></span>En direct</div>
+      <div class="hero-widget-title">Prochains départs · Gares</div>
+      <div class="hw-ligne"><span class="hw-badge" style="background:#185FA5">C1</span><span class="hw-dest">→ Palluel</span><span class="hw-temps" id="hw-c1">—</span></div>
+      <div class="hw-ligne"><span class="hw-badge" style="background:#0F6E56">C2</span><span class="hw-dest">→ Les Claverins</span><span class="hw-temps" id="hw-c2">—</span></div>
+      <div class="hw-ligne"><span class="hw-badge" style="background:#993C1D">C3</span><span class="hw-dest">→ La Vallone</span><span class="hw-temps" id="hw-c3">—</span></div>
+      <div class="hw-ligne"><span class="hw-badge" style="background:#534AB7">4</span><span class="hw-dest">→ Lycée du Grésivaudan</span><span class="hw-temps" id="hw-4">—</span></div>
+      <div style="margin-top:14px;text-align:right"><a href="reseau.html" style="font-size:12px;color:var(--bleu);text-decoration:none;font-weight:600">Voir tous les horaires →</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="section">
+    <div class="quick-grid">
+      <a href="reseau.html" class="quick-card"><span class="quick-card-icon">🕐</span><span>Horaires</span></a>
+      <a href="infotrafic.html" class="quick-card"><span class="quick-card-icon">⚠️</span><span>Infotrafic</span></a>
+      <a href="tarifs.html" class="quick-card"><span class="quick-card-icon">🎫</span><span>Tarifs</span></a>
+      <a href="reseau.html" class="quick-card"><span class="quick-card-icon">🗺️</span><span>Le réseau</span></a>
+      <a href="contact.html" class="quick-card"><span class="quick-card-icon">✉️</span><span>Contact</span></a>
+      <a href="objets-perdus.html" class="quick-card"><span class="quick-card-icon">🔍</span><span>Objets perdus</span></a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Infotrafic <span class="live-chip" style="font-size:11px;vertical-align:middle;margin-left:8px"><span class="live-dot"></span>En direct</span></div>
+      <a href="infotrafic.html" class="section-link">Tout voir →</a>
+    </div>
+    <div id="alertes-accueil"><div style="font-size:13px;color:var(--texte-sec)">Chargement...</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Lignes structurantes</div>
+      <a href="reseau.html" class="section-link">Tout le réseau →</a>
+    </div>
+    <div class="grid grid-3">
+      <a href="reseau.html" class="card" style="text-decoration:none">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span class="ligne-num" style="background:#185FA5;font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;color:white">C1</span>
+          <strong style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--texte)">Gares ↔ Palluel</strong>
+        </div>
+        <p style="font-size:13px;color:var(--texte-sec)">Toutes les 7 min · 5h–0h15</p>
+      </a>
+      <a href="reseau.html" class="card" style="text-decoration:none">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span class="ligne-num" style="background:#0F6E56;font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;color:white">C2</span>
+          <strong style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--texte)">Gares ↔ Les Claverins</strong>
+        </div>
+        <p style="font-size:13px;color:var(--texte-sec)">Toutes les 6 min · 5h–0h30</p>
+      </a>
+      <a href="reseau.html" class="card" style="text-decoration:none">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span class="ligne-num" style="background:#993C1D;font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;color:white">C3</span>
+          <strong style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--texte)">Gares ↔ La Vallone</strong>
+        </div>
+        <p style="font-size:13px;color:var(--texte-sec)">Toutes les 5 min · 5h–0h30</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── CAROUSEL (images, séparé des articles) ──────────── -->
+  <div id="sec-carousel" style="display:none">
+    <div class="section-header" style="margin-bottom:1rem">
+      <div class="section-title" id="carousel-titre">À la une</div>
+    </div>
+    <div style="position:relative;overflow:hidden;border-radius:16px;background:#0A2240;min-height:120px">
+      <div id="car-inner" style="display:flex;transition:transform 0.45s ease"></div>
+      <button onclick="carNav(-1)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.45);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2">‹</button>
+      <button onclick="carNav(1)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.45);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2">›</button>
+      <div id="car-dots" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2"></div>
+    </div>
+  </div>
+
+  <!-- ── ACTUALITÉS (articles texte, séparés du carousel) ── -->
+  <div id="sec-actu" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Actualités</div>
+      <a href="actualites.html" class="section-link">Tout voir →</a>
+    </div>
+    <div id="actu-grid" class="grid grid-3"></div>
+  </div>
+
+  <!-- ── POP-UP ── -->
+  <div id="popup-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:2rem">
+    <div id="popup-box" style="max-width:440px;width:100%;border-radius:16px;padding:2rem;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.4)">
+      <button onclick="fermerPopup()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:rgba(255,255,255,0.8);font-size:22px;cursor:pointer;line-height:1">×</button>
+      <div id="pu-titre" style="font-size:18px;font-weight:800;margin-bottom:10px;color:white"></div>
+      <div id="pu-msg" style="font-size:14px;color:rgba(255,255,255,0.9);margin-bottom:16px;line-height:1.6"></div>
+      <a id="pu-btn" href="#" style="display:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;background:white"></a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function minutesAvant(h) {
+  const now = new Date(), [hh,mm] = h.split(':').map(Number);
+  const p = new Date(); p.setHours(hh,mm,0,0);
+  if(p-now < -12*3600000) p.setDate(p.getDate()+1);
+  return Math.round((p-now)/60000);
+}
+async function majWidget() {
+  try {
+    const r = await fetch('lines.json');
+    const lines = await r.json();
+    const j = new Date().getDay();
+    const jour = j===6?'samedi':j===0?'dimanche':'semaine';
+    [['C1','Palluel','hw-c1'],['C2','Les Claverins','hw-c2'],['C3','La Vallone','hw-c3'],['4','Lycée du Grésivaudan','hw-4']].forEach(([code,dir,id])=>{
+      const l = lines.find(x=>x.code===code&&x.direction===dir&&x.jour===jour);
+      if(!l) return;
+      const min = l.horaires.map(h=>minutesAvant(h.heure)).filter(m=>m>=0&&m<=40).sort((a,b)=>a-b)[0];
+      const el = document.getElementById(id);
+      if(el) el.textContent = min!=null?(min===0?"À l'arrêt":`${min} min`):'—';
+    });
+  } catch(e){}
+}
+majWidget(); setInterval(majWidget, 30000);
+
+// ── JSONBin : carousel, actu, popup, infotrafic ───────────
+const JB_ID="69d95af5aaba882197e64b7e", JB_KEY="$2a$10$0apNc/nNCMR.8/TGHyYHxO5hePLCGZ9bJua1DrAKkJdLf8y8TGbdm";
+let carItems=[], carIdx=0;
+
+async function loadFromJB(){
+  try{
+    const r=await fetch("https://api.jsonbin.io/v3/b/"+JB_ID+"/latest",{headers:{"X-Master-Key":JB_KEY}});
+    const j=await r.json(); const rec=j.record||{};
+
+    // Infotrafic
+    const alertes=rec.alertes||[];
+    const alDiv=document.getElementById("alertes-accueil");
+    if(alDiv){
+      if(alertes.length){
+        alDiv.innerHTML=alertes.slice(0,3).map(a=>{
+          const bg=a.niveau==="rouge"?"#E74C3C":"#E67E22";
+          const bgLight=a.niveau==="rouge"?"rgba(231,76,60,0.08)":"rgba(230,126,34,0.08)";
+          const brd=a.niveau==="rouge"?"rgba(231,76,60,0.25)":"rgba(230,126,34,0.25)";
+          return '<div style="background:white;border:1px solid '+brd+';border-left:4px solid '+bg+';border-radius:10px;padding:12px 16px;margin-bottom:10px">'+
+            '<strong style="font-size:14px;color:#0F1923">'+a.ligne+' : '+a.titre+'</strong>'+
+            '<p style="font-size:13px;color:#5A6272;margin-top:4px">'+a.desc+'</p></div>';
+        }).join("");
+      }else{
+        alDiv.innerHTML='<div style="background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.2);border-radius:10px;padding:12px 16px;font-size:13px;color:#27AE60">✓ Aucune perturbation en cours.</div>';
+      }
+    }
+
+    // Carousel images (séparé)
+    const carousel=rec.carousel||[];
+    if(carousel.length){
+      document.getElementById("sec-carousel").style.display="block";
+      if(rec.carousel_titre) document.getElementById("carousel-titre").textContent=rec.carousel_titre;
+      carItems=carousel;
+      renderCar();
+      setInterval(()=>{ if(carItems.length>1) carNav(1); },5000);
+    }
+
+    // Actualités (articles texte)
+    const articles=rec.articles||[];
+    if(articles.length){
+      document.getElementById("sec-actu").style.display="block";
+      document.getElementById("actu-grid").innerHTML=articles.slice(0,3).map(a=>{
+        var imgHtml=a.img?'<img src="'+a.img+'" style="width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:12px" onerror="this.style.display=\'none\'">':'';
+        var catHtml='<span style="background:var(--bleu-pale);color:var(--bleu);font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;text-transform:uppercase">'+(a.cat||'Actualité')+'</span>';
+        return '<div class="card">'+imgHtml+'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+catHtml+'<span style="font-size:11px;color:var(--texte-sec)">'+(a.date||'')+'</span></div><h3 style="font-size:15px;font-weight:700;margin-bottom:6px;color:var(--texte)">'+a.titre+'</h3><p style="font-size:13px;color:var(--texte-sec);line-height:1.5">'+((a.contenu||'').slice(0,120))+'...</p></div>';
+      }).join("");
+    }
+
+    // Pop-up
+    const pu=rec.popup||{};
+    if(pu.actif && pu.titre && !sessionStorage.getItem("pu_seen")){
+      var cols={bleu:"#1565C0",rouge:"#C0392B",vert:"#27AE60",or:"#C9A84C"};
+      var bg=cols[pu.couleur]||"#1565C0";
+      document.getElementById("popup-box").style.background=bg;
+      document.getElementById("pu-titre").textContent=pu.titre;
+      document.getElementById("pu-msg").textContent=pu.msg||"";
+      if(pu.lien && pu.btn){
+        var btn=document.getElementById("pu-btn");
+        btn.href=pu.lien; btn.textContent=pu.btn;
+        btn.style.display="inline-block"; btn.style.color=bg;
+      }
+      var ov=document.getElementById("popup-ov");
+      ov.style.display="flex";
+      ov.addEventListener("click",function(e){ if(e.target===ov) fermerPopup(); });
+    }
+
+  }catch(e){ console.warn("JSONBin:",e.message); }
+}
+
+function fermerPopup(){
+  document.getElementById("popup-ov").style.display="none";
+  sessionStorage.setItem("pu_seen","1");
+}
+
+function renderCar(){
+  if(!carItems.length) return;
+  const inner=document.getElementById("car-inner");
+  const n=carItems.length;
+  inner.style.width=(n*100)+"%";
+  inner.innerHTML=carItems.map(function(item){
+    var img=typeof item==="string"?item:(item.img||"");
+    var titre=typeof item==="object"?(item.titre||""):"";
+    var desc=typeof item==="object"?(item.desc||""):"";
+    var overlay=titre?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.65));padding:1.25rem 1rem"><div style="color:white;font-size:16px;font-weight:700">'+titre+'</div>'+(desc?'<div style="color:rgba(255,255,255,0.8);font-size:13px;margin-top:3px">'+desc+'</div>':'')+'</div>':'';
+    return '<div style="width:'+(100/n)+'%;flex-shrink:0;position:relative"><img src="'+img+'" style="width:100%;height:300px;object-fit:cover;display:block">'+overlay+'</div>';
+  }).join("");
+  // Dots
+  var dots=document.getElementById("car-dots");
+  dots.innerHTML=carItems.map(function(_,i){
+    return '<div onclick="carGo('+i+')" style="width:8px;height:8px;border-radius:50%;cursor:pointer;transition:background 0.2s;background:'+(i===0?"white":"rgba(255,255,255,0.4)")+'"></div>';
+  }).join("");
+  carGo(0);
+}
+
+function carGo(i){
+  carIdx=i;
+  var n=carItems.length;
+  document.getElementById("car-inner").style.transform="translateX(-"+(i*(100/n))+"%)";
+  var dots=document.getElementById("car-dots").children;
+  for(var j=0;j<dots.length;j++) dots[j].style.background=j===i?"white":"rgba(255,255,255,0.4)";
+}
+function carNav(d){ carGo((carIdx+d+carItems.length)%carItems.length); }
+
+loadFromJB();
+
+</script>
+
+<footer>
+  <div class="accent-bar"></div>
+  <div style="padding:3rem 2rem">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div>
+        <p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région. Partenaire de vos déplacements quotidiens.</p>
+      </div>
+      <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="reseau.html">Horaires</a><a href="tad.html">Transport à la demande</a></div>
+      <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a></div>
+      <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a3d
