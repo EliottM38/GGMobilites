@@ -197,14 +197,16 @@ function renderStops(){
   const list = stops[sens];
   if(!list.length){ el.innerHTML = '<div class="hint">Aucun arrêt. Cliquez sur la carte.</div>'; return; }
   el.innerHTML = list.map((s,i)=>`
-    <div class="stop-row">
+    <div class="stop-row" style="flex-wrap:wrap">
       <div class="stop-num">${i+1}</div>
-      <input type="text" value="${s.nom.replace(/"/g,"&quot;")}" onchange="renameStop(${i}, this.value)">
+      <input type="text" value="${s.nom.replace(/"/g,"&quot;")}" onchange="renameStop(${i}, this.value)" placeholder="Nom de l'arrêt">
       <button class="icon-btn" onclick="moveStop(${i},-1)" title="Monter">↑</button>
       <button class="icon-btn" onclick="moveStop(${i},1)" title="Descendre">↓</button>
       <button class="icon-btn del" onclick="removeStop(${i})" title="Supprimer">✕</button>
+      <input type="text" value="${(s.lieu||"").replace(/"/g,"&quot;")}" onchange="setLieu(${i}, this.value)" placeholder="📍 Lieu notable (optionnel, ex: Musée)" style="flex-basis:100%;margin-top:6px;font-size:11px;opacity:.85">
     </div>`).join("");
 }
+function setLieu(i, val){ stops[sens][i].lieu = val; }
 function renameStop(i, val){ stops[sens][i].nom = val; }
 function removeStop(i){ stops[sens].splice(i,1); redrawSens(); renderStops(); }
 function moveStop(i, dir){
@@ -282,7 +284,7 @@ async function saveLigne(){
       if(!stops[s].length) continue;
       const arretIds = [];
       for(const st of stops[s]){
-        const { data: a, error: ea } = await supabaseClient.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng }).select("id").single();
+        const { data: a, error: ea } = await supabaseClient.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng, lieu_nom: st.lieu || null }).select("id").single();
         if(ea) throw ea;
         arretIds.push(a.id);
       }

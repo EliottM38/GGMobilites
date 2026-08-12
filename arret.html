@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Arrêt — GGMobilités</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="styles.css">
+<style>
+.abanner{background:#3B82F6;padding:1.1rem 2rem;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.abanner h1{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:#0B0B14;margin:0}
+.abanner .badges{display:flex;gap:6px;flex-wrap:wrap}
+.lbadge{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:white;flex-shrink:0;cursor:pointer;text-decoration:none}
+.abody{max-width:1200px;margin:0 auto;padding:1.5rem 2rem 4rem}
+.grid3{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:18px;align-items:stretch}
+@media(max-width:900px){.grid3{grid-template-columns:1fr}}
+.box{background:white;border:1px solid var(--bordure,#e5e5e5);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.05);display:flex;flex-direction:column}
+.box-h{padding:12px 16px;border-bottom:1px solid var(--bordure,#e5e5e5);font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+.box-c{padding:14px 16px;flex:1}
+#minimap{height:200px}
+.pass-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f2f2f2}
+.pass-row:last-child{border-bottom:none}
+.pass-badge{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;color:white;flex-shrink:0}
+.pass-dir{flex:1;font-size:12px;color:var(--texte-sec,#666)}
+.pass-time{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#3B82F6}
+.statut-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif}
+.statut-normal{background:#E6F9F0;color:#00A854}
+.statut-travaux,.statut-deplace{background:#FFF4E0;color:#D9820B}
+.statut-supprime{background:#FDEAEA;color:#E4032E}
+.statut-info{background:#E6F1FB;color:#0C447C}
+.abar{background:white;border:1px solid var(--bordure,#e5e5e5);border-radius:14px;padding:16px 20px;margin-top:18px;display:flex;gap:12px;align-items:flex-start}
+.abar-icon{font-size:22px}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</a>
+<div class="nav-links"><a href="index.html">Accueil</a><a href="reseau.html">Le réseau</a><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><a href="contact.html">Contact</a></div>
+</div></nav>
+<div class="accent-bar"></div>
+<div class="abanner">
+  <h1 id="a-nom">Chargement...</h1>
+  <div class="badges" id="a-badges"></div>
+</div>
+<div class="abody">
+  <div class="grid3">
+    <div class="box">
+      <div class="box-h">📍 Position</div>
+      <div id="minimap"></div>
+      <div class="box-c" id="a-adresse" style="font-size:12px;color:var(--texte-sec,#666)"></div>
+    </div>
+    <div class="box">
+      <div class="box-h">🕐 Prochains passages — toutes lignes</div>
+      <div class="box-c" id="a-passages"><div style="color:var(--texte-sec,#888);font-size:12px">Chargement...</div></div>
+    </div>
+    <div class="box">
+      <div class="box-h">ℹ️ État de l'arrêt</div>
+      <div class="box-c" id="a-statut"></div>
+    </div>
+  </div>
+  <div class="abar" id="a-anecdote-wrap" style="display:none">
+    <div class="abar-icon">💡</div>
+    <div><strong style="font-family:'Syne',sans-serif;font-size:13px">À savoir</strong><div id="a-anecdote" style="font-size:13px;color:var(--texte-sec,#555);margin-top:3px"></div></div>
+  </div>
+</div>
+<footer><div class="accent-bar"></div><div style="padding:2.5rem 2rem"><div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</div></div></div></div></footer>
+
+<script>
+const ID = new URLSearchParams(location.search).get("id");
+let supabaseClient;
+const STATUT_LABEL = {normal:"Fonctionne normalement", deplace:"Arrêt déplacé", supprime:"Arrêt fermé", travaux:"Travaux en cours", info:"Information"};
+
+async function init(){
+  if(!ID){ document.getElementById("a-nom").textContent="Arrêt introuvable"; return; }
+  const cfg = await fetch("/api/config").then(r=>r.json());
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+  const { data: arret, error } = await supabaseClient.from("arrets").select("*").eq("id", ID).single();
+  if(error || !arret){ document.getElementById("a-nom").textContent="Arrêt introuvable"; return; }
+
+  document.getElementById("page-title").textContent = arret.nom + " — GGMobilités";
+  document.getElementById("a-nom").textContent = arret.nom;
+  document.getElementById("a-adresse").textContent = arret.adresse || "Adresse non renseignée.";
+
+  // Statut
+  const st = arret.statut || "normal";
+  document.getElementById("a-statut").innerHTML =
+    `<span class="statut-pill statut-${st}">${STATUT_LABEL[st]||st}</span>` +
+    (arret.statut_detail ? `<div style="margin-top:10px;font-size:12px;color:var(--texte-sec,#666)">${arret.statut_detail}</div>` : "");
+
+  // Anecdote / lieu notable
+  if(arret.anecdote || arret.lieu_nom){
+    document.getElementById("a-anecdote-wrap").style.display = "flex";
+    document.getElementById("a-anecdote").textContent = [arret.lieu_nom, arret.anecdote].filter(Boolean).join(" — ");
+  }
+
+  // Carte
+  const map = L.map("minimap", {zoomControl:false, dragging:false, scrollWheelZoom:false}).setView([arret.lat, arret.lng], 16);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'© OpenStreetMap'}).addTo(map);
+  L.circleMarker([arret.lat, arret.lng], {radius:9, color:"#fff", weight:3, fillColor:"#3B82F6", fillOpacity:1}).addTo(map);
+
+  // Lignes qui desservent cet arrêt
+  const { data: las } = await supabaseClient.from("ligne_arrets").select("ligne_code, sens").eq("arret_id", ID);
+  const codes = [...new Set((las||[]).map(l=>l.ligne_code))];
+  if(!codes.length){
+    document.getElementById("a-passages").innerHTML = '<div style="color:var(--texte-sec,#888);font-size:12px">Aucune ligne ne dessert cet arrêt.</div>';
+    return;
+  }
+  const { data: lignes } = await supabaseClient.from("lignes").select("*").in("code", codes);
+  const ligneByCode = Object.fromEntries((lignes||[]).map(l=>[l.code,l]));
+
+  document.getElementById("a-badges").innerHTML = codes.map(c => {
+    const l = ligneByCode[c]; if(!l) return "";
+    return `<a href="ligne.html?code=${encodeURIComponent(c)}" class="lbadge" style="background:${l.couleur}" title="${l.nom}">${c}</a>`;
+  }).join("");
+
+  if(st==="supprime"){
+    document.getElementById("a-passages").innerHTML = '<div style="color:var(--texte-sec,#888);font-size:12px">Arrêt fermé — pas de passages.</div>';
+    return;
+  }
+
+  const { data: freqs } = await supabaseClient.from("frequences").select("*").in("ligne_code", codes);
+  const jour = jourType();
+  const now = new Date(); const nowMin = now.getHours()*60+now.getMinutes();
+  const results = [];
+  (freqs||[]).forEach(f=>{
+    if(f.jour!==jour) return;
+    const l = ligneByCode[f.ligne_code]; if(!l) return;
+    const next = nextDeparture(f, nowMin);
+    if(next!==null) results.push({code:f.ligne_code, sens:f.sens, couleur:l.couleur, mins:next, terminus: f.sens==="aller" ? l.terminus_b : l.terminus_a});
+  });
+  results.sort((a,b)=>a.mins-b.mins);
+  if(!results.length){
+    document.getElementById("a-passages").innerHTML = '<div style="color:var(--texte-sec,#888);font-size:12px">Pas de service pour le moment.</div>';
+  } else {
+    document.getElementById("a-passages").innerHTML = results.slice(0,10).map(r => `
+      <div class="pass-row">
+        <div class="pass-badge" style="background:${r.couleur}">${r.code}</div>
+        <div class="pass-dir">→ ${r.terminus}</div>
+        <div class="pass-time">${r.mins<=0?"À l'instant":r.mins+" min"}</div>
+      </div>`).join("");
+  }
+}
+
+function jourType(){ const j=new Date().getDay(); return j===6?"samedi":j===0?"dimanche":"semaine"; }
+function nextDeparture(f, nowMin){
+  const [dh,dm] = f.heure_debut.split(":").map(Number);
+  const [fh,fm] = f.heure_fin.split(":").map(Number);
+  const debut = dh*60+dm, fin = fh*60+fm, itv = f.intervalle_minutes;
+  if(nowMin < debut) return debut - nowMin;
+  if(nowMin > fin) return null;
+  const elapsed = nowMin - debut;
+  const nextOffset = Math.ceil(elapsed/itv)*itv;
+  const nextMin = debut + nextOffset;
+  if(nextMin > fin) return null;
+  return nextMin - nowMin;
+}
+
+init();
+</script>
+</body>
+</html>
