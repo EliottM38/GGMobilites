@@ -73,7 +73,12 @@ input[type=color]{height:40px;width:100%;padding:3px;border-radius:8px;border:1p
       <div class="row3">
         <div><label>Code (ex: 12)</label><input type="text" id="f-code"></div>
         <div><label>Nom de la ligne</label><input type="text" id="f-nom" placeholder="Ex: Chrono 4"></div>
-        <div><label>Couleur</label><input type="color" id="f-couleur" value="#185FA5"></div>
+        <div><label>Couleur</label>
+          <div style="display:flex;gap:8px">
+            <input type="color" id="f-couleur" value="#185FA5" style="flex:0 0 52px;padding:2px">
+            <input type="text" id="f-couleur-hex" value="#185FA5" placeholder="#185FA5" maxlength="7" style="flex:1">
+          </div>
+        </div>
       </div>
       <div class="row2">
         <div><label>Terminus A</label><input type="text" id="f-term-a" placeholder="Ex: Gares"></div>
@@ -144,13 +149,50 @@ async function doLogin(){
   showApp();
 }
 
+const EDIT_CODE = new URLSearchParams(location.search).get("code") || null;
+
 function showApp(){
   document.getElementById("login-gate").style.display="none";
   document.getElementById("topbar").style.display="flex";
   document.getElementById("app").style.display="grid";
   initMap();
-  addFreqRow();
-  renderStops();
+  if(EDIT_CODE){ loadExistingLigne(EDIT_CODE); }
+  else { addFreqRow(); renderStops(); }
+}
+
+async function loadExistingLigne(code){
+  document.getElementById("msg").className=""; document.getElementById("msg").textContent="Chargement de la ligne "+code+"...";
+  document.querySelector(".topbar h1").textContent = "Modifier la ligne " + code;
+  document.getElementById("btn-save").textContent = "Enregistrer les modifications";
+  document.getElementById("f-code").disabled = true;
+
+  const { data: l } = await supabaseClient.from("lignes").select("*").eq("code", code).single();
+  if(!l){ document.getElementById("msg").className="err"; document.getElementById("msg").textContent="Ligne introuvable."; return; }
+  document.getElementById("f-code").value = l.code;
+  document.getElementById("f-nom").value = l.nom;
+  document.getElementById("f-couleur").value = l.couleur;
+  document.getElementById("f-couleur-hex").value = l.couleur;
+  document.getElementById("f-term-a").value = l.terminus_a;
+  document.getElementById("f-term-b").value = l.terminus_b;
+  document.getElementById("f-icone").value = l.icone_url || "";
+
+  const { data: las } = await supabaseClient.from("ligne_arrets").select("*, arrets(*)").eq("ligne_code", code).order("ordre");
+  ["aller","retour"].forEach(s => {
+    stops[s] = (las||[]).filter(x=>x.sens===s).map(x=>({ lat:x.arrets.lat, lng:x.arrets.lng, nom:x.arrets.nom, lieu:x.arrets.lieu_nom||"", _existingId:x.arret_id }));
+  });
+  redrawSens(); renderStops();
+  setSens("aller");
+
+  const { data: freqs } = await supabaseClient.from("frequences").select("*").eq("ligne_code", code);
+  freqRows = (freqs||[]).map(f => ({ sens:f.sens, jour:f.jour, debut:f.heure_debut.slice(0,5), fin:f.heure_fin.slice(0,5), intervalle:f.intervalle_minutes }));
+  if(!freqRows.length) freqRows.push({sens:"aller", jour:"semaine", debut:"07:00", fin:"09:00", intervalle:10});
+  renderFreq();
+
+  const { data: fichiers } = await supabaseClient.from("fichiers_ligne").select("*").eq("ligne_code", code);
+  fileRows = (fichiers||[]).map(f => ({ nom:f.nom, url:f.url }));
+  renderFiles();
+
+  document.getElementById("msg").className=""; document.getElementById("msg").textContent="";
 }
 
 function initMap(){
@@ -261,7 +303,7 @@ async function saveLigne(){
   const btn = document.getElementById("btn-save");
   const code = document.getElementById("f-code").value.trim();
   const nom = document.getElementById("f-nom").value.trim();
-  const couleur = document.getElementById("f-couleur").value;
+  const couleur = document.getElementById("f-couleur-hex").value.trim();
   const termA = document.getElementById("f-term-a").value.trim();
   const termB = document.getElementById("f-term-b").value.trim();
   const icone = document.getElementById("f-icone").value.trim();
@@ -269,16 +311,35 @@ async function saveLigne(){
   if(!code || !nom || !termA || !termB){
     msg.className="err"; msg.textContent="Code, nom et les deux terminus sont obligatoires."; return;
   }
+  if(!/^#[0-9A-Fa-f]{6}$/.test(couleur)){
+    msg.className="err"; msg.textContent="Couleur invalide — format attendu : #RRGGBB (ex: #dc241f)."; return;
+  }
   if(!stops.aller.length){
     msg.className="err"; msg.textContent="Ajoutez au moins un arrêt sur le sens Aller."; return;
   }
 
   btn.disabled = true; msg.className=""; msg.textContent="Enregistrement en cours...";
   try{
-    const { error: e1 } = await supabaseClient.from("lignes").insert({
-      code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur
-    });
-    if(e1) throw e1;
+    if(EDIT_CODE){
+      const { error: eu } = await supabaseClient.from("lignes").update({
+        nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur
+      }).eq("code", code);
+      if(eu) throw eu;
+
+      // On repart propre : on supprime les anciens arrêts/tracés/fréquences/fichiers de cette ligne, puis on réinsère.
+      const { data: oldLas } = await supabaseClient.from("ligne_arrets").select("arret_id").eq("ligne_code", code);
+      const oldArretIds = [...new Set((oldLas||[]).map(x=>x.arret_id))];
+      await supabaseClient.from("ligne_arrets").delete().eq("ligne_code", code);
+      if(oldArretIds.length) await supabaseClient.from("arrets").delete().in("id", oldArretIds);
+      await supabaseClient.from("traces").delete().eq("ligne_code", code);
+      await supabaseClient.from("frequences").delete().eq("ligne_code", code);
+      await supabaseClient.from("fichiers_ligne").delete().eq("ligne_code", code);
+    } else {
+      const { error: e1 } = await supabaseClient.from("lignes").insert({
+        code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur
+      });
+      if(e1) throw e1;
+    }
 
     for(const s of ["aller","retour"]){
       if(!stops[s].length) continue;
@@ -320,6 +381,18 @@ async function saveLigne(){
   }
 }
 
+function syncColorInputs(){
+  const picker = document.getElementById("f-couleur");
+  const hex = document.getElementById("f-couleur-hex");
+  picker.addEventListener("input", () => { hex.value = picker.value; });
+  hex.addEventListener("input", () => {
+    let v = hex.value.trim();
+    if(!v.startsWith("#")) v = "#"+v;
+    if(/^#[0-9A-Fa-f]{6}$/.test(v)){ picker.value = v; hex.style.borderColor = ""; }
+    else { hex.style.borderColor = "#E4032E"; }
+  });
+}
+syncColorInputs();
 initSupabase();
 </script>
 </body>

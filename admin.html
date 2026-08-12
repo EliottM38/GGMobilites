@@ -145,16 +145,9 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
 
       <div class="pn" id="pn-lig">
         <h2>Lignes du réseau</h2>
-        <div class="ib"><strong>⚠️ Nouveau système</strong> — La gestion simple ci-dessous (code/nom/couleur, via JSONBin) est en cours de remplacement. Utilisez désormais <a href="admin-ligne.html" style="color:#4FA8FF;font-weight:700">Créer une ligne (carte interactive, Supabase) →</a> pour construire une ligne complète avec tracé, arrêts géolocalisés et fréquences.</div>
-        <div class="ib"><strong>Gestion des lignes (ancien système)</strong> — Ajoutez, modifiez ou supprimez les lignes affichées sur le site (code, nom, couleur). Les lignes existantes que vous supprimez ici resteront visibles ailleurs (horaires, pages dédiées) tant que vous ne modifiez pas ces contenus séparément.</div>
-        <div class="stl">Ajouter une ligne</div>
-        <div class="fc">
-          <div class="fr3">
-            <div class="fd" style="margin:0"><label>Code</label><input type="text" id="lg-code" placeholder="Ex : 12"></div>
-            <div class="fd" style="margin:0"><label>Nom / description</label><input type="text" id="lg-nom" placeholder="Ex : Gares ↔ Échirolles"></div>
-            <div class="fd" style="margin:0"><label>Couleur</label><input type="color" id="lg-coul" value="#185FA5" style="height:42px;padding:4px;cursor:pointer"></div>
-          </div>
-          <button class="bor" style="margin-top:12px" onclick="addLig()">Ajouter la ligne</button>
+        <div class="ib"><strong>Gestion des lignes</strong> — Créez, modifiez et supprimez les lignes du réseau (tracé, arrêts, fréquences) depuis <a href="admin-ligne.html" style="color:#4FA8FF;font-weight:700">l'éditeur de ligne (carte interactive) →</a></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+          <a href="admin-ligne.html" class="bor" style="text-decoration:none">+ Nouvelle ligne</a>
         </div>
         <div class="stl">Lignes existantes</div>
         <div id="lig-list"></div>
@@ -342,8 +335,7 @@ const CATS={actualite:"Actualité",travaux:"Travaux",evenement:"Événement","in
 const LC={C1:"#185FA5",C2:"#0F6E56",C3:"#993C1D","4":"#534AB7","5":"#3B6D11","6":"#854F0B","7":"#993556","8":"#5F5E5A","9":"#0A6BAB","10":"#0F6E56","11":"#A32D2D","60":"#412402","61":"#3B6D11",PL1:"#1A1A2E"};
 const PLAGES_DEF={"C1": {"semaine": [["05:00", "07:30", 10], ["07:30", "19:00", 7], ["19:00", "00:15", 15]], "samedi": [["06:00", "09:00", 12], ["09:00", "18:00", 10], ["18:00", "00:00", 15]], "dimanche": [["06:00", "10:00", 15], ["10:00", "17:00", 12], ["17:00", "23:00", 15]]}, "C2": {"semaine": [["05:00", "07:30", 9], ["07:30", "19:00", 6], ["19:00", "00:30", 10]], "samedi": [["05:30", "09:00", 10], ["09:00", "18:00", 8], ["18:00", "00:15", 15]], "dimanche": [["05:45", "10:00", 20], ["10:00", "17:00", 15], ["17:00", "00:00", 20]]}, "C3": {"semaine": [["05:00", "07:30", 8], ["07:30", "19:00", 5], ["19:00", "00:30", 15]], "samedi": [["05:30", "09:00", 13], ["09:00", "18:00", 8], ["18:00", "00:00", 15]], "dimanche": [["05:45", "10:00", 16], ["10:00", "17:00", 13], ["17:00", "23:45", 16]]}, "4": {"semaine": [["06:00", "07:30", 15], ["07:30", "18:45", 10], ["18:45", "22:00", 60]], "samedi": [["07:00", "22:00", 15]], "dimanche": [["09:00", "19:00", 30]]}, "5": {"semaine": [["05:30", "07:30", 15], ["07:30", "19:00", 10], ["19:00", "23:30", 40]], "samedi": [["06:00", "09:00", 20], ["09:00", "22:00", 15]], "dimanche": [["08:00", "21:30", 20]]}, "6": {"semaine": [["06:00", "07:30", 15], ["07:30", "18:00", 10], ["18:00", "21:00", 20]], "samedi": [["07:00", "09:00", 30], ["09:00", "18:00", 20], ["18:00", "20:30", 30]], "dimanche": [["09:00", "19:00", 30]]}, "7": {"semaine": [["05:30", "07:30", 20], ["07:30", "19:00", 10], ["19:00", "21:30", 45]], "samedi": [["07:00", "10:00", 60], ["10:00", "17:00", 30], ["17:00", "21:00", 45]], "dimanche": [["10:00", "18:00", 30]]}, "8": {"semaine": [["06:45", "08:00", 30], ["08:00", "18:30", 15], ["18:30", "22:00", 45]], "samedi": [["07:00", "10:00", 45], ["10:00", "16:30", 20], ["16:30", "21:00", 40]], "dimanche": [["08:00", "20:00", 30]]}, "9": {"semaine": [["07:30", "18:00", 15], ["18:00", "21:00", 30]], "samedi": [["08:30", "20:45", 20]], "dimanche": [["10:00", "20:30", 30]]}, "10": {"semaine": [["05:30", "07:30", 20], ["07:30", "19:00", 10], ["19:00", "23:00", 30]], "samedi": [["06:00", "10:00", 30], ["10:00", "18:00", 15], ["18:00", "22:00", 30]], "dimanche": [["07:30", "21:00", 30]]}, "11": {"semaine": [["07:00", "21:30", 30]], "samedi": [["07:00", "21:00", 45]], "dimanche": []}, "60": {"semaine": [["07:00", "20:00", 20]], "samedi": [], "dimanche": []}, "61": {"semaine": [["06:30", "08:00", 30], ["08:00", "21:00", 15]], "samedi": [["08:00", "19:30", 30]], "dimanche": []}, "PL1": {"semaine": [["23:00", "05:00", 60]], "samedi": [["23:00", "06:00", 60]], "dimanche": [["23:00", "06:00", 90]]}};
 
-const LIGNES_DEF=Object.keys(LC).map(c=>({code:c,nom:c,couleur:LC[c]}));
-let db={alertes:[],articles:[],horaires_modifs:[],activity:[],lignes:[...LIGNES_DEF],agences:[{nom:"Agence Gares",adr:"Place de la Gare, Grenoble",sem:"Lun–Ven : 7h–20h",we:"Sam : 8h–18h · Dim : 10h–17h",svc:"Vente, abonnements, rechargement"},{nom:"Agence Victor Hugo",adr:"Place Victor Hugo, Grenoble",sem:"Lun–Ven : 9h–19h",we:"Sam : 9h–17h · Dim : fermé",svc:"Vente, abonnements"},{nom:"Agence Grand'Place",adr:"Centre commercial Grand'Place",sem:"Lun–Sam : 9h–19h",we:"Dim : fermé",svc:"Vente, rechargement"},{nom:"Agence Universités",adr:"Campus, Saint-Martin-d'Hères",sem:"Lun–Ven : 8h30–18h",we:"Fermé sam et dim",svc:"Vente, abonnements étudiants"}],images:[],popup:{actif:false},carousel:[],carousel_titre:"",comptes:[...CPTES_DEF]};
+let db={alertes:[],articles:[],horaires_modifs:[],activity:[],agences:[{nom:"Agence Gares",adr:"Place de la Gare, Grenoble",sem:"Lun–Ven : 7h–20h",we:"Sam : 8h–18h · Dim : 10h–17h",svc:"Vente, abonnements, rechargement"},{nom:"Agence Victor Hugo",adr:"Place Victor Hugo, Grenoble",sem:"Lun–Ven : 9h–19h",we:"Sam : 9h–17h · Dim : fermé",svc:"Vente, abonnements"},{nom:"Agence Grand'Place",adr:"Centre commercial Grand'Place",sem:"Lun–Sam : 9h–19h",we:"Dim : fermé",svc:"Vente, rechargement"},{nom:"Agence Universités",adr:"Campus, Saint-Martin-d'Hères",sem:"Lun–Ven : 8h30–18h",we:"Fermé sam et dim",svc:"Vente, abonnements étudiants"}],images:[],popup:{actif:false},carousel:[],carousel_titre:"",comptes:[...CPTES_DEF]};
 let linesData=[];
 let curUser=null,saving=false,hAction=null,nbP=0;
 
@@ -375,7 +367,6 @@ async function loadDB(){
     if(rec.horaires_modifs)db.horaires_modifs=rec.horaires_modifs;
     if(rec.activity)db.activity=rec.activity;
     if(rec.agences&&rec.agences.length)db.agences=rec.agences;
-    if(rec.lignes&&rec.lignes.length)db.lignes=rec.lignes;
     if(rec.images)db.images=rec.images;
     if(rec.popup)db.popup=rec.popup;
     if(rec.carousel)db.carousel=rec.carousel;
@@ -390,7 +381,7 @@ async function loadDB(){
 async function saveDB(){
   if(saving)return;saving=true;setSync("ld");
   try{
-    await fetch("https://api.jsonbin.io/v3/b/"+JB_ID,{method:"PUT",headers:{"Content-Type":"application/json","X-Master-Key":JB_KEY},body:JSON.stringify({alertes:db.alertes,articles:db.articles,horaires_modifs:db.horaires_modifs,comptes:db.comptes,activity:db.activity,agences:db.agences,lignes:db.lignes,images:db.images,popup:db.popup,carousel:db.carousel,carousel_titre:db.carousel_titre})});
+    await fetch("https://api.jsonbin.io/v3/b/"+JB_ID,{method:"PUT",headers:{"Content-Type":"application/json","X-Master-Key":JB_KEY},body:JSON.stringify({alertes:db.alertes,articles:db.articles,horaires_modifs:db.horaires_modifs,comptes:db.comptes,activity:db.activity,agences:db.agences,images:db.images,popup:db.popup,carousel:db.carousel,carousel_titre:db.carousel_titre})});
     setSync("ok");
   }catch(e){setSync("er");toast("Erreur sauvegarde JSONBin",true);}
   saving=false;
@@ -709,35 +700,28 @@ async function delArt(i){if(!confirm("Supprimer ?"))return;log("Article supprim�
 
 // ── AGENCES ───────────────────────────────────────────────────────────
 // ── LIGNES ────────────────────────────────────────────────────────────
-function getColor(code){const l=db.lignes.find(x=>x.code===code);return (l&&l.couleur)||LC[code]||"#555";}
-function renderLig(){
+function getColor(code){const l=(window._supaLignes||[]).find(x=>x.code===code);return (l&&l.couleur)||LC[code]||"#555";}
+async function renderLig(){
   const el=document.getElementById("lig-list");if(!el)return;
-  if(!db.lignes.length){el.innerHTML='<div style="color:var(--txs);font-size:13px">Aucune ligne.</div>';return;}
-  el.innerHTML=db.lignes.map(function(l,i){return'<div class="cptc"><span style="background:'+l.couleur+';color:white;padding:4px 10px;border-radius:6px;font-weight:800;font-size:13px;flex-shrink:0">'+l.code+'</span><div style="flex:1"><input type="text" value="'+l.nom.replace(/"/g,"&quot;")+'" id="lg-nom-'+i+'" style="width:100%;padding:6px 10px;background:#111;border:1px solid var(--bord);border-radius:6px;color:var(--tx);font-size:13px;font-family:inherit"></div><input type="color" value="'+l.couleur+'" id="lg-coul-'+i+'" style="height:34px;width:44px;padding:2px;cursor:pointer;flex-shrink:0"><button class="bgh" style="padding:6px 12px" onclick="saveLig('+i+')">Enregistrer</button><button class="bdel" onclick="delLig('+i+')">Supprimer</button></div>';}).join("");
+  if(!supabaseClient){el.innerHTML='<div style="color:var(--txs);font-size:13px">Connexion Supabase indisponible.</div>';return;}
+  const {data,error}=await supabaseClient.from("lignes").select("*").order("code");
+  if(error){el.innerHTML='<div style="color:var(--txs);font-size:13px">Erreur de chargement.</div>';return;}
+  window._supaLignes=data||[];
+  document.getElementById("s-lg").textContent=window._supaLignes.length;
+  if(!window._supaLignes.length){el.innerHTML='<div style="color:var(--txs);font-size:13px">Aucune ligne créée pour l\'instant.</div>';return;}
+  el.innerHTML=window._supaLignes.map(function(l){return'<div class="cptc"><span style="background:'+l.couleur+';color:white;padding:4px 10px;border-radius:6px;font-weight:800;font-size:13px;flex-shrink:0">'+l.code+'</span><div style="flex:1;font-size:13px;color:var(--tx)">'+l.terminus_a+' ↔ '+l.terminus_b+'</div><a class="bgh" style="padding:6px 12px;text-decoration:none" href="admin-ligne.html?code='+encodeURIComponent(l.code)+'">✏️ Éditer</a><button class="bdel" onclick="delLigSupa(\''+l.code+'\')">Supprimer</button></div>';}).join("");
+  fillLigneSelects();
 }
-async function addLig(){
-  const code=document.getElementById("lg-code").value.trim();
-  const nom=document.getElementById("lg-nom").value.trim()||code;
-  const coul=document.getElementById("lg-coul").value;
-  if(!code){toast("Entrez un code de ligne.",true);return;}
-  if(db.lignes.find(l=>l.code===code)){toast("Ce code de ligne existe déjà.",true);return;}
-  db.lignes.push({code:code,nom:nom,couleur:coul});
-  document.getElementById("lg-code").value="";document.getElementById("lg-nom").value="";
-  log("Ligne ajoutée : "+code);renderAll();await saveDB();toast("Ligne ajoutée !");
-}
-async function saveLig(i){
-  const nom=document.getElementById("lg-nom-"+i).value.trim();
-  const coul=document.getElementById("lg-coul-"+i).value;
-  db.lignes[i].nom=nom||db.lignes[i].code;db.lignes[i].couleur=coul;
-  log("Ligne modifiée : "+db.lignes[i].code);renderAll();await saveDB();toast("Ligne mise à jour !");
-}
-async function delLig(i){
-  if(!confirm("Supprimer cette ligne de la liste ? (les horaires et pages existantes de cette ligne ne seront pas supprimés ailleurs)"))return;
-  const code=db.lignes[i].code;db.lignes.splice(i,1);
-  log("Ligne supprimée : "+code);renderAll();await saveDB();toast("Ligne supprimée.");
+async function delLigSupa(code){
+  if(!confirm("Supprimer définitivement la ligne "+code+" ainsi que ses arrêts, tracé et fréquences ?"))return;
+  const {error}=await supabaseClient.from("lignes").delete().eq("code",code);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  log("Ligne supprimée (Supabase) : "+code);
+  renderLig();toast("Ligne supprimée.");
 }
 function fillLigneSelects(){
-  const opts=db.lignes.map(l=>'<option value="'+l.code+'">'+l.code+'</option>').join("");
+  const lignes=window._supaLignes||[];
+  const opts=lignes.map(l=>'<option value="'+l.code+'">'+l.code+'</option>').join("");
   const itlg=document.getElementById("it-lg");if(itlg){const cur=itlg.value;itlg.innerHTML=opts;if([...itlg.options].some(o=>o.value===cur))itlg.value=cur;}
   const hcode=document.getElementById("h-code");if(hcode){const cur=hcode.value;hcode.innerHTML='<option value="">— Choisir —</option>'+opts;if([...hcode.options].some(o=>o.value===cur))hcode.value=cur;}
 }
@@ -807,10 +791,9 @@ function renderAll(){
   document.getElementById("s-al").textContent=db.alertes.length;
   document.getElementById("s-ar").textContent=db.articles.length;
   document.getElementById("s-hm").textContent=db.horaires_modifs.length;
-  document.getElementById("s-lg").textContent=db.lignes.length;
   const al=document.getElementById("alog");
   al.innerHTML=db.activity.length?db.activity.slice(0,10).map(function(a){return'<div class="act">'+a+'</div>';}).join(''):'<div class="act">Aucune activité.</div>';
-  renderAl();renderArts();renderCar();renderAge();renderCpt();renderLig();fillLigneSelects();
+  renderAl();renderArts();renderCar();renderAge();renderCpt();renderLig();
   if(db.popup?.titre)renderPopPrev();
 }
 

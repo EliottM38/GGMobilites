@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Génération fiche horaire — GGMobilités</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body{font-family:Arial,sans-serif;background:#F7F8FC;display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:1rem;color:#0F1923}
     .box{background:white;border-radius:12px;padding:2rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:400px;width:90%}
@@ -11,7 +12,6 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     .msg{font-size:15px;color:#5A6272}
     .title{font-size:18px;font-weight:700;margin-bottom:0.5rem;color:#0F1923}
-    .btn{display:inline-block;margin-top:1rem;padding:10px 20px;background:#185FA5;color:white;border-radius:8px;text-decoration:none;font-weight:600;cursor:pointer;border:none;font-size:14px}
   </style>
 </head>
 <body>
@@ -22,144 +22,103 @@
   </div>
 <script>
 const p = new URLSearchParams(location.search);
-const CODE = p.get('code') || 'C1';
-const DIR = decodeURIComponent(p.get('direction') || 'Palluel');
-const JOUR = p.get('jour') || 'semaine';
+const CODE = p.get('code');
+const SENS = p.get('sens') === 'retour' ? 'retour' : 'aller';
 
-const BADGES = {C1:'#185FA5',C2:'#0F6E56',C3:'#993C1D',4:'#534AB7',5:'#3B6D11',6:'#854F0B',7:'#993556',8:'#5F5E5A',9:'#0A6BAB',10:'#0F6E56',11:'#A32D2D',60:'#412402',61:'#3B6D11',PL1:'#1A1A2E'};
-const FREQS = {
-  C1:{semaine:[{d:'05:00',f:'07:30',q:10},{d:'07:30',f:'19:00',q:7},{d:'19:00',f:'00:15',q:15}],samedi:[{d:'06:00',f:'09:00',q:12},{d:'09:00',f:'18:00',q:10},{d:'18:00',f:'00:00',q:15}],dimanche:[{d:'06:00',f:'10:00',q:15},{d:'10:00',f:'17:00',q:12},{d:'17:00',f:'23:00',q:15}]},
-  C2:{semaine:[{d:'05:00',f:'07:30',q:9},{d:'07:30',f:'19:00',q:6},{d:'19:00',f:'00:30',q:10}],samedi:[{d:'05:30',f:'09:00',q:10},{d:'09:00',f:'18:00',q:8},{d:'18:00',f:'00:15',q:15}],dimanche:[{d:'05:45',f:'10:00',q:20},{d:'10:00',f:'17:00',q:15},{d:'17:00',f:'00:00',q:20}]},
-  C3:{semaine:[{d:'05:00',f:'07:30',q:8},{d:'07:30',f:'19:00',q:5},{d:'19:00',f:'00:30',q:15}],samedi:[{d:'05:30',f:'09:00',q:13},{d:'09:00',f:'18:00',q:8},{d:'18:00',f:'00:00',q:15}],dimanche:[{d:'05:45',f:'10:00',q:16},{d:'10:00',f:'17:00',q:13},{d:'17:00',f:'23:45',q:16}]},
-};
+function hexRgb(h){ h=(h||'#185FA5').replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+const JOUR_LABEL = {semaine:'Lundi – Vendredi', samedi:'Samedi', dimanche:'Dimanche'};
 
-function hexRgb(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]}
-
-async function generer() {
-  try {
+async function generer(){
+  try{
+    if(!CODE) throw new Error('Aucune ligne spécifiée.');
     document.getElementById('msg').textContent = 'Chargement des données...';
-    const r = await fetch('./lines-mini.json');
-    if (!r.ok) throw new Error('Impossible de charger les données');
-    const data = await r.json();
-    const ligne = data[CODE]?.[DIR]?.[JOUR];
-    if (!ligne || !ligne.arrets?.length) throw new Error('Ligne introuvable : ' + CODE + ' ' + DIR + ' ' + JOUR);
+
+    const cfg = await fetch('/api/config').then(r=>r.json());
+    const supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+    const { data: ligne, error: e1 } = await supabaseClient.from('lignes').select('*').eq('code', CODE).single();
+    if(e1 || !ligne) throw new Error('Ligne introuvable : ' + CODE);
+
+    const { data: las } = await supabaseClient.from('ligne_arrets').select('ordre, arrets(nom, lieu_nom)').eq('ligne_code', CODE).eq('sens', SENS).order('ordre');
+    const arrets = (las||[]).map(x=>x.arrets).filter(Boolean);
+
+    const { data: freqs } = await supabaseClient.from('frequences').select('*').eq('ligne_code', CODE).eq('sens', SENS);
 
     document.getElementById('msg').textContent = 'Génération du PDF...';
     const {jsPDF} = window.jspdf;
-    const doc = new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const doc = new jsPDF({orientation:'landscape', unit:'mm', format:'a4'});
     const W=297, H=210;
-    const color = hexRgb(BADGES[CODE] || '#185FA5');
-    const jourLabel = {semaine:'Lundi – Vendredi',samedi:'Samedi',dimanche:'Dimanche'}[JOUR]||JOUR;
+    const color = hexRgb(ligne.couleur);
+    const depart = SENS==='aller' ? ligne.terminus_a : ligne.terminus_b;
+    const arrivee = SENS==='aller' ? ligne.terminus_b : ligne.terminus_a;
 
-    // En-tête
-    doc.setFillColor(...color);
-    doc.rect(0,0,W,30,'F');
-    doc.setTextColor(255,255,255);
-    doc.setFontSize(8); doc.setFont('helvetica','bold');
-    doc.text('GGMobilités',12,9);
-    doc.setFontSize(20); doc.setFont('helvetica','bold');
-    doc.setFillColor(255,255,255,40);
-    doc.roundedRect(8,13,20,13,2,2,'F');
-    doc.setTextColor(...color);
-    doc.text(CODE,18,23,{align:'center'});
-    doc.setTextColor(255,255,255);
-    doc.setFontSize(13);
-    doc.text('Direction ' + DIR, 32,18);
-    doc.setFontSize(8); doc.setFont('helvetica','normal');
-    doc.text(jourLabel,32,24);
-    doc.setTextColor(200,200,200);
-    doc.text('Horaires 2026 · Édité le ' + new Date().toLocaleDateString('fr-FR'), W-12,24,{align:'right'});
+    // ── En-tête ──────────────────────────────────────────
+    doc.setFillColor(...color); doc.rect(0,0,W,32,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text('GGMobilités', 12, 9);
+    doc.setFillColor(255,255,255); doc.roundedRect(8,13,22,14,2,2,'F');
+    doc.setTextColor(...color); doc.setFontSize(15); doc.text(String(CODE), 19, 22, {align:'center'});
+    doc.setTextColor(255,255,255); doc.setFontSize(15); doc.setFont('helvetica','bold');
+    doc.text(depart + '  →  ' + arrivee, 36, 20);
+    doc.setFontSize(9); doc.setFont('helvetica','normal');
+    doc.text('Fiche horaire · Édité le ' + new Date().toLocaleDateString('fr-FR'), W-12, 27, {align:'right'});
 
-    // Tableau
-    const arrets = ligne.arrets;
-    const isFreq = arrets[0]?.passages?.length > 50;
-    const HEADER_Y = 33;
-    const ROW_H = 5.2;
-    const COL_A = 58;
-
-    if (isFreq) {
-      // Mode fréquence par heure
-      const tranches = [];
-      for(let h=5;h<=24;h++) tranches.push((h%24).toString().padStart(2,'0')+'h');
-      const tW = (W-16-COL_A)/tranches.length;
-
-      doc.setFillColor(245,245,248);
-      doc.rect(8,HEADER_Y,W-16,7,'F');
-      doc.setFontSize(6.5); doc.setFont('helvetica','bold');
-      doc.setTextColor(...color);
-      doc.text('Arrêt',10,HEADER_Y+5);
-      tranches.forEach((t,ti) => doc.text(t,COL_A+ti*tW+tW/2,HEADER_Y+5,{align:'center'}));
-      doc.setDrawColor(...color); doc.setLineWidth(0.4);
-      doc.line(8,HEADER_Y+7,W-8,HEADER_Y+7);
-
-      arrets.forEach((a,ai) => {
-        const y = HEADER_Y+8+ai*ROW_H;
-        if(y>H-14) return;
-        if(ai%2===0){doc.setFillColor(252,252,252);doc.rect(8,y-3.5,W-16,ROW_H,'F');}
-        doc.setFont('helvetica','normal'); doc.setFontSize(6.2); doc.setTextColor(30,30,30);
-        doc.text(a.nom.substring(0,30),10,y);
-        const byH = {};
-        a.passages.forEach(h=>{const k=parseInt(h.split(':')[0])+'h'.padStart(2,'0').slice(-3);const hh=parseInt(h.split(':')[0]);const key=(hh%24).toString().padStart(2,'0')+'h';if(!byH[key])byH[key]=[];byH[key].push(h.split(':')[1]);});
-        tranches.forEach((t,ti) => {
-          const ms = byH[t]||[];
-          const x = COL_A+ti*tW+tW/2;
-          doc.setFontSize(5.5);
-          if(ms.length>=6){doc.setTextColor(...color);doc.setFont('helvetica','bold');doc.text(Math.round(60/ms.length)+'min',x,y,{align:'center'});doc.setFont('helvetica','normal');}
-          else if(ms.length>0){doc.setTextColor(50,50,50);doc.text(ms.slice(0,2).join(' '),x,y,{align:'center'});}
-          else{doc.setTextColor(210,210,210);doc.text('·',x,y,{align:'center'});}
-        });
-      });
-    } else {
-      const COL_W = 7.5;
-      const maxC = Math.floor((W-16-COL_A)/COL_W);
-      const refP = arrets[0].passages.slice(0,maxC);
-      doc.setFillColor(245,245,248); doc.rect(8,HEADER_Y,W-16,7,'F');
-      doc.setFontSize(6.5); doc.setFont('helvetica','bold'); doc.setTextColor(...color);
-      doc.text('Arrêt',10,HEADER_Y+5);
-      refP.forEach((h,hi) => doc.text(h,COL_A+hi*COL_W,HEADER_Y+5,{align:'center'}));
-      doc.setDrawColor(...color); doc.setLineWidth(0.4);
-      doc.line(8,HEADER_Y+7,W-8,HEADER_Y+7);
-      arrets.forEach((a,ai) => {
-        const y=HEADER_Y+8+ai*ROW_H; if(y>H-14) return;
-        if(ai%2===0){doc.setFillColor(252,252,252);doc.rect(8,y-3.5,W-16,ROW_H,'F');}
-        doc.setFont('helvetica','normal'); doc.setFontSize(6.2); doc.setTextColor(30,30,30);
-        doc.text(a.nom.substring(0,30),10,y);
-        const refIdx = arrets[0].passages;
-        refP.forEach((refH,hi) => {
-          const idx2 = refIdx.indexOf(refH);
-          const h2 = idx2>=0 ? a.passages[idx2] : null;
-          if(h2){doc.setFontSize(5.8);doc.setTextColor(50,50,50);doc.text(h2,COL_A+hi*COL_W,y,{align:'center'});}
-        });
-      });
-    }
-
-    // Légende fréquences
-    const lY=H-12;
-    doc.setFillColor(...color); doc.rect(0,lY-2,W,14,'F');
-    doc.setTextColor(255,255,255); doc.setFontSize(7); doc.setFont('helvetica','bold');
-    doc.text('Fréquences :',12,lY+3);
-    doc.setFont('helvetica','normal');
-    const freqs = (FREQS[CODE]||{})[JOUR]||[];
-    let fx=42;
-    freqs.forEach(f => {
-      const txt = f.q<15 ? f.d+'–'+f.f+' : toutes les '+f.q+' min' : f.d+'–'+f.f+' : toutes les '+f.q+' min';
-      doc.text(txt,fx,lY+3); fx+=82;
+    // ── Arrêts desservis (liste ordonnée) ───────────────
+    let y = 42;
+    doc.setTextColor(...color); doc.setFontSize(11); doc.setFont('helvetica','bold');
+    doc.text('Arrêts desservis', 12, y);
+    y += 6;
+    doc.setFontSize(8); doc.setTextColor(30,30,30); doc.setFont('helvetica','normal');
+    const colW = 62, rowH = 5.2, maxRows = Math.floor((150-y)/rowH);
+    arrets.forEach((a, i) => {
+      const col = Math.floor(i / maxRows);
+      const row = i % maxRows;
+      const x = 12 + col*colW;
+      const yy = y + row*rowH;
+      if(x > W-12) return;
+      const isTerm = i===0 || i===arrets.length-1;
+      doc.setFont('helvetica', isTerm ? 'bold' : 'normal');
+      const label = (i+1) + '. ' + a.nom + (a.lieu_nom ? '  📍' : '');
+      doc.text(label.substring(0,42), x, yy);
     });
-    doc.text('Ligne '+CODE+' · Direction '+DIR+' · '+jourLabel, W/2,lY+8,{align:'center'});
 
-    doc.save('GGMobilites_'+CODE+'_'+DIR.replace(/[^a-zA-Z0-9]/g,'_')+'_'+JOUR+'.pdf');
+    // ── Tableau des fréquences ───────────────────────────
+    let fy = 155;
+    doc.setDrawColor(...color); doc.setLineWidth(0.4); doc.line(12, fy-6, W-12, fy-6);
+    doc.setTextColor(...color); doc.setFontSize(11); doc.setFont('helvetica','bold');
+    doc.text('Fréquences de passage', 12, fy);
+    fy += 8;
+
+    ['semaine','samedi','dimanche'].forEach(jour => {
+      const rows = (freqs||[]).filter(f=>f.jour===jour).sort((a,b)=>a.heure_debut.localeCompare(b.heure_debut));
+      doc.setFillColor(245,245,248); doc.rect(12, fy-4, W-24, 6, 'F');
+      doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(...color);
+      doc.text(JOUR_LABEL[jour], 14, fy);
+      doc.setFont('helvetica','normal'); doc.setTextColor(60,60,60);
+      if(!rows.length){
+        doc.text('Pas de service.', 70, fy);
+      } else {
+        const txt = rows.map(r => r.heure_debut.slice(0,5)+'–'+r.heure_fin.slice(0,5)+' : toutes les '+r.intervalle_minutes+' min').join('     ');
+        doc.text(txt, 70, fy);
+      }
+      fy += 7;
+    });
+
+    doc.setFontSize(7); doc.setTextColor(150,150,150);
+    doc.text('Fréquences indicatives, susceptibles de varier selon le trafic. GGMobilités · Réseau de Grenoble.', 12, H-8);
+
+    doc.save('GGMobilites_' + CODE + '_' + SENS + '.pdf');
     document.getElementById('spinner').style.display='none';
     document.getElementById('title').textContent='✅ Fiche téléchargée !';
-    document.getElementById('msg').textContent='Ligne '+CODE+' · '+DIR+' · '+jourLabel;
-    setTimeout(()=>window.close(),2000);
-  } catch(e) {
+    document.getElementById('msg').textContent = 'Ligne ' + CODE + ' · ' + depart + ' → ' + arrivee;
+    setTimeout(()=>window.close(), 2000);
+  }catch(e){
     document.getElementById('spinner').style.display='none';
     document.getElementById('title').textContent='❌ Erreur';
-    document.getElementById('msg').textContent=e.message;
+    document.getElementById('msg').textContent = e.message;
     console.error(e);
   }
 }
-
 generer();
 </script>
 </body>
