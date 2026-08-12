@@ -16,8 +16,8 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html" class="active">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a><a href="tad.html">TAD</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div>
-</div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a><a href="tad.html">TAD</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+  </div>
 </nav>
 <div class="accent-bar"></div>
 
@@ -31,11 +31,8 @@
     </div>
     <div class="hero-widget">
       <div class="live-chip" style="margin-bottom:0.75rem"><span class="live-dot"></span>En direct</div>
-      <div class="hero-widget-title">Prochains départs · Gares</div>
-      <div class="hw-ligne"><span class="hw-badge" style="background:#185FA5">C1</span><span class="hw-dest">→ Palluel</span><span class="hw-temps" id="hw-c1">—</span></div>
-      <div class="hw-ligne"><span class="hw-badge" style="background:#0F6E56">C2</span><span class="hw-dest">→ Les Claverins</span><span class="hw-temps" id="hw-c2">—</span></div>
-      <div class="hw-ligne"><span class="hw-badge" style="background:#993C1D">C3</span><span class="hw-dest">→ La Vallone</span><span class="hw-temps" id="hw-c3">—</span></div>
-      <div class="hw-ligne"><span class="hw-badge" style="background:#534AB7">4</span><span class="hw-dest">→ Lycée du Grésivaudan</span><span class="hw-temps" id="hw-4">—</span></div>
+      <div class="hero-widget-title" id="hw-title">Prochains départs</div>
+      <div id="hw-list"><div style="font-size:12px;color:rgba(255,255,255,0.5)">Chargement...</div></div>
       <div style="margin-top:14px;text-align:right"><a href="reseau.html" style="font-size:12px;color:var(--bleu);text-decoration:none;font-weight:600">Voir tous les horaires →</a></div>
     </div>
   </div>
@@ -61,33 +58,13 @@
     <div id="alertes-accueil"><div style="font-size:13px;color:var(--texte-sec)">Chargement...</div></div>
   </div>
 
-  <div class="section">
+  <div class="section" id="sec-lignes-struct">
     <div class="section-header">
       <div class="section-title">Lignes structurantes</div>
       <a href="reseau.html" class="section-link">Tout le réseau →</a>
     </div>
-    <div class="grid grid-3">
-      <a href="reseau.html" class="card" style="text-decoration:none">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <span class="ligne-num" style="background:#185FA5;font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;color:white">C1</span>
-          <strong style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--texte)">Gares ↔ Palluel</strong>
-        </div>
-        <p style="font-size:13px;color:var(--texte-sec)">Toutes les 7 min · 5h–0h15</p>
-      </a>
-      <a href="reseau.html" class="card" style="text-decoration:none">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <span class="ligne-num" style="background:#0F6E56;font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;color:white">C2</span>
-          <strong style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--texte)">Gares ↔ Les Claverins</strong>
-        </div>
-        <p style="font-size:13px;color:var(--texte-sec)">Toutes les 6 min · 5h–0h30</p>
-      </a>
-      <a href="reseau.html" class="card" style="text-decoration:none">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <span class="ligne-num" style="background:#993C1D;font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;color:white">C3</span>
-          <strong style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--texte)">Gares ↔ La Vallone</strong>
-        </div>
-        <p style="font-size:13px;color:var(--texte-sec)">Toutes les 5 min · 5h–0h30</p>
-      </a>
+    <div class="grid grid-3" id="lignes-struct-grid">
+      <div style="font-size:13px;color:var(--texte-sec)">Chargement...</div>
     </div>
   </div>
 
@@ -125,29 +102,68 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function minutesAvant(h) {
-  const now = new Date(), [hh,mm] = h.split(':').map(Number);
-  const p = new Date(); p.setHours(hh,mm,0,0);
-  if(p-now < -12*3600000) p.setDate(p.getDate()+1);
-  return Math.round((p-now)/60000);
+function jourType(){ const j=new Date().getDay(); return j===6?"samedi":j===0?"dimanche":"semaine"; }
+function nextDeparture(f, nowMin){
+  const [dh,dm]=f.heure_debut.split(":").map(Number), [fh,fm]=f.heure_fin.split(":").map(Number);
+  const debut=dh*60+dm, fin=fh*60+fm, itv=f.intervalle_minutes;
+  if(nowMin<debut) return debut-nowMin;
+  if(nowMin>fin) return null;
+  const nextOffset = Math.ceil((nowMin-debut)/itv)*itv;
+  const nextMin = debut+nextOffset;
+  return nextMin>fin ? null : nextMin-nowMin;
 }
 async function majWidget() {
+  const list = document.getElementById("hw-list");
   try {
-    const r = await fetch('lines.json');
-    const lines = await r.json();
-    const j = new Date().getDay();
-    const jour = j===6?'samedi':j===0?'dimanche':'semaine';
-    [['C1','Palluel','hw-c1'],['C2','Les Claverins','hw-c2'],['C3','La Vallone','hw-c3'],['4','Lycée du Grésivaudan','hw-4']].forEach(([code,dir,id])=>{
-      const l = lines.find(x=>x.code===code&&x.direction===dir&&x.jour===jour);
-      if(!l) return;
-      const min = l.horaires.map(h=>minutesAvant(h.heure)).filter(m=>m>=0&&m<=40).sort((a,b)=>a-b)[0];
-      const el = document.getElementById(id);
-      if(el) el.textContent = min!=null?(min===0?"À l'arrêt":`${min} min`):'—';
-    });
-  } catch(e){}
+    const cfg = await fetch('/api/config').then(r=>r.json());
+    const supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    const { data: lignes } = await supabaseClient.from("lignes").select("*").eq("actif", true).order("code").limit(4);
+
+    if(!lignes || !lignes.length){
+      document.getElementById("hw-title").textContent = "Le réseau se construit";
+      list.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.5">Aucune ligne en service pour le moment. Revenez bientôt !</div>';
+      return;
+    }
+    document.getElementById("hw-title").textContent = "Prochains départs";
+
+    const codes = lignes.map(l=>l.code);
+    const { data: freqs } = await supabaseClient.from("frequences").select("*").in("ligne_code", codes).eq("sens","aller");
+    const jour = jourType();
+    const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+
+    list.innerHTML = lignes.map(l => {
+      const f = (freqs||[]).find(x=>x.ligne_code===l.code && x.jour===jour);
+      const min = f ? nextDeparture(f, nowMin) : null;
+      const label = min==null ? '—' : (min<=0 ? "À l'arrêt" : min+" min");
+      return `<div class="hw-ligne"><span class="hw-badge" style="background:${l.couleur}">${l.code}</span><span class="hw-dest">→ ${l.terminus_b}</span><span class="hw-temps">${label}</span></div>`;
+    }).join("");
+  } catch(e){
+    console.error(e);
+    list.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.5)">Indisponible pour le moment.</div>';
+  }
 }
 majWidget(); setInterval(majWidget, 30000);
+
+async function chargerLignesStructurantes(){
+  const grid = document.getElementById("lignes-struct-grid");
+  const sec = document.getElementById("sec-lignes-struct");
+  try{
+    const cfg = await fetch('/api/config').then(r=>r.json());
+    const supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    const { data: lignes } = await supabaseClient.from("lignes").select("*").eq("actif", true).order("code").limit(3);
+    if(!lignes || !lignes.length){ sec.style.display = "none"; return; }
+    grid.innerHTML = lignes.map(l => `
+      <a href="ligne.html?code=${encodeURIComponent(l.code)}" class="card" style="text-decoration:none">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span class="ligne-num" style="background:${l.couleur};font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;color:white">${l.code}</span>
+          <strong style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--texte)">${l.terminus_a} ↔ ${l.terminus_b}</strong>
+        </div>
+      </a>`).join("");
+  }catch(e){ console.error(e); sec.style.display = "none"; }
+}
+chargerLignesStructurantes();
 
 // ── JSONBin : carousel, actu, popup, infotrafic ───────────
 const JB_ID="69d95af5aaba882197e64b7e", JB_KEY="$2a$10$0apNc/nNCMR.8/TGHyYHxO5hePLCGZ9bJua1DrAKkJdLf8y8TGbdm";
