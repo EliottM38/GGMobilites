@@ -84,9 +84,15 @@ input[type=color]{height:40px;width:100%;padding:3px;border-radius:8px;border:1p
         <div><label>Terminus A</label><input type="text" id="f-term-a" placeholder="Ex: Gares"></div>
         <div><label>Terminus B</label><input type="text" id="f-term-b" placeholder="Ex: Échirolles"></div>
       </div>
+      <label>Type de ligne</label>
+      <select id="f-type" style="margin-bottom:12px">
+        <option value="fixe">Ligne fixe (horaires/fréquences classiques)</option>
+        <option value="tad">Transport à la demande (TAD — formulaire de réservation)</option>
+      </select>
       <label>Icône de la ligne (lien URL vers une image)</label>
       <input type="url" id="f-icone" placeholder="https://...">
     </div>
+    <div class="hint" id="tad-hint" style="display:none;margin-top:-4px">ℹ️ Pour une ligne TAD, les fréquences ci-dessous sont facultatives — un formulaire de réservation s'affichera automatiquement sur la page publique de la ligne.</div>
 
     <div class="card">
       <h3>🗺️ Tracé et arrêts sur la carte</h3>
@@ -175,6 +181,8 @@ async function loadExistingLigne(code){
   document.getElementById("f-term-a").value = l.terminus_a;
   document.getElementById("f-term-b").value = l.terminus_b;
   document.getElementById("f-icone").value = l.icone_url || "";
+  document.getElementById("f-type").value = l.type || "fixe";
+  document.getElementById("tad-hint").style.display = (l.type==="tad") ? "block" : "none";
 
   const { data: las } = await supabaseClient.from("ligne_arrets").select("*, arrets(*)").eq("ligne_code", code).order("ordre");
   ["aller","retour"].forEach(s => {
@@ -307,6 +315,7 @@ async function saveLigne(){
   const termA = document.getElementById("f-term-a").value.trim();
   const termB = document.getElementById("f-term-b").value.trim();
   const icone = document.getElementById("f-icone").value.trim();
+  const type = document.getElementById("f-type").value;
 
   if(!code || !nom || !termA || !termB){
     msg.className="err"; msg.textContent="Code, nom et les deux terminus sont obligatoires."; return;
@@ -322,7 +331,7 @@ async function saveLigne(){
   try{
     if(EDIT_CODE){
       const { error: eu } = await supabaseClient.from("lignes").update({
-        nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur
+        nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur, type
       }).eq("code", code);
       if(eu) throw eu;
 
@@ -336,7 +345,7 @@ async function saveLigne(){
       await supabaseClient.from("fichiers_ligne").delete().eq("ligne_code", code);
     } else {
       const { error: e1 } = await supabaseClient.from("lignes").insert({
-        code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur
+        code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur, type
       });
       if(e1) throw e1;
     }
@@ -392,6 +401,9 @@ function syncColorInputs(){
     else { hex.style.borderColor = "#E4032E"; }
   });
 }
+document.getElementById("f-type").addEventListener("change", function(){
+  document.getElementById("tad-hint").style.display = (this.value==="tad") ? "block" : "none";
+});
 syncColorInputs();
 initSupabase();
 </script>
