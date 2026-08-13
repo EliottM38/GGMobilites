@@ -87,8 +87,7 @@ nav {
 
 /* ── ACCENT BAR ─────────────────────── */
 .accent-bar {
-  height: 4px;
-  background: linear-gradient(90deg, var(--rose) 0%, var(--cyan) 33%, var(--jaune) 66%, var(--or) 100%);
+  height: 0;
 }
 
 /* ── HERO ───────────────────────────── */
@@ -348,3 +347,13 @@ footer { background: var(--bleu-fonce); color: rgba(255,255,255,0.6); padding: 0
 .arret-prochain-heure { color: var(--texte-sec); }
 .passage-dest-sub { color: var(--texte-sec); }
 .detail-popup { background: white; border: 1px solid var(--bordure); }
+
+/* ── TRANSITIONS DE PAGE ──────────────────────────── */
+body { opacity: 0; }
+body.page-ready { opacity: 1; transition: opacity 0.28s ease; }
+body.page-leaving { opacity: 0; transition: opacity 0.22s ease; }
+
+.loader-spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: loader-rotate 0.7s linear infinite; vertical-align: -3px; }
+.loader-spin.dark { border-color: rgba(0,0,0,0.15); border-top-color: var(--bleu); }
+@keyframes loader-rotate { to { transform: rotate(360deg); } }
+.btn-loading { pointer-events: none; opacity: 0.75; }

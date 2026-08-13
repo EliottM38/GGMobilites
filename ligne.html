@@ -60,7 +60,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a><a href="tad.html">TAD</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
@@ -85,6 +85,27 @@
   <div class="main-grid">
     <div>
       <div id="map"></div>
+      <div class="lieux-box" id="tad-box" style="display:none">
+        <h3>🚐 Réserver un trajet</h3>
+        <form id="tad-form">
+          <div class="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Date</label><input type="date" id="tad-date" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Heure souhaitée</label><input type="time" id="tad-heure" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <div class="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Arrêt de départ</label><input type="text" id="tad-depart" required placeholder="Ex: Gares" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Arrêt d'arrivée</label><input type="text" id="tad-arrivee" required placeholder="Ex: Échirolles" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <div class="row2" style="display:grid;grid-template-columns:80px 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Places</label><input type="number" id="tad-places" min="1" value="1" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Nom</label><input type="text" id="tad-nom" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Téléphone ou email</label>
+          <input type="text" id="tad-contact" required placeholder="06 12 34 56 78 ou vous@email.fr" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5);margin-bottom:12px">
+          <button type="submit" id="tad-submit" style="width:100%;padding:12px;border-radius:9px;border:none;background:var(--badge,#185FA5);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Envoyer la demande de réservation</button>
+          <div id="tad-msg" style="font-size:12px;margin-top:10px;text-align:center"></div>
+        </form>
+      </div>
       <div class="lieux-box" id="lieux-box" style="display:none">
         <h3>📍 Pour aller à</h3>
         <div id="lieux-list"></div>
@@ -125,6 +146,12 @@ async function init(){
   document.getElementById("hero-code").textContent = CODE;
   document.getElementById("hero-title").textContent = ligne.terminus_a + " ↔ " + ligne.terminus_b;
   if(ligne.icone_url){ document.getElementById("hero-icon").innerHTML = `<img src="${ligne.icone_url}" alt="">`; }
+
+  if(ligne.type === "tad"){
+    document.getElementById("tad-box").style.display = "block";
+    document.getElementById("tad-date").min = new Date().toISOString().split("T")[0];
+    document.getElementById("tad-form").addEventListener("submit", envoyerReservationTad);
+  }
 
   initMap();
   await loadAlertes();
@@ -263,7 +290,41 @@ function genPDF(){
   window.open("generer-pdf.html?code="+encodeURIComponent(CODE)+"&sens="+sens, "_blank");
 }
 
+async function envoyerReservationTad(e){
+  e.preventDefault();
+  const btn = document.getElementById("tad-submit");
+  const msg = document.getElementById("tad-msg");
+  setBtnLoading ? setBtnLoading(btn, "Envoi...") : (btn.disabled=true, btn.textContent="Envoi...");
+  msg.textContent = ""; msg.style.color = "";
+
+  const payload = {
+    ligne_code: CODE,
+    date_trajet: document.getElementById("tad-date").value,
+    heure_trajet: document.getElementById("tad-heure").value,
+    arret_depart: document.getElementById("tad-depart").value.trim(),
+    arret_arrivee: document.getElementById("tad-arrivee").value.trim(),
+    nb_places: parseInt(document.getElementById("tad-places").value) || 1,
+    nom: document.getElementById("tad-nom").value.trim(),
+    contact: document.getElementById("tad-contact").value.trim()
+  };
+
+  const { error } = await supabaseClient.from("reservations_tad").insert(payload);
+
+  if(typeof unsetBtnLoading === "function") unsetBtnLoading(btn); else { btn.disabled=false; btn.textContent="Envoyer la demande de réservation"; }
+
+  if(error){
+    msg.style.color = "#E4032E";
+    msg.textContent = "Erreur lors de l'envoi. Réessayez.";
+    console.error(error);
+    return;
+  }
+  msg.style.color = "#00A854";
+  msg.textContent = "✅ Demande envoyée ! Nous vous recontactons pour confirmer.";
+  document.getElementById("tad-form").reset();
+}
+
 init();
 </script>
+<script src="transitions.js"></script>
 </body>
 </html>

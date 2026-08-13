@@ -16,17 +16,27 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a><a href="tad.html">TAD</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
 
-<div class="hero" style="padding-bottom:5.5rem">
-  <div class="hero-inner" style="grid-template-columns:1fr;text-align:center;max-width:800px">
+<div class="hero" style="padding-bottom:2.5rem">
+  <div class="hero-inner" style="grid-template-columns:1fr;text-align:center;max-width:900px">
     <div>
       <div class="hero-label" style="justify-content:center">🚌 Réseau de transport de Grenoble</div>
       <h1 style="font-size:40px">Toute la mobilité, <span>où que vous alliez</span></h1>
-      <p class="hero-desc">Lignes, horaires en temps réel et itinéraires : tout GGMobilités au même endroit.</p>
+
+      <!-- Carousel d'actualités, à la place du texte de présentation -->
+      <div id="sec-carousel" style="display:none;margin:1.5rem 0;text-align:left">
+        <div style="position:relative;overflow:hidden;border-radius:16px;background:rgba(255,255,255,0.06);min-height:160px;border:1px solid rgba(255,255,255,0.12)">
+          <div id="car-inner" style="display:flex;transition:transform 0.45s ease"></div>
+          <button onclick="carNav(-1)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.45);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2">‹</button>
+          <button onclick="carNav(1)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.45);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2">›</button>
+          <div id="car-dots" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2"></div>
+        </div>
+      </div>
+
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem">
         <a href="reseau.html" style="padding:12px 24px;border-radius:10px;background:var(--or);color:#0F1923;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-decoration:none">Voir le réseau</a>
         <a href="infotrafic.html" style="padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,0.4);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-decoration:none">Infotrafic</a>
@@ -37,19 +47,19 @@
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Carte flottante "Rechercher un itinéraire", façon M Réso -->
-  <div style="max-width:1200px;margin:2.5rem auto -7rem;padding:0 2rem;position:relative;z-index:5">
-    <form action="itineraire.html" method="get" style="background:white;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,0.18);padding:1.5rem;display:grid;grid-template-columns:auto 1fr 1fr auto;gap:12px;align-items:center">
+<div class="page" style="padding-top:2rem">
+  <!-- Recherche d'itinéraire, en section normale (plus flottante) -->
+  <div style="margin-bottom:2.5rem">
+    <form action="itineraire.html" method="get" id="hero-itineraire-form" class="card" style="padding:1.5rem;display:grid;grid-template-columns:auto 1fr 1fr auto;gap:12px;align-items:center">
       <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--texte);white-space:nowrap;display:flex;align-items:center;gap:8px">🧭 Itinéraire</div>
       <input type="text" name="depart" placeholder="Départ : arrêt / adresse" style="padding:12px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit">
       <input type="text" name="arrivee" placeholder="Arrivée : arrêt / adresse" style="padding:12px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit">
-      <button type="submit" style="padding:12px 26px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap">Rechercher</button>
+      <button type="submit" id="btn-itineraire" style="padding:12px 26px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap">Rechercher</button>
     </form>
   </div>
-</div>
 
-<div class="page" style="padding-top:9rem">
   <!-- ── Prochains passages / Votre ligne, façon M Réso ── -->
   <div class="grid grid-2" style="margin-bottom:2.5rem">
     <div class="card" style="padding:1.5rem">
@@ -87,19 +97,7 @@
       <div style="font-size:13px;color:var(--texte-sec)">Chargement...</div>
     </div>
   </div>
-
-  <!-- ── CAROUSEL (images, séparé des articles) ──────────── -->
-  <div id="sec-carousel" style="display:none">
-    <div class="section-header" style="margin-bottom:1rem">
-      <div class="section-title" id="carousel-titre">À la une</div>
-    </div>
-    <div style="position:relative;overflow:hidden;border-radius:16px;background:#0A2240;min-height:120px">
-      <div id="car-inner" style="display:flex;transition:transform 0.45s ease"></div>
-      <button onclick="carNav(-1)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.45);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2">‹</button>
-      <button onclick="carNav(1)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.45);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2">›</button>
-      <div id="car-dots" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2"></div>
-    </div>
-  </div>
+</div>
 
   <!-- ── ACTUALITÉS (articles texte, séparés du carousel) ── -->
   <div id="sec-actu" style="display:none">
@@ -134,7 +132,7 @@
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Agences</div>
         <p style="font-size:12px;color:var(--texte-sec)">Trouvez une agence de mobilité près de vous.</p>
       </a>
-      <a href="tad.html" class="card" style="text-decoration:none;text-align:center">
+      <a href="reseau.html" class="card" style="text-decoration:none;text-align:center">
         <div style="font-size:32px;margin-bottom:10px">🚐</div>
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Transport à la demande</div>
         <p style="font-size:12px;color:var(--texte-sec)">Sur réservation, dans les zones peu desservies.</p>
@@ -207,6 +205,9 @@ async function majWidget() {
     }
   } catch(e){ console.error(e); }
 }
+document.getElementById("hero-itineraire-form").addEventListener("submit", function(){
+  setBtnLoading(document.getElementById("btn-itineraire"), "Recherche...");
+});
 document.getElementById("ligne-quick-form").addEventListener("submit", function(e){
   e.preventDefault();
   const code = document.getElementById("ligne-quick-select").value;
@@ -264,7 +265,7 @@ async function loadFromJB(){
     const carousel=rec.carousel||[];
     if(carousel.length){
       document.getElementById("sec-carousel").style.display="block";
-      if(rec.carousel_titre) document.getElementById("carousel-titre").textContent=rec.carousel_titre;
+      if(rec.carousel_titre) document.getElementById("carousel-titre") && (document.getElementById("carousel-titre").textContent=rec.carousel_titre);
       carItems=carousel;
       renderCar();
       setInterval(()=>{ if(carItems.length>1) carNav(1); },5000);
@@ -348,8 +349,11 @@ loadFromJB();
         <div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div>
         <p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région. Partenaire de vos déplacements quotidiens.</p>
       </div>
-      <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="reseau.html">Horaires</a><a href="tad.html">Transport à la demande</a></div>
+      <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="reseau.html">Horaires</a><a href="reseau.html">Transport à la demande</a></div>
       <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a></div>
       <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
     </div>
-    <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a3d
+    <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div></div></footer>
+<script src="transitions.js"></script>
+</body>
+</html>

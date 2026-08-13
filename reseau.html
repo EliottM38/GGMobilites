@@ -15,7 +15,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a><a href="tad.html">TAD</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
@@ -43,19 +43,25 @@ async function chargerLignes(){
       return;
     }
 
-    el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px">' + lignes.map(l => `
-      <a href="ligne.html?code=${encodeURIComponent(l.code)}" style="display:block;background:white;border-radius:14px;border:1px solid var(--bordure);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);text-decoration:none;transition:all 0.2s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.06)'">
-        <div style="background:${l.couleur};padding:14px 18px;display:flex;align-items:center;gap:14px">
-          ${l.icone_url
-            ? `<img src="${l.icone_url}" alt="${l.code}" width="56" height="56" style="object-fit:contain;border-radius:8px;flex-shrink:0;background:rgba(255,255,255,0.15);padding:4px" onerror="this.outerHTML='<div style=&quot;width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:white;flex-shrink:0&quot;>${l.code}</div>'">`
-            : `<div style="width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:white;flex-shrink:0">${l.code}</div>`
-          }
-          <div style="flex:1;min-width:0">
-            <div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.terminus_a} ↔ ${l.terminus_b}</div>
-          </div>
-          <div style="background:rgba(255,255,255,0.22);border:1px solid rgba(255,255,255,0.4);color:white;padding:7px 14px;border-radius:8px;font-family:Syne,sans-serif;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0">Voir →</div>
+    const groupes = [
+      {titre:"Lignes régulières", items: lignes.filter(l => l.type !== "tad")},
+      {titre:"Transport à la demande (TAD)", items: lignes.filter(l => l.type === "tad")}
+    ].filter(g => g.items.length);
+
+    const badge = l => `
+      <a href="ligne.html?code=${encodeURIComponent(l.code)}" class="ligne-badge-wrap" title="${l.terminus_a} ↔ ${l.terminus_b}" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:6px;width:64px">
+        <div style="width:52px;height:52px;border-radius:50%;background:${l.couleur};display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:15px;color:white;box-shadow:0 2px 6px rgba(0,0,0,0.15);transition:transform 0.15s;overflow:hidden"
+             onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform=''">
+          ${l.icone_url ? `<img src="${l.icone_url}" alt="${l.code}" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()">` : l.code}
         </div>
-      </a>`).join("") + '</div>';
+        <div style="font-size:10px;color:var(--texte-sec);text-align:center;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:64px">${l.terminus_a}</div>
+      </a>`;
+
+    el.innerHTML = groupes.map(g => `
+      <div style="margin-bottom:2rem">
+        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:14px;color:var(--texte);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--bordure)">${g.titre}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:16px">${g.items.map(badge).join("")}</div>
+      </div>`).join("");
   }catch(e){
     console.error(e);
     el.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--texte-sec)">Impossible de charger le réseau pour le moment.</div>';
@@ -65,5 +71,6 @@ chargerLignes();
 </script>
 
 <footer><div class="accent-bar"></div><div style="padding:2.5rem 2rem"><div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</div><p class="footer-desc">Réseau de transport de Grenoble et sa région.</p></div><div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan interactif</a><a href="infotrafic.html">Infotrafic</a></div><div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="agences.html">Agences</a></div><div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a></div></div><div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div></div></footer>
+<script src="transitions.js"></script>
 </body>
 </html>
