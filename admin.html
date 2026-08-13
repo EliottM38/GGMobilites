@@ -646,20 +646,32 @@ async function hSave(){
 }
 
 // ── INFOTRAFIC ────────────────────────────────────────────────────────
-function renderAl(){
+async function renderAl(){
   const el=document.getElementById("al-list");
-  if(!db.alertes.length){el.innerHTML='<div style="color:var(--txs);font-size:13px;padding:1rem 0">Aucune alerte.</div>';return;}
-  el.innerHTML=db.alertes.map(function(a,i){return'<div class="alc '+a.niveau+'"><div><div class="alb">'+(a.niveau==="rouge"?"Perturbé":"Info")+'</div><div style="margin-top:8px"><span style="background:'+(getColor(a.ligne))+';color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">'+a.ligne+'</span></div></div><div class="alct"><strong>'+a.titre+'</strong><p>'+a.desc+'</p><div style="font-size:11px;color:var(--txs);margin-top:6px">'+a.date+' · '+(a.auteur||"—")+'</div></div><button class="bdel" onclick="delAl('+i+')">Supprimer</button></div>';}).join("");
+  if(!supabaseClient){el.innerHTML='<div style="color:var(--txs);font-size:13px;padding:1rem 0">Connexion Supabase indisponible.</div>';return;}
+  const {data:alertes,error}=await supabaseClient.from("alertes").select("*").order("created_at",{ascending:false});
+  if(error){el.innerHTML='<div style="color:var(--txs);font-size:13px;padding:1rem 0">Erreur de chargement.</div>';return;}
+  window._supaAlertes=alertes||[];
+  document.getElementById("s-al").textContent=window._supaAlertes.length;
+  if(!window._supaAlertes.length){el.innerHTML='<div style="color:var(--txs);font-size:13px;padding:1rem 0">Aucune alerte.</div>';return;}
+  el.innerHTML=window._supaAlertes.map(function(a){return'<div class="alc '+a.niveau+'"><div><div class="alb">'+(a.niveau==="rouge"?"Perturbé":"Info")+'</div><div style="margin-top:8px"><span style="background:'+(getColor(a.ligne_code))+';color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">'+(a.ligne_code||"—")+'</span></div></div><div class="alct"><strong>'+a.titre+'</strong><p>'+(a.description||"")+'</p><div style="font-size:11px;color:var(--txs);margin-top:6px">'+new Date(a.created_at).toLocaleDateString("fr-FR")+' · '+(a.auteur||"—")+'</div></div><button class="bdel" onclick="delAl(\''+a.id+'\')">Supprimer</button></div>';}).join("");
 }
 async function addAlerte(){
   const l=document.getElementById("it-lg").value,n=document.getElementById("it-nv").value;
   const t=document.getElementById("it-ti").value.trim(),d=document.getElementById("it-de").value.trim();
   if(!t||!d){toast("Remplissez titre et description.",true);return;}
-  db.alertes.push({ligne:l,niveau:n,titre:t,desc:d,date:new Date().toLocaleDateString("fr-FR"),auteur:curUser?.nom});
+  const {error}=await supabaseClient.from("alertes").insert({ligne_code:l||null,niveau:n,titre:t,description:d,auteur:curUser?.nom||null});
+  if(error){toast("Erreur : "+error.message,true);return;}
   document.getElementById("it-ti").value="";document.getElementById("it-de").value="";
-  log("Alerte : "+t+" ("+l+")");renderAll();await saveDB();toast("Alerte publiée !");
+  log("Alerte : "+t+" ("+l+")");renderAl();toast("Alerte publiée !");
 }
-async function delAl(i){if(!confirm("Supprimer ?"))return;log("Alerte supprimée : "+db.alertes[i].titre);db.alertes.splice(i,1);renderAll();await saveDB();toast("Alerte supprimée.");}
+async function delAl(id){
+  if(!confirm("Supprimer ?"))return;
+  const a=(window._supaAlertes||[]).find(x=>x.id===id);
+  const {error}=await supabaseClient.from("alertes").delete().eq("id",id);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  log("Alerte supprimée : "+(a?a.titre:id));renderAl();toast("Alerte supprimée.");
+}
 
 // ── ARTICLES & CAROUSEL ───────────────────────────────────────────────
 function renderCar(){
@@ -788,7 +800,7 @@ function toast(msg,err){const el=document.createElement("div");el.className="t"+
 
 // ── RENDER ALL ────────────────────────────────────────────────────────
 function renderAll(){
-  document.getElementById("s-al").textContent=db.alertes.length;
+  document.getElementById("s-al").textContent=(window._supaAlertes||[]).length||"—";
   document.getElementById("s-ar").textContent=db.articles.length;
   document.getElementById("s-hm").textContent=db.horaires_modifs.length;
   const al=document.getElementById("alog");

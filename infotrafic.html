@@ -6,8 +6,34 @@
   <title>Infotrafic — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .it-head{max-width:1200px;margin:0 auto;padding:2rem 2rem 0}
+    .it-title{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:#E4530B;margin-bottom:4px}
+    .it-maj{font-size:13px;color:var(--texte-sec)}
+    .it-tabs{max-width:1200px;margin:1.5rem auto 0;padding:0 2rem;display:flex;align-items:center;gap:1.5rem;border-bottom:1px solid var(--bordure);padding-bottom:1rem}
+    .it-tab{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.03em;color:var(--texte-sec);background:none;border:none;cursor:pointer;padding:10px 18px;border-radius:20px}
+    .it-tab.active{background:#3FBEE0;color:white}
+    .it-share{margin-left:auto;display:flex;gap:10px}
+    .it-share a{width:34px;height:34px;border-radius:50%;border:1px solid var(--bordure);display:flex;align-items:center;justify-content:center;color:var(--bleu);text-decoration:none;font-size:14px}
+    .it-icons{max-width:1200px;margin:1.5rem auto 0;padding:0 2rem;display:flex;flex-wrap:wrap;gap:10px 8px}
+    .it-icon-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:white;cursor:pointer;border:none;transition:transform 0.15s;flex-shrink:0}
+    .it-icon-badge:hover{transform:scale(1.12)}
+    .it-icon-badge.dimmed{opacity:0.35}
+    .it-cards{max-width:1200px;margin:2rem auto 4rem;padding:0 2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+    .it-card{background:white;border:1px solid var(--bordure);border-radius:14px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);scroll-margin-top:100px;transition:box-shadow 0.3s, border-color 0.3s}
+    .it-card.highlight{box-shadow:0 0 0 3px var(--or);border-color:var(--or)}
+    .it-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .it-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:white;flex-shrink:0}
+    .it-card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--bleu)}
+    .it-niveau{font-size:12px;font-weight:700;color:#E4530B;margin-bottom:8px}
+    .it-niveau.normal{color:#27AE60}
+    .it-desc{font-size:13px;color:var(--texte);line-height:1.6;margin-bottom:12px;white-space:pre-line}
+    .it-meta{font-size:11px;color:var(--texte-sec)}
+    .it-empty{background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.25);border-radius:12px;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:12px;font-size:14px;color:#27AE60}
+  </style>
 </head>
 <body>
 <nav>
@@ -21,35 +47,23 @@
 </nav>
 <div class="accent-bar"></div>
 
-<div class="page">
-  <div style="margin-bottom:2rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:32px;font-weight:800;color:var(--texte)">Infotrafic</h1>
-    <span class="live-chip"><span class="live-dot"></span>En direct</span>
-    <span style="font-size:12px;color:var(--texte-sec);margin-left:auto" id="maj-time"></span>
-  </div>
+<div class="it-head">
+  <div class="it-title">Infotrafic</div>
+  <div class="it-maj" id="it-maj">Chargement...</div>
+</div>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:2rem">
-    <div style="background:var(--noir-card);border:1px solid var(--bordure);border-radius:12px;padding:1rem;text-align:center">
-      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;color:#E74C3C" id="count-perturb">—</div>
-      <div style="font-size:11px;color:var(--texte-sec);text-transform:uppercase;letter-spacing:0.06em">Perturbées</div>
-    </div>
-    <div style="background:var(--noir-card);border:1px solid var(--bordure);border-radius:12px;padding:1rem;text-align:center">
-      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;color:var(--or)" id="count-normal">—</div>
-      <div style="font-size:11px;color:var(--texte-sec);text-transform:uppercase;letter-spacing:0.06em">Normales</div>
-    </div>
-    <div style="background:var(--noir-card);border:1px solid var(--bordure);border-radius:12px;padding:1rem;text-align:center">
-      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;color:var(--texte)">14</div>
-      <div style="font-size:11px;color:var(--texte-sec);text-transform:uppercase;letter-spacing:0.06em">Total lignes</div>
-    </div>
+<div class="it-tabs">
+  <button class="it-tab active">AUJOURD'HUI</button>
+  <div class="it-share">
+    <a href="#" onclick="window.print();return false" title="Imprimer">🖨️</a>
+    <a href="mailto:?subject=Infotrafic%20GGMobilit%C3%A9s" title="Partager par e-mail">✉️</a>
   </div>
+</div>
 
-  <div style="font-size:11px;font-weight:700;color:var(--texte-sec);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:1rem">Perturbations en cours</div>
-  <div id="alertes-dynamiques">
-    <div style="font-size:14px;color:var(--texte-sec);padding:1rem 0">Chargement...</div>
-  </div>
+<div class="it-icons" id="it-icons"></div>
 
-  <div style="font-size:11px;font-weight:700;color:var(--texte-sec);text-transform:uppercase;letter-spacing:0.12em;margin:2rem 0 1rem">Lignes en circulation normale</div>
-  <div id="lignes-normales" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+<div class="it-cards" id="it-cards">
+  <div style="font-size:13px;color:var(--texte-sec)">Chargement des perturbations...</div>
 </div>
 
 <footer>
@@ -57,54 +71,85 @@
   <div style="padding:3rem 2rem">
     <div class="footer-inner">
       <div class="footer-brand">
-        <div class="footer-logo"><img src="logo.png" alt="GGMobilités"> GGMobilités</div>
+        <div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div>
         <p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région.</p>
       </div>
-      <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan du réseau</a><a href="lignes-speciales.html">Lignes spéciales</a><a href="infotrafic.html">Infotrafic</a></div>
+      <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan du réseau</a><a href="infotrafic.html">Infotrafic</a></div>
       <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div>
       <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
     </div>
     <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div>
   </div>
 </footer>
-<script src="data-loader.js"></script>
 
 <script>
-const LC = {C1:"#185FA5",C2:"#0F6E56",C3:"#993C1D","4":"#534AB7","5":"#3B6D11","6":"#854F0B","7":"#993556","8":"#5F5E5A","9":"#185FA5","10":"#0F6E56","11":"#A32D2D","60":"#412402","61":"#3B6D11",PL1:"#2C2C2A"};
-const TOUTES = ["C1","C2","C3","4","5","6","7","8","9","10","11","60","61","PL1"];
+let supabaseClient;
+const NIVEAU_LABEL = {rouge:"Très perturbé", orange:"Perturbé"};
 
-async function chargerInfotrafic() {
-  document.getElementById('maj-time').textContent = 'Dernière mise à jour : ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  const data = await chargerData();
-  const alertes = data.alertes || [];
-  const lignesPerturb = alertes.map(a => a.ligne);
-  const lignesNormales = TOUTES.filter(l => !lignesPerturb.includes(l));
+async function init(){
+  document.getElementById('it-maj').textContent = 'Mise à jour le : ' + new Date().toLocaleDateString('fr-FR') + ' - ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 
-  document.getElementById('count-perturb').textContent = lignesPerturb.length;
-  document.getElementById('count-normal').textContent = lignesNormales.length;
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
 
-  // Alertes
-  const el = document.getElementById('alertes-dynamiques');
-  if (!alertes.length) {
-    el.innerHTML = '<div style="background:var(--noir-card);border:1px solid var(--bordure);border-left:4px solid #2ECC71;border-radius:0 12px 12px 0;padding:1rem 1.5rem;display:flex;align-items:center;gap:12px"><span style="color:#2ECC71;font-size:20px">✓</span><span style="font-size:14px;color:var(--texte-sec)">Aucune perturbation — toutes les lignes circulent normalement.</span></div>';
+  const { data: lignes } = await supabaseClient.from("lignes").select("*").eq("actif", true).order("code");
+  const { data: alertes } = await supabaseClient.from("alertes").select("*").order("created_at",{ascending:false});
+
+  const lignesList = lignes || [];
+  const alertesList = alertes || [];
+  const codesAvecAlerte = new Set(alertesList.map(a=>a.ligne_code).filter(Boolean));
+  const ligneByCode = Object.fromEntries(lignesList.map(l=>[l.code,l]));
+
+  // ── Icônes cliquables en haut ──────────────────────────
+  const iconsEl = document.getElementById('it-icons');
+  if(!lignesList.length){
+    iconsEl.innerHTML = '<div style="font-size:13px;color:var(--texte-sec)">Aucune ligne pour le moment.</div>';
   } else {
-    el.innerHTML = '';
-    await injecterInfotraficGlobal();
+    iconsEl.innerHTML = lignesList.map(l => {
+      const has = codesAvecAlerte.has(l.code);
+      return `<button class="it-icon-badge${has?'':' dimmed'}" style="background:${l.couleur}" title="${l.code}${has?' — perturbée':' — normal'}" onclick="allerVers('${l.code}')">${l.code}</button>`;
+    }).join('');
   }
 
-  // Lignes normales
-  document.getElementById('lignes-normales').innerHTML = lignesNormales.map(l =>
-    `<a href="ligne-${l.toLowerCase()}.html" style="background:var(--noir-card);border:1px solid var(--bordure);border-radius:8px;padding:6px 14px;text-decoration:none;display:flex;align-items:center;gap:6px">
-      <span style="background:${LC[l]};color:white;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;padding:2px 8px;border-radius:5px">${l}</span>
-      <span style="font-size:12px;color:var(--texte-sec)">Normal</span>
-      <span style="color:#2ECC71;font-size:14px">✓</span>
-    </a>`
-  ).join('');
+  // ── Cartes de perturbations ─────────────────────────────
+  const cardsEl = document.getElementById('it-cards');
+  if(!alertesList.length){
+    cardsEl.innerHTML = `<div class="it-empty" style="grid-column:1/-1">✅ Aucune perturbation en cours — toutes les lignes circulent normalement.</div>`;
+    return;
+  }
+
+  cardsEl.innerHTML = alertesList.map(a => {
+    const l = a.ligne_code ? ligneByCode[a.ligne_code] : null;
+    const couleur = l ? l.couleur : '#888';
+    const niveauLabel = NIVEAU_LABEL[a.niveau] || 'Information';
+    const niveauClass = a.niveau === 'rouge' || a.niveau === 'orange' ? '' : 'normal';
+    return `
+    <div class="it-card" id="bloc-${a.ligne_code||a.id}">
+      <div class="it-card-head">
+        <div class="it-badge" style="background:${couleur}">${a.ligne_code||'—'}</div>
+        <div class="it-card-title">${a.titre}</div>
+      </div>
+      <div class="it-niveau ${niveauClass}">${niveauLabel}</div>
+      ${a.description ? `<div class="it-desc">${a.description}</div>` : ''}
+      <div class="it-meta">${new Date(a.created_at).toLocaleDateString('fr-FR')}${a.auteur ? ' · '+a.auteur : ''}</div>
+      ${a.ligne_code ? `<a href="ligne.html?code=${encodeURIComponent(a.ligne_code)}" style="display:inline-block;margin-top:12px;font-size:12px;font-weight:700;color:var(--bleu);text-decoration:none">Voir la ligne ${a.ligne_code} →</a>` : ''}
+    </div>`;
+  }).join('');
 }
 
-chargerInfotrafic();
-setInterval(chargerInfotrafic, 60000);
-</script>
+function allerVers(code){
+  const el = document.getElementById('bloc-'+code);
+  if(!el){
+    // Pas de perturbation pour cette ligne : petit retour visuel neutre
+    return;
+  }
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  el.classList.add('highlight');
+  setTimeout(()=>el.classList.remove('highlight'), 1800);
+}
 
+init();
+setInterval(init, 60000);
+</script>
 </body>
 </html>
