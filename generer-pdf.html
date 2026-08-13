@@ -63,23 +63,30 @@ async function generer(){
     doc.setFontSize(9); doc.setFont('helvetica','normal');
     doc.text('Fiche horaire · Édité le ' + new Date().toLocaleDateString('fr-FR'), W-12, 27, {align:'right'});
 
-    // ── Arrêts desservis (liste ordonnée) ───────────────
+    // ── Thermomètre de ligne (arrêts desservis) ──────────
     let y = 42;
     doc.setTextColor(...color); doc.setFontSize(11); doc.setFont('helvetica','bold');
     doc.text('Arrêts desservis', 12, y);
-    y += 6;
-    doc.setFontSize(8); doc.setTextColor(30,30,30); doc.setFont('helvetica','normal');
-    const colW = 62, rowH = 5.2, maxRows = Math.floor((150-y)/rowH);
+    y += 8;
+
+    const thermoX = 22, thermoTop = y, thermoBottom = 148;
+    const n = arrets.length;
+    const stepY = n>1 ? (thermoBottom-thermoTop)/(n-1) : 0;
+
+    if(n>1){ doc.setDrawColor(...color); doc.setLineWidth(1.1); doc.line(thermoX, thermoTop, thermoX, thermoBottom); }
+
+    doc.setFontSize(8);
     arrets.forEach((a, i) => {
-      const col = Math.floor(i / maxRows);
-      const row = i % maxRows;
-      const x = 12 + col*colW;
-      const yy = y + row*rowH;
-      if(x > W-12) return;
-      const isTerm = i===0 || i===arrets.length-1;
+      const yy = thermoTop + stepY*i;
+      const isTerm = i===0 || i===n-1;
+      doc.setFillColor(...color);
+      doc.circle(thermoX, yy, isTerm?1.6:1.1, 'F');
+      doc.setDrawColor(255,255,255); doc.setLineWidth(0.4); doc.circle(thermoX, yy, isTerm?1.6:1.1, 'S');
+      doc.setTextColor(30,30,30);
       doc.setFont('helvetica', isTerm ? 'bold' : 'normal');
-      const label = (i+1) + '. ' + a.nom + (a.lieu_nom ? '  📍' : '');
-      doc.text(label.substring(0,42), x, yy);
+      doc.setFontSize(isTerm?8.5:7.5);
+      let label = a.nom + (a.lieu_nom ? '  📍'+a.lieu_nom : '');
+      doc.text(label.substring(0,58), thermoX+6, yy+1.3);
     });
 
     // ── Tableau des fréquences ───────────────────────────

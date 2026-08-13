@@ -21,32 +21,52 @@
 </nav>
 <div class="accent-bar"></div>
 
-<div class="hero">
-  <div class="hero-inner">
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-val">14</div><div class="hero-stat-label">Lignes</div></div>
-        <div class="hero-stat"><div class="hero-stat-val">4 296</div><div class="hero-stat-label">Passages/jour</div></div>
+<div class="hero" style="padding-bottom:5.5rem">
+  <div class="hero-inner" style="grid-template-columns:1fr;text-align:center;max-width:800px">
+    <div>
+      <div class="hero-label" style="justify-content:center">🚌 Réseau de transport de Grenoble</div>
+      <h1 style="font-size:40px">Toute la mobilité, <span>où que vous alliez</span></h1>
+      <p class="hero-desc">Lignes, horaires en temps réel et itinéraires : tout GGMobilités au même endroit.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem">
+        <a href="reseau.html" style="padding:12px 24px;border-radius:10px;background:var(--or);color:#0F1923;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-decoration:none">Voir le réseau</a>
+        <a href="infotrafic.html" style="padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,0.4);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-decoration:none">Infotrafic</a>
+      </div>
+      <div class="hero-stats" style="justify-content:center">
+        <div class="hero-stat"><div class="hero-stat-val" id="stat-lignes">—</div><div class="hero-stat-label">Lignes</div></div>
         <div class="hero-stat"><div class="hero-stat-val">5h – 1h</div><div class="hero-stat-label">Amplitude</div></div>
       </div>
     </div>
-    <div class="hero-widget">
-      <div class="live-chip" style="margin-bottom:0.75rem"><span class="live-dot"></span>En direct</div>
-      <div class="hero-widget-title" id="hw-title">Prochains départs</div>
-      <div id="hw-list"><div style="font-size:12px;color:rgba(255,255,255,0.5)">Chargement...</div></div>
-      <div style="margin-top:14px;text-align:right"><a href="reseau.html" style="font-size:12px;color:var(--bleu);text-decoration:none;font-weight:600">Voir tous les horaires →</a></div>
-    </div>
+  </div>
+
+  <!-- Carte flottante "Rechercher un itinéraire", façon M Réso -->
+  <div style="max-width:1200px;margin:2.5rem auto -7rem;padding:0 2rem;position:relative;z-index:5">
+    <form action="itineraire.html" method="get" style="background:white;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,0.18);padding:1.5rem;display:grid;grid-template-columns:auto 1fr 1fr auto;gap:12px;align-items:center">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--texte);white-space:nowrap;display:flex;align-items:center;gap:8px">🧭 Itinéraire</div>
+      <input type="text" name="depart" placeholder="Départ : arrêt / adresse" style="padding:12px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit">
+      <input type="text" name="arrivee" placeholder="Arrivée : arrêt / adresse" style="padding:12px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit">
+      <button type="submit" style="padding:12px 26px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap">Rechercher</button>
+    </form>
   </div>
 </div>
 
-<div class="page">
-  <div class="section">
-    <div class="quick-grid">
-      <a href="reseau.html" class="quick-card"><span class="quick-card-icon">🕐</span><span>Horaires</span></a>
-      <a href="infotrafic.html" class="quick-card"><span class="quick-card-icon">⚠️</span><span>Infotrafic</span></a>
-      <a href="tarifs.html" class="quick-card"><span class="quick-card-icon">🎫</span><span>Tarifs</span></a>
-      <a href="reseau.html" class="quick-card"><span class="quick-card-icon">🗺️</span><span>Le réseau</span></a>
-      <a href="contact.html" class="quick-card"><span class="quick-card-icon">✉️</span><span>Contact</span></a>
-      <a href="objets-perdus.html" class="quick-card"><span class="quick-card-icon">🔍</span><span>Objets perdus</span></a>
+<div class="page" style="padding-top:9rem">
+  <!-- ── Prochains passages / Votre ligne, façon M Réso ── -->
+  <div class="grid grid-2" style="margin-bottom:2.5rem">
+    <div class="card" style="padding:1.5rem">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px">🕐 Prochains passages</div>
+      <form action="horaires-arret.html" method="get" style="display:flex;gap:8px">
+        <input type="text" name="q" placeholder="Choisissez un arrêt" style="flex:1;padding:11px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:13px;font-family:inherit">
+        <button type="submit" style="padding:11px 18px;border-radius:10px;border:none;background:var(--bleu);color:white;cursor:pointer;font-size:15px">🔍</button>
+      </form>
+    </div>
+    <div class="card" style="padding:1.5rem">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px">🚌 Votre ligne en détail</div>
+      <form id="ligne-quick-form" style="display:flex;gap:8px">
+        <select id="ligne-quick-select" style="flex:1;padding:11px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:13px;font-family:inherit;background:white">
+          <option value="">Choisissez une ligne</option>
+        </select>
+        <button type="submit" style="padding:11px 18px;border-radius:10px;border:none;background:var(--bleu);color:white;cursor:pointer;font-size:15px">🔍</button>
+      </form>
     </div>
   </div>
 
@@ -90,6 +110,63 @@
     <div id="actu-grid" class="grid grid-3"></div>
   </div>
 
+  <!-- ── SERVICES, façon M Réso ───────────────────────────── -->
+  <div class="section">
+    <div class="section-header"><div class="section-title">Services</div></div>
+    <div class="grid grid-3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <a href="reseau.html" class="card" style="text-decoration:none;text-align:center">
+        <div style="font-size:32px;margin-bottom:10px">🗺️</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Le réseau</div>
+        <p style="font-size:12px;color:var(--texte-sec)">Toutes les lignes GGMobilités et leurs horaires.</p>
+      </a>
+      <a href="itineraire.html" class="card" style="text-decoration:none;text-align:center">
+        <div style="font-size:32px;margin-bottom:10px">🧭</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Itinéraires</div>
+        <p style="font-size:12px;color:var(--texte-sec)">Calculez le meilleur trajet d'un point à un autre.</p>
+      </a>
+      <a href="tarifs.html" class="card" style="text-decoration:none;text-align:center">
+        <div style="font-size:32px;margin-bottom:10px">🎫</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Tarifs & vente</div>
+        <p style="font-size:12px;color:var(--texte-sec)">Titres de transport et points de vente.</p>
+      </a>
+      <a href="agences.html" class="card" style="text-decoration:none;text-align:center">
+        <div style="font-size:32px;margin-bottom:10px">🏢</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Agences</div>
+        <p style="font-size:12px;color:var(--texte-sec)">Trouvez une agence de mobilité près de vous.</p>
+      </a>
+      <a href="tad.html" class="card" style="text-decoration:none;text-align:center">
+        <div style="font-size:32px;margin-bottom:10px">🚐</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Transport à la demande</div>
+        <p style="font-size:12px;color:var(--texte-sec)">Sur réservation, dans les zones peu desservies.</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── CONTACT, façon M Réso ────────────────────────────── -->
+  <div class="section" style="background:var(--fond);border-radius:16px;padding:2rem;margin-top:1rem">
+    <div class="grid grid-2" style="align-items:start">
+      <div>
+        <div style="display:flex;gap:14px;margin-bottom:1.5rem">
+          <div style="font-size:26px">🔑</div>
+          <div><a href="objets-perdus.html" style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Un objet perdu</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Agissez rapidement pour augmenter vos chances de le retrouver.</p></div>
+        </div>
+        <div style="display:flex;gap:14px;margin-bottom:1.5rem">
+          <div style="font-size:26px">🗺️</div>
+          <div><a href="infotrafic.html" style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Des conseils en déplacement</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Préparez votre trajet et suivez les perturbations en direct.</p></div>
+        </div>
+        <div style="display:flex;gap:14px">
+          <div style="font-size:26px">📮</div>
+          <div><a href="contact.html" style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Une réclamation ou suggestion</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Notre équipe vous répond personnellement.</p></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--texte);margin-bottom:10px">Vous souhaitez nous contacter ?</div>
+        <p style="font-size:13px;color:var(--texte-sec);margin-bottom:16px;line-height:1.6">Nous mettons tout en œuvre pour répondre à vos questions et satisfaire vos demandes.</p>
+        <a href="contact.html" style="display:inline-block;padding:11px 22px;border-radius:10px;background:var(--bleu);color:white;text-decoration:none;font-family:'Syne',sans-serif;font-weight:700;font-size:13px">Nous écrire →</a>
+      </div>
+    </div>
+  </div>
+
   <!-- ── POP-UP ── -->
   <div id="popup-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:2rem">
     <div id="popup-box" style="max-width:440px;width:100%;border-radius:16px;padding:2rem;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.4)">
@@ -115,36 +192,27 @@ function nextDeparture(f, nowMin){
   return nextMin>fin ? null : nextMin-nowMin;
 }
 async function majWidget() {
-  const list = document.getElementById("hw-list");
   try {
     const cfg = await fetch('/api/config').then(r=>r.json());
     const supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-    const { data: lignes } = await supabaseClient.from("lignes").select("*").eq("actif", true).order("code").limit(4);
+    const { data: lignes } = await supabaseClient.from("lignes").select("*").eq("actif", true).order("code");
 
-    if(!lignes || !lignes.length){
-      document.getElementById("hw-title").textContent = "Le réseau se construit";
-      list.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.5">Aucune ligne en service pour le moment. Revenez bientôt !</div>';
-      return;
+    document.getElementById("stat-lignes").textContent = lignes ? lignes.length : "0";
+
+    const sel = document.getElementById("ligne-quick-select");
+    if(lignes && lignes.length){
+      sel.innerHTML = '<option value="">Choisissez une ligne</option>' + lignes.map(l =>
+        `<option value="${l.code}">${l.code} — ${l.terminus_a} ↔ ${l.terminus_b}</option>`
+      ).join("");
     }
-    document.getElementById("hw-title").textContent = "Prochains départs";
-
-    const codes = lignes.map(l=>l.code);
-    const { data: freqs } = await supabaseClient.from("frequences").select("*").in("ligne_code", codes).eq("sens","aller");
-    const jour = jourType();
-    const nowMin = new Date().getHours()*60 + new Date().getMinutes();
-
-    list.innerHTML = lignes.map(l => {
-      const f = (freqs||[]).find(x=>x.ligne_code===l.code && x.jour===jour);
-      const min = f ? nextDeparture(f, nowMin) : null;
-      const label = min==null ? '—' : (min<=0 ? "À l'arrêt" : min+" min");
-      return `<div class="hw-ligne"><span class="hw-badge" style="background:${l.couleur}">${l.code}</span><span class="hw-dest">→ ${l.terminus_b}</span><span class="hw-temps">${label}</span></div>`;
-    }).join("");
-  } catch(e){
-    console.error(e);
-    list.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.5)">Indisponible pour le moment.</div>';
-  }
+  } catch(e){ console.error(e); }
 }
-majWidget(); setInterval(majWidget, 30000);
+document.getElementById("ligne-quick-form").addEventListener("submit", function(e){
+  e.preventDefault();
+  const code = document.getElementById("ligne-quick-select").value;
+  if(code) location.href = "ligne.html?code=" + encodeURIComponent(code);
+});
+majWidget();
 
 async function chargerLignesStructurantes(){
   const grid = document.getElementById("lignes-struct-grid");
