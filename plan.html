@@ -1,52 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plan interactif — GGMobilités</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .plan-wrapper {
-      height: calc(100vh - 68px - 3px);
-      display: flex;
-      flex-direction: column;
-    }
-    .plan-topbar {
-      background: var(--blanc);
-      border-bottom: 1px solid var(--bordure);
-      padding: 10px 2rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-    .plan-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--texte);
-    }
-    .plan-desc {
-      font-size: 13px;
-      color: var(--texte-sec);
-    }
-    .plan-link {
-      margin-left: auto;
-      color: var(--or);
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .plan-link:hover { color: var(--or-clair); }
-    .plan-iframe {
-      flex: 1;
-      border: none;
-      width: 100%;
-    }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan du réseau — GGMobilités</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+<style>
+.plan-wrap{max-width:1400px;margin:0 auto;padding:1.5rem 2rem 3rem}
+.plan-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.plan-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--texte)}
+.plan-desc{font-size:13px;color:var(--texte-sec);margin-top:2px}
+.plan-btn{padding:11px 20px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.plan-btn:disabled{opacity:.6;cursor:default}
+.plan-grid{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+@media(max-width:900px){.plan-grid{grid-template-columns:1fr}}
+#map{height:640px;border-radius:14px;border:1px solid var(--bordure);background:#eef1f6}
+.legend-box{background:white;border:1px solid var(--bordure);border-radius:14px;padding:1rem;max-height:640px;overflow-y:auto}
+.legend-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:10px;color:var(--texte)}
+.legend-item{display:flex;align-items:center;gap:9px;padding:7px 6px;border-radius:8px;cursor:pointer;text-decoration:none;transition:background .12s}
+.legend-item:hover{background:var(--bleu-pale)}
+.legend-swatch{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;color:white}
+.legend-label{font-size:12px;color:var(--texte);line-height:1.3}
+</style>
 </head>
 <body>
 <nav>
@@ -59,21 +40,149 @@
   </div>
 </nav>
 <div class="accent-bar"></div>
-<div class="plan-wrapper">
+
+<div class="plan-wrap">
   <div class="plan-topbar">
     <div>
       <div class="plan-title">🗺️ Plan interactif du réseau</div>
-      <div class="plan-desc">Cliquez sur une ligne ou un arrêt pour explorer le réseau GGMobilités</div>
+      <div class="plan-desc">Cliquez sur une ligne pour l'explorer en détail</div>
     </div>
-    <a href="https://metrodreamin.com/view/elNleEM2THNIc1JhSzhSMXI1UUp0c1AzcTBHM3wx" target="_blank" class="plan-link">Ouvrir en plein écran ↗</a>
+    <button class="plan-btn" id="btn-pdf" onclick="genererPlanPDF()">📄 Télécharger le plan PDF</button>
   </div>
-  <iframe
-    class="plan-iframe"
-    src="https://metrodreamin.com/view/elNleEM2THNIc1JhSzhSMXI1UUp0c1AzcTBHM3wx"
-    title="Plan interactif GGMobilités"
-    allowfullscreen
-    loading="lazy">
-  </iframe>
+
+  <div class="plan-grid">
+    <div id="map"></div>
+    <div class="legend-box">
+      <div class="legend-title">Lignes du réseau</div>
+      <div id="legend-list"><div style="font-size:12px;color:var(--texte-sec)">Chargement...</div></div>
+    </div>
+  </div>
 </div>
+
+<footer>
+  <div class="accent-bar"></div>
+  <div style="padding:2.5rem 2rem"><div class="footer-inner">
+    <div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div></div>
+  </div></div>
+</footer>
+
+<script>
+let map, supabaseClient;
+let lignesData = [];
+
+// Décale légèrement un tracé perpendiculairement pour limiter les recouvrements totaux
+// entre lignes qui empruntent le même axe (approximation simple, pas un vrai bundling).
+function offsetPoints(points, idx){
+  if(points.length < 2 || idx === 0) return points;
+  const dir = idx % 2 === 0 ? 1 : -1;
+  const mag = (Math.ceil(idx/2)) * 0.00006; // ~6-7m par cran, en degrés
+  return points.map((p,i)=>{
+    const prev = points[Math.max(0,i-1)], next = points[Math.min(points.length-1,i+1)];
+    const dx = next.lng - prev.lng, dy = next.lat - prev.lat;
+    const len = Math.hypot(dx,dy) || 1;
+    const nx = -dy/len, ny = dx/len;
+    return { lat: p.lat + ny*mag*dir, lng: p.lng + nx*mag*dir };
+  });
+}
+
+async function init(){
+  map = L.map("map").setView([45.1885, 5.7245], 13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'© OpenStreetMap contributors'}).addTo(map);
+
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+  const { data: lignes } = await supabaseClient.from("lignes").select("*").eq("actif", true).order("code");
+  const { data: traces } = await supabaseClient.from("traces").select("*").eq("sens","aller");
+  lignesData = lignes || [];
+
+  const legendEl = document.getElementById("legend-list");
+  if(!lignesData.length){
+    legendEl.innerHTML = '<div style="font-size:12px;color:var(--texte-sec)">Aucune ligne pour le moment. Le réseau se construit !</div>';
+    document.getElementById("btn-pdf").disabled = true;
+    return;
+  }
+
+  const tracesByCode = Object.fromEntries((traces||[]).map(t=>[t.ligne_code, t.points]));
+  const bounds = [];
+
+  legendEl.innerHTML = lignesData.map((l, idx) => {
+    const pts = tracesByCode[l.code];
+    if(pts && pts.length > 1){
+      const shifted = offsetPoints(pts, idx);
+      const latlngs = shifted.map(p=>[p.lat,p.lng]);
+      const poly = L.polyline(latlngs, {color:l.couleur, weight:5, opacity:0.85, lineCap:"round", lineJoin:"round"}).addTo(map);
+      poly.on("click", ()=> location.href = "ligne.html?code="+encodeURIComponent(l.code));
+      poly.on("mouseover", function(){ this.setStyle({weight:8}); });
+      poly.on("mouseout", function(){ this.setStyle({weight:5}); });
+      poly.bindTooltip(l.code+" — "+l.terminus_a+" ↔ "+l.terminus_b);
+      pts.forEach(p=>bounds.push([p.lat,p.lng]));
+    }
+    return `<a href="ligne.html?code=${encodeURIComponent(l.code)}" class="legend-item">
+      <div class="legend-swatch" style="background:${l.couleur}">${l.code}</div>
+      <div class="legend-label">${l.terminus_a} ↔ ${l.terminus_b}</div>
+    </a>`;
+  }).join("");
+
+  if(bounds.length) map.fitBounds(bounds, {padding:[30,30]});
+}
+
+async function genererPlanPDF(){
+  const btn = document.getElementById("btn-pdf");
+  btn.disabled = true; btn.textContent = "Génération...";
+  try{
+    const mapEl = document.getElementById("map");
+    const canvas = await html2canvas(mapEl, {useCORS:true, allowTaint:true, scale:2});
+    const imgData = canvas.toDataURL("image/png");
+
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'landscape', unit:'mm', format:'a3'});
+    const W = 420, H = 297;
+
+    // Bandeau supérieur, façon plan-poster
+    doc.setFillColor(15,15,20); doc.rect(0,0,W,20,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+    doc.text('Plan du réseau', 10, 13);
+    doc.setFontSize(9); doc.setFont('helvetica','normal');
+    doc.text('GGMobilités · Édité le ' + new Date().toLocaleDateString('fr-FR'), W-10, 13, {align:'right'});
+
+    // Carte
+    const mapW = W - 20, mapH = H - 34;
+    const ratio = canvas.width / canvas.height;
+    let drawW = mapW, drawH = mapW / ratio;
+    if(drawH > mapH){ drawH = mapH; drawW = mapH * ratio; }
+    const mapX = (W - drawW)/2, mapY = 26;
+    doc.addImage(imgData, 'PNG', mapX, mapY, drawW, drawH);
+    doc.setDrawColor(220,220,220); doc.rect(mapX, mapY, drawW, drawH, 'S');
+
+    // Légende en bas
+    let ly = H - 6;
+    doc.setFontSize(7.5); doc.setTextColor(60,60,60);
+    let lx = 10;
+    lignesData.forEach(l => {
+      const label = l.code + ' ' + l.terminus_a + '↔' + l.terminus_b;
+      const w = doc.getTextWidth(label) + 12;
+      if(lx + w > W-10){ lx = 10; ly -= 6; }
+      const [r,g,b] = hexRgb(l.couleur);
+      doc.setFillColor(r,g,b); doc.roundedRect(lx, ly-4, 8, 5, 1, 1, 'F');
+      doc.setTextColor(255,255,255); doc.setFontSize(6); doc.setFont('helvetica','bold');
+      doc.text(l.code, lx+4, ly-1, {align:'center'});
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+      doc.text(l.terminus_a+' ↔ '+l.terminus_b, lx+10, ly-0.5);
+      lx += w;
+    });
+
+    doc.save('GGMobilites_plan_reseau.pdf');
+  }catch(e){
+    console.error(e);
+    alert("Erreur lors de la génération du PDF : " + e.message);
+  }
+  btn.disabled = false; btn.textContent = "📄 Télécharger le plan PDF";
+}
+
+function hexRgb(h){ h=(h||'#185FA5').replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+
+init();
+</script>
 </body>
 </html>
