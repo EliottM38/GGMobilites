@@ -53,7 +53,8 @@
 </div>
 
 <div class="it-tabs">
-  <button class="it-tab active">AUJOURD'HUI</button>
+  <button class="it-tab active" id="tab-today" onclick="setTab('today')">AUJOURD'HUI</button>
+  <button class="it-tab" id="tab-upcoming" onclick="setTab('upcoming')">À VENIR <span id="upcoming-count" style="display:none"></span></button>
   <div class="it-share">
     <a href="#" onclick="window.print();return false" title="Imprimer">🖨️</a>
     <a href="mailto:?subject=Infotrafic%20GGMobilit%C3%A9s" title="Partager par e-mail">✉️</a>
@@ -84,6 +85,8 @@
 
 <script>
 let supabaseClient;
+let alertesAujourdhui = [], alertesAVenir = [];
+let currentTab = 'today';
 const NIVEAU_LABEL = {rouge:"Très perturbé", orange:"Perturbé"};
 
 async function init(){
@@ -97,24 +100,51 @@ async function init(){
 
   const lignesList = lignes || [];
   const alertesList = alertes || [];
-  const codesAvecAlerte = new Set(alertesList.map(a=>a.ligne_code).filter(Boolean));
-  const ligneByCode = Object.fromEntries(lignesList.map(l=>[l.code,l]));
+  window._lignesList = lignesList;
+  window._ligneByCode = Object.fromEntries(lignesList.map(l=>[l.code,l]));
 
-  // ── Icônes cliquables en haut ──────────────────────────
+  const today = new Date(); today.setHours(0,0,0,0);
+  alertesAujourdhui = alertesList.filter(a => !a.date_debut || new Date(a.date_debut) <= today);
+  alertesAVenir = alertesList.filter(a => a.date_debut && new Date(a.date_debut) > today);
+
+  const cEl = document.getElementById('upcoming-count');
+  if(alertesAVenir.length){ cEl.style.display='inline'; cEl.textContent = '('+alertesAVenir.length+')'; }
+
+  renderIcons(alertesAujourdhui);
+  renderCards(alertesAujourdhui);
+}
+
+function setTab(tab){
+  currentTab = tab;
+  document.getElementById('tab-today').classList.toggle('active', tab==='today');
+  document.getElementById('tab-upcoming').classList.toggle('active', tab==='upcoming');
+  const list = tab==='today' ? alertesAujourdhui : alertesAVenir;
+  renderIcons(list);
+  renderCards(list, tab==='upcoming');
+}
+
+function renderIcons(alertesList){
   const iconsEl = document.getElementById('it-icons');
+  const codesAvecAlerte = new Set(alertesList.map(a=>a.ligne_code).filter(Boolean));
+  const lignesList = window._lignesList || [];
   if(!lignesList.length){
     iconsEl.innerHTML = '<div style="font-size:13px;color:var(--texte-sec)">Aucune ligne pour le moment.</div>';
-  } else {
-    iconsEl.innerHTML = lignesList.map(l => {
-      const has = codesAvecAlerte.has(l.code);
-      return `<button class="it-icon-badge${has?'':' dimmed'}" style="background:${l.couleur}" title="${l.code}${has?' — perturbée':' — normal'}" onclick="allerVers('${l.code}')">${l.code}</button>`;
-    }).join('');
+    return;
   }
+  iconsEl.innerHTML = lignesList.map(l => {
+    const has = codesAvecAlerte.has(l.code);
+    return `<button class="it-icon-badge${has?'':' dimmed'}" style="background:${l.couleur}" title="${l.code}${has?' — perturbée':' — normal'}" onclick="allerVers('${l.code}')">${l.code}</button>`;
+  }).join('');
+}
 
-  // ── Cartes de perturbations ─────────────────────────────
+function renderCards(alertesList, isUpcoming){
   const cardsEl = document.getElementById('it-cards');
+  const ligneByCode = window._ligneByCode || {};
+
   if(!alertesList.length){
-    cardsEl.innerHTML = `<div class="it-empty" style="grid-column:1/-1">✅ Aucune perturbation en cours — toutes les lignes circulent normalement.</div>`;
+    cardsEl.innerHTML = isUpcoming
+      ? `<div class="it-empty" style="grid-column:1/-1;background:rgba(63,190,224,0.08);border-color:rgba(63,190,224,0.25);color:#0C7FA3">📅 Aucune perturbation prévue prochainement.</div>`
+      : `<div class="it-empty" style="grid-column:1/-1">✅ Aucune perturbation en cours — toutes les lignes circulent normalement.</div>`;
     return;
   }
 
@@ -123,6 +153,7 @@ async function init(){
     const couleur = l ? l.couleur : '#888';
     const niveauLabel = NIVEAU_LABEL[a.niveau] || 'Information';
     const niveauClass = a.niveau === 'rouge' || a.niveau === 'orange' ? '' : 'normal';
+    const periode = a.date_debut ? `📅 ${isUpcoming?'À partir du ':'Depuis le '}${new Date(a.date_debut).toLocaleDateString('fr-FR')}${a.date_fin?' jusqu\'au '+new Date(a.date_fin).toLocaleDateString('fr-FR'):''}` : '';
     return `
     <div class="it-card" id="bloc-${a.ligne_code||a.id}">
       <div class="it-card-head">
@@ -130,6 +161,7 @@ async function init(){
         <div class="it-card-title">${a.titre}</div>
       </div>
       <div class="it-niveau ${niveauClass}">${niveauLabel}</div>
+      ${periode ? `<div style="font-size:12px;color:var(--texte-sec);margin-bottom:8px">${periode}</div>` : ''}
       ${a.description ? `<div class="it-desc">${a.description}</div>` : ''}
       <div class="it-meta">${new Date(a.created_at).toLocaleDateString('fr-FR')}${a.auteur ? ' · '+a.auteur : ''}</div>
       ${a.ligne_code ? `<a href="ligne.html?code=${encodeURIComponent(a.ligne_code)}" style="display:inline-block;margin-top:12px;font-size:12px;font-weight:700;color:var(--bleu);text-decoration:none">Voir la ligne ${a.ligne_code} →</a>` : ''}
@@ -138,11 +170,9 @@ async function init(){
 }
 
 function allerVers(code){
+  if(currentTab !== 'today') setTab('today');
   const el = document.getElementById('bloc-'+code);
-  if(!el){
-    // Pas de perturbation pour cette ligne : petit retour visuel neutre
-    return;
-  }
+  if(!el) return;
   el.scrollIntoView({behavior:'smooth', block:'center'});
   el.classList.add('highlight');
   setTimeout(()=>el.classList.remove('highlight'), 1800);

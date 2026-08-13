@@ -163,6 +163,10 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
           </div>
           <div class="fd"><label>Titre</label><input type="text" id="it-ti" placeholder="Ex : Travaux secteur Meylan"></div>
           <div class="fd"><label>Description</label><textarea id="it-de" placeholder="Détails..."></textarea></div>
+          <div class="fr2">
+            <div class="fd" style="margin:0"><label>Date de début (optionnel — vide = déjà en cours)</label><input type="date" id="it-db"></div>
+            <div class="fd" style="margin:0"><label>Date de fin (optionnel)</label><input type="date" id="it-df"></div>
+          </div>
           <button class="bor" onclick="addAlerte()">Publier</button>
         </div>
         <div class="stl">Alertes actives</div>
@@ -654,15 +658,17 @@ async function renderAl(){
   window._supaAlertes=alertes||[];
   document.getElementById("s-al").textContent=window._supaAlertes.length;
   if(!window._supaAlertes.length){el.innerHTML='<div style="color:var(--txs);font-size:13px;padding:1rem 0">Aucune alerte.</div>';return;}
-  el.innerHTML=window._supaAlertes.map(function(a){return'<div class="alc '+a.niveau+'"><div><div class="alb">'+(a.niveau==="rouge"?"Perturbé":"Info")+'</div><div style="margin-top:8px"><span style="background:'+(getColor(a.ligne_code))+';color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">'+(a.ligne_code||"—")+'</span></div></div><div class="alct"><strong>'+a.titre+'</strong><p>'+(a.description||"")+'</p><div style="font-size:11px;color:var(--txs);margin-top:6px">'+new Date(a.created_at).toLocaleDateString("fr-FR")+' · '+(a.auteur||"—")+'</div></div><button class="bdel" onclick="delAl(\''+a.id+'\')">Supprimer</button></div>';}).join("");
+  el.innerHTML=window._supaAlertes.map(function(a){const periode=a.date_debut?(' · '+new Date(a.date_debut).toLocaleDateString("fr-FR")+(a.date_fin?' → '+new Date(a.date_fin).toLocaleDateString("fr-FR"):'')):'';return'<div class="alc '+a.niveau+'"><div><div class="alb">'+(a.niveau==="rouge"?"Perturbé":"Info")+'</div><div style="margin-top:8px"><span style="background:'+(getColor(a.ligne_code))+';color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">'+(a.ligne_code||"—")+'</span></div></div><div class="alct"><strong>'+a.titre+'</strong><p>'+(a.description||"")+'</p><div style="font-size:11px;color:var(--txs);margin-top:6px">'+new Date(a.created_at).toLocaleDateString("fr-FR")+' · '+(a.auteur||"—")+periode+'</div></div><button class="bdel" onclick="delAl(\''+a.id+'\')">Supprimer</button></div>';}).join("");
 }
 async function addAlerte(){
   const l=document.getElementById("it-lg").value,n=document.getElementById("it-nv").value;
   const t=document.getElementById("it-ti").value.trim(),d=document.getElementById("it-de").value.trim();
+  const db_=document.getElementById("it-db").value||null,df_=document.getElementById("it-df").value||null;
   if(!t||!d){toast("Remplissez titre et description.",true);return;}
-  const {error}=await supabaseClient.from("alertes").insert({ligne_code:l||null,niveau:n,titre:t,description:d,auteur:curUser?.nom||null});
+  const {error}=await supabaseClient.from("alertes").insert({ligne_code:l||null,niveau:n,titre:t,description:d,auteur:curUser?.nom||null,date_debut:db_,date_fin:df_});
   if(error){toast("Erreur : "+error.message,true);return;}
   document.getElementById("it-ti").value="";document.getElementById("it-de").value="";
+  document.getElementById("it-db").value="";document.getElementById("it-df").value="";
   log("Alerte : "+t+" ("+l+")");renderAl();toast("Alerte publiée !");
 }
 async function delAl(id){
