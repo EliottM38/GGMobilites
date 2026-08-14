@@ -9,7 +9,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--b:#0A2E5C;--or:#C9A84C;--orc:#E8C96A;--r:#E74C3C;--o:#E67E22;--g:#27AE60;--bg:#0F0F0F;--card:#1A1A1A;--bord:#2A2A2A;--tx:#F0EDE6;--txs:#9A9080}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
+body{font-family:'Inter', sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
 .lw{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
 .lc{background:var(--card);border:1px solid var(--bord);border-radius:16px;padding:2.5rem;width:100%;max-width:380px}
 .ll{display:flex;align-items:center;gap:12px;margin-bottom:2rem}
@@ -213,6 +213,10 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
             <div class="fd" style="margin:0"><label>URL image</label><input type="url" id="car-img" placeholder="https://..."></div>
             <div class="fd" style="margin:0"><label>Titre image</label><input type="text" id="car-itit" placeholder="Optionnel"></div>
             <div class="fd" style="margin:0"><label>Description</label><input type="text" id="car-idesc" placeholder="Optionnel"></div>
+          </div>
+          <div class="fr3" style="margin-bottom:10px">
+            <div class="fd" style="margin:0"><label>Texte du bouton</label><input type="text" id="car-ibtn" placeholder="Ex : En savoir plus"></div>
+            <div class="fd" style="margin:0;grid-column:span 2"><label>Lien du bouton</label><input type="text" id="car-ilink" placeholder="Ex : reseau.html ou https://..."></div>
           </div>
           <button class="bor" onclick="addCarImg()">Ajouter au carousel</button>
         </div>
@@ -691,12 +695,15 @@ async function addCarImg(){
   const img=document.getElementById("car-img").value.trim();
   const tit=document.getElementById("car-itit").value.trim();
   const desc=document.getElementById("car-idesc").value.trim();
+  const btn=document.getElementById("car-ibtn").value.trim();
+  const link=document.getElementById("car-ilink").value.trim();
   const titre=document.getElementById("car-titre").value.trim();
   if(!img){toast("Entrez une URL.",true);return;}
   if(!db.carousel)db.carousel=[];
-  db.carousel.push(tit?{img:img,titre:tit,desc:desc}:img);
+  db.carousel.push((tit||btn||link)?{img:img,titre:tit,desc:desc,btn:btn,link:link}:img);
   if(titre)db.carousel_titre=titre;
   document.getElementById("car-img").value="";document.getElementById("car-itit").value="";document.getElementById("car-idesc").value="";
+  document.getElementById("car-ibtn").value="";document.getElementById("car-ilink").value="";
   renderCar();await saveDB();toast("Image ajoutée !");
 }
 async function delCarImg(i){if(!confirm("Supprimer ?"))return;db.carousel.splice(i,1);renderCar();await saveDB();toast("Image supprimée.");}

@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan du réseau — GGMobilités</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,18 +14,18 @@
 <style>
 .plan-wrap{max-width:1400px;margin:0 auto;padding:1.5rem 2rem 3rem}
 .plan-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
-.plan-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--texte)}
+.plan-title{font-family:'Inter', sans-serif;font-size:26px;font-weight:800;color:var(--texte)}
 .plan-desc{font-size:13px;color:var(--texte-sec);margin-top:2px}
-.plan-btn{padding:11px 20px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.plan-btn{padding:11px 20px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Inter', sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 .plan-btn:disabled{opacity:.6;cursor:default}
 .plan-grid{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
 @media(max-width:900px){.plan-grid{grid-template-columns:1fr}}
 #map{height:640px;border-radius:14px;border:1px solid var(--bordure);background:#eef1f6}
 .legend-box{background:white;border:1px solid var(--bordure);border-radius:14px;padding:1rem;max-height:640px;overflow-y:auto}
-.legend-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:10px;color:var(--texte)}
+.legend-title{font-family:'Inter', sans-serif;font-weight:700;font-size:13px;margin-bottom:10px;color:var(--texte)}
 .legend-item{display:flex;align-items:center;gap:9px;padding:7px 6px;border-radius:8px;cursor:pointer;text-decoration:none;transition:background .12s}
 .legend-item:hover{background:var(--bleu-pale)}
-.legend-swatch{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;color:white}
+.legend-swatch{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Inter', sans-serif;font-weight:800;font-size:10px;color:white}
 .legend-label{font-size:12px;color:var(--texte);line-height:1.3}
 </style>
 </head>
@@ -36,7 +36,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html" class="active">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html" class="active">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>

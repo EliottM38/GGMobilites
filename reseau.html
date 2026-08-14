@@ -5,7 +5,7 @@
 <title>Le réseau — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,13 +15,13 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
 <div class="page">
   <div style="margin-bottom:2rem">
-    <h1 style="font-family:Syne,sans-serif;font-size:32px;font-weight:800;margin-bottom:6px;color:var(--texte)">Le réseau GGMobilités</h1>
+    <h1 style="font-family:Inter, sans-serif;font-size:32px;font-weight:800;margin-bottom:6px;color:var(--texte)">Le réseau GGMobilités</h1>
     <p style="color:var(--texte-sec);font-size:15px">Cliquez sur une ligne pour voir les horaires en temps réel</p>
   </div>
   <div id="lignes-container">
@@ -39,7 +39,7 @@ async function chargerLignes(){
     if(error) throw error;
 
     if(!lignes || !lignes.length){
-      el.innerHTML = '<div style="text-align:center;padding:4rem 2rem;color:var(--texte-sec)"><div style="font-size:40px;margin-bottom:1rem">🚧</div><div style="font-family:Syne,sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Le réseau est en cours de refonte</div><div>Les lignes seront de nouveau disponibles ici très prochainement.</div></div>';
+      el.innerHTML = '<div style="text-align:center;padding:4rem 2rem;color:var(--texte-sec)"><div style="font-size:40px;margin-bottom:1rem">🚧</div><div style="font-family:Inter, sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Le réseau est en cours de refonte</div><div>Les lignes seront de nouveau disponibles ici très prochainement.</div></div>';
       return;
     }
 
@@ -50,7 +50,7 @@ async function chargerLignes(){
 
     const badge = l => `
       <a href="ligne.html?code=${encodeURIComponent(l.code)}" class="ligne-badge-wrap" title="${l.terminus_a} ↔ ${l.terminus_b}" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:6px;width:64px">
-        <div style="width:52px;height:52px;border-radius:50%;background:${l.couleur};display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:15px;color:white;box-shadow:0 2px 6px rgba(0,0,0,0.15);transition:transform 0.15s;overflow:hidden"
+        <div style="width:52px;height:52px;border-radius:50%;background:${l.couleur};display:flex;align-items:center;justify-content:center;font-family:Inter, sans-serif;font-weight:800;font-size:15px;color:white;box-shadow:0 2px 6px rgba(0,0,0,0.15);transition:transform 0.15s;overflow:hidden"
              onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform=''">
           ${l.icone_url ? `<img src="${l.icone_url}" alt="${l.code}" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()">` : l.code}
         </div>
@@ -59,7 +59,7 @@ async function chargerLignes(){
 
     el.innerHTML = groupes.map(g => `
       <div style="margin-bottom:2rem">
-        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:14px;color:var(--texte);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--bordure)">${g.titre}</div>
+        <div style="font-family:Inter, sans-serif;font-weight:800;font-size:14px;color:var(--texte);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--bordure)">${g.titre}</div>
         <div style="display:flex;flex-wrap:wrap;gap:16px">${g.items.map(badge).join("")}</div>
       </div>`).join("");
   }catch(e){

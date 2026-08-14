@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">Ligne — GGMobilités</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,25 +14,25 @@
 .lhero-in{max-width:1300px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .lhero-icon{width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
 .lhero-icon img{width:100%;height:100%;object-fit:cover}
-.lhero-icon span{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:white}
-.lhero-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:white}
+.lhero-icon span{font-family:'Inter', sans-serif;font-size:20px;font-weight:800;color:white}
+.lhero-title{font-family:'Inter', sans-serif;font-size:21px;font-weight:800;color:white}
 .lhero-btns{margin-left:auto;display:flex;gap:8px}
-.hbtn{padding:9px 16px;border-radius:9px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;border:1px solid rgba(255,255,255,0.35);color:white;background:rgba(255,255,255,0.15);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.hbtn{padding:9px 16px;border-radius:9px;font-size:12px;font-weight:700;font-family:'Inter', sans-serif;cursor:pointer;border:1px solid rgba(255,255,255,0.35);color:white;background:rgba(255,255,255,0.15);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
 .hbtn.primary{background:white;color:var(--badge,#185FA5);border-color:white}
 .sens-bar{background:white;border-bottom:1px solid var(--bordure,#e5e5e5);padding:10px 2rem;display:flex;gap:8px;position:sticky;top:64px;z-index:60}
-.sens-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5);background:transparent;color:var(--texte-sec,#666);cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:12px}
+.sens-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5);background:transparent;color:var(--texte-sec,#666);cursor:pointer;font-family:'Inter', sans-serif;font-weight:700;font-size:12px}
 .sens-btn.active{background:var(--badge,#185FA5);color:white;border-color:var(--badge,#185FA5)}
 .lbody{max-width:1300px;margin:0 auto;padding:1.5rem 2rem 4rem}
 .infotrafic-box{background:#FFF4E0;border:1px solid #F0C878;border-radius:12px;padding:14px 18px;margin-bottom:18px}
 .infotrafic-box.empty{background:#F0F4FA;border-color:var(--bordure,#e5e5e5)}
-.infotrafic-box h3{font-family:'Syne',sans-serif;font-size:13px;margin-bottom:8px}
+.infotrafic-box h3{font-family:'Inter', sans-serif;font-size:13px;margin-bottom:8px}
 .pert-item{font-size:12px;padding:6px 0;border-top:1px solid rgba(0,0,0,0.06)}
 .pert-item:first-child{border-top:none}
 .main-grid{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
 @media(max-width:960px){.main-grid{grid-template-columns:1fr}}
 #map{height:520px;border-radius:14px;border:1px solid var(--bordure,#e5e5e5)}
 .thermo-box{background:#1C1C2E;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.15);max-height:520px;overflow-y:auto}
-.thermo-h{padding:12px 16px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:white;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;background:#1C1C2E}
+.thermo-h{padding:12px 16px;font-family:'Inter', sans-serif;font-weight:700;font-size:12px;color:white;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;background:#1C1C2E}
 .tstop{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:background .12s}
 .tstop:hover{background:rgba(255,255,255,0.04)}
 .tstop:last-child{border-bottom:none}
@@ -43,9 +43,9 @@
 .tname{font-size:13px;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tcorr{display:flex;gap:3px;margin-top:3px}
 .tcorr-badge{width:16px;height:16px;border-radius:4px;font-size:8px;font-weight:800;color:white;display:flex;align-items:center;justify-content:center}
-.ttime{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#FFB347;flex-shrink:0}
+.ttime{font-family:'Inter', sans-serif;font-weight:800;font-size:13px;color:#FFB347;flex-shrink:0}
 .lieux-box{background:white;border:1px solid var(--bordure,#e5e5e5);border-radius:14px;padding:14px 18px;margin-top:18px}
-.lieux-box h3{font-family:'Syne',sans-serif;font-size:13px;margin-bottom:10px}
+.lieux-box h3{font-family:'Inter', sans-serif;font-size:13px;margin-bottom:10px}
 .lieu-link{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:13px;color:var(--texte,#222);text-decoration:none;border-top:1px solid #f2f2f2}
 .lieu-link:first-of-type{border-top:none}
 .lieu-link:hover{color:var(--badge,#185FA5)}
@@ -60,7 +60,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
@@ -102,7 +102,7 @@
           </div>
           <label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Téléphone ou email</label>
           <input type="text" id="tad-contact" required placeholder="06 12 34 56 78 ou vous@email.fr" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5);margin-bottom:12px">
-          <button type="submit" id="tad-submit" style="width:100%;padding:12px;border-radius:9px;border:none;background:var(--badge,#185FA5);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Envoyer la demande de réservation</button>
+          <button type="submit" id="tad-submit" style="width:100%;padding:12px;border-radius:9px;border:none;background:var(--badge,#185FA5);color:white;font-family:'Inter', sans-serif;font-weight:700;font-size:13px;cursor:pointer">Envoyer la demande de réservation</button>
           <div id="tad-msg" style="font-size:12px;margin-top:10px;text-align:center"></div>
         </form>
       </div>
@@ -111,7 +111,7 @@
         <div id="lieux-list"></div>
       </div>
       <div class="fichiers-box" id="fichiers-box" style="display:none">
-        <h3 style="font-family:'Syne',sans-serif;font-size:13px;margin-bottom:10px">📎 Fichiers & infos</h3>
+        <h3 style="font-family:'Inter', sans-serif;font-size:13px;margin-bottom:10px">📎 Fichiers & infos</h3>
         <div id="fichiers-list"></div>
       </div>
     </div>

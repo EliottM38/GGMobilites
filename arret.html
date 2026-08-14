@@ -4,29 +4,29 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">Arrêt — GGMobilités</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="styles.css">
 <style>
 .abanner{background:#3B82F6;padding:1.1rem 2rem;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.abanner h1{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:#0B0B14;margin:0}
+.abanner h1{font-family:'Inter', sans-serif;font-size:19px;font-weight:800;color:#0B0B14;margin:0}
 .abanner .badges{display:flex;gap:6px;flex-wrap:wrap}
-.lbadge{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:white;flex-shrink:0;cursor:pointer;text-decoration:none}
+.lbadge{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Inter', sans-serif;font-weight:800;font-size:11px;color:white;flex-shrink:0;cursor:pointer;text-decoration:none}
 .abody{max-width:1200px;margin:0 auto;padding:1.5rem 2rem 4rem}
 .grid3{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:18px;align-items:stretch}
 @media(max-width:900px){.grid3{grid-template-columns:1fr}}
 .box{background:white;border:1px solid var(--bordure,#e5e5e5);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.05);display:flex;flex-direction:column}
-.box-h{padding:12px 16px;border-bottom:1px solid var(--bordure,#e5e5e5);font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+.box-h{padding:12px 16px;border-bottom:1px solid var(--bordure,#e5e5e5);font-family:'Inter', sans-serif;font-weight:700;font-size:13px}
 .box-c{padding:14px 16px;flex:1}
 #minimap{height:200px}
 .pass-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f2f2f2}
 .pass-row:last-child{border-bottom:none}
-.pass-badge{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;color:white;flex-shrink:0}
+.pass-badge{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Inter', sans-serif;font-weight:800;font-size:10px;color:white;flex-shrink:0}
 .pass-dir{flex:1;font-size:12px;color:var(--texte-sec,#666)}
-.pass-time{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#3B82F6}
-.statut-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif}
+.pass-time{font-family:'Inter', sans-serif;font-weight:800;font-size:14px;color:#3B82F6}
+.statut-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;font-family:'Inter', sans-serif}
 .statut-normal{background:#E6F9F0;color:#00A854}
 .statut-travaux,.statut-deplace{background:#FFF4E0;color:#D9820B}
 .statut-supprime{background:#FDEAEA;color:#E4032E}
@@ -42,7 +42,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
@@ -68,7 +68,7 @@
   </div>
   <div class="abar" id="a-anecdote-wrap" style="display:none">
     <div class="abar-icon">💡</div>
-    <div><strong style="font-family:'Syne',sans-serif;font-size:13px">À savoir</strong><div id="a-anecdote" style="font-size:13px;color:var(--texte-sec,#555);margin-top:3px"></div></div>
+    <div><strong style="font-family:'Inter', sans-serif;font-size:13px">À savoir</strong><div id="a-anecdote" style="font-size:13px;color:var(--texte-sec,#555);margin-top:3px"></div></div>
   </div>
 </div>
 <footer><div class="accent-bar"></div><div style="padding:2.5rem 2rem"><div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</div></div></div></div></footer>

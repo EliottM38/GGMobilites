@@ -6,28 +6,28 @@
   <title>Infotrafic — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     .it-head{max-width:1200px;margin:0 auto;padding:2rem 2rem 0}
-    .it-title{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:#E4530B;margin-bottom:4px}
+    .it-title{font-family:'Inter', sans-serif;font-size:38px;font-weight:800;color:#E4530B;margin-bottom:4px}
     .it-maj{font-size:13px;color:var(--texte-sec)}
     .it-tabs{max-width:1200px;margin:1.5rem auto 0;padding:0 2rem;display:flex;align-items:center;gap:1.5rem;border-bottom:1px solid var(--bordure);padding-bottom:1rem}
-    .it-tab{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.03em;color:var(--texte-sec);background:none;border:none;cursor:pointer;padding:10px 18px;border-radius:20px}
+    .it-tab{font-family:'Inter', sans-serif;font-weight:700;font-size:13px;letter-spacing:0.03em;color:var(--texte-sec);background:none;border:none;cursor:pointer;padding:10px 18px;border-radius:20px}
     .it-tab.active{background:#3FBEE0;color:white}
     .it-share{margin-left:auto;display:flex;gap:10px}
     .it-share a{width:34px;height:34px;border-radius:50%;border:1px solid var(--bordure);display:flex;align-items:center;justify-content:center;color:var(--bleu);text-decoration:none;font-size:14px}
     .it-icons{max-width:1200px;margin:1.5rem auto 0;padding:0 2rem;display:flex;flex-wrap:wrap;gap:10px 8px}
-    .it-icon-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:white;cursor:pointer;border:none;transition:transform 0.15s;flex-shrink:0}
+    .it-icon-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Inter', sans-serif;font-weight:800;font-size:12px;color:white;cursor:pointer;border:none;transition:transform 0.15s;flex-shrink:0}
     .it-icon-badge:hover{transform:scale(1.12)}
     .it-icon-badge.dimmed{opacity:0.35}
     .it-cards{max-width:1200px;margin:2rem auto 4rem;padding:0 2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
     .it-card{background:white;border:1px solid var(--bordure);border-radius:14px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);scroll-margin-top:100px;transition:box-shadow 0.3s, border-color 0.3s}
     .it-card.highlight{box-shadow:0 0 0 3px var(--or);border-color:var(--or)}
     .it-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .it-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:white;flex-shrink:0}
-    .it-card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--bleu)}
+    .it-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Inter', sans-serif;font-weight:800;font-size:12px;color:white;flex-shrink:0}
+    .it-card-title{font-family:'Inter', sans-serif;font-weight:700;font-size:15px;color:var(--bleu)}
     .it-niveau{font-size:12px;font-weight:700;color:#E4530B;margin-bottom:8px}
     .it-niveau.normal{color:#27AE60}
     .it-desc{font-size:13px;color:var(--texte);line-height:1.6;margin-bottom:12px;white-space:pre-line}
@@ -42,7 +42,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>

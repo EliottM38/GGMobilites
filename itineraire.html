@@ -6,7 +6,7 @@
   <title>Itinéraires — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -15,7 +15,7 @@
     @media(max-width:900px){.itin-layout{grid-template-columns:1fr}}
     .itin-box{background:var(--blanc);border:1px solid var(--bordure);border-radius:var(--radius);padding:1.5rem}
     .itin-input-wrap{position:relative;margin-bottom:8px}
-    .itin-input{width:100%;padding:12px 16px 12px 42px;border-radius:var(--radius-sm);border:1px solid var(--bordure);background:var(--fond);color:var(--texte);font-size:14px;font-family:'DM Sans',sans-serif;transition:border .2s}
+    .itin-input{width:100%;padding:12px 16px 12px 42px;border-radius:var(--radius-sm);border:1px solid var(--bordure);background:var(--fond);color:var(--texte);font-size:14px;font-family:'Inter', sans-serif;transition:border .2s}
     .itin-input:focus{outline:none;border-color:var(--bleu)}
     .itin-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:17px;pointer-events:none}
     .ac-list{position:absolute;top:calc(100% - 1px);left:0;right:0;z-index:9999;background:var(--blanc);border:1px solid var(--or);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:240px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)}
@@ -23,19 +23,19 @@
     .ac-item:last-child{border-bottom:none}
     .ac-item:hover,.ac-item.sel{background:var(--bleu-pale);color:var(--texte)}
     .ac-badges{display:flex;gap:3px;margin-left:auto;flex-shrink:0}
-    .ac-badge{font-family:'Syne',sans-serif;font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;color:white}
+    .ac-badge{font-family:'Inter', sans-serif;font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;color:white}
     .mode-btns{display:flex;gap:8px;margin-bottom:1.25rem}
-    .mode-btn{flex:1;padding:9px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;border:1px solid var(--bordure);background:var(--blanc);color:var(--texte-sec);transition:all .2s}
+    .mode-btn{flex:1;padding:9px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;font-family:'Inter', sans-serif;cursor:pointer;border:1px solid var(--bordure);background:var(--blanc);color:var(--texte-sec);transition:all .2s}
     .mode-btn.active{background:var(--bleu);color:var(--fond);border-color:var(--bleu)}
     .swap-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--bleu-pale);border:1px solid rgba(201,168,76,.3);cursor:pointer;font-size:15px;margin:5px auto;transition:all .2s}
     .swap-btn:hover{background:var(--bleu)}
-    .search-btn{width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--bleu);color:var(--fond);font-family:'Syne',sans-serif;font-weight:700;font-size:14px;border:none;cursor:pointer;transition:all .2s;margin-top:12px}
+    .search-btn{width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--bleu);color:var(--fond);font-family:'Inter', sans-serif;font-weight:700;font-size:14px;border:none;cursor:pointer;transition:all .2s;margin-top:12px}
     .search-btn:hover{background:var(--or-clair);transform:translateY(-1px)}
     /* Sélecteur heure/jour */
     .datetime-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-    .dt-select{width:100%;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--bordure);background:var(--fond);color:var(--texte);font-size:13px;font-family:'DM Sans',sans-serif}
+    .dt-select{width:100%;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--bordure);background:var(--fond);color:var(--texte);font-size:13px;font-family:'Inter', sans-serif}
     .dt-select:focus{outline:none;border-color:var(--bleu)}
-    .dt-label{font-size:11px;color:var(--texte-sec);font-weight:600;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:block}
+    .dt-label{font-size:11px;color:var(--texte-sec);font-weight:600;font-family:'Inter', sans-serif;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:block}
     /* Carte */
     #carte{height:460px;border-radius:var(--radius);border:1px solid var(--bordure);overflow:hidden}
     .carte-ph{height:460px;border-radius:var(--radius);border:1px solid var(--bordure);background:var(--blanc);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--texte-sec)}
@@ -44,14 +44,14 @@
     .result-card:hover,.result-card.active{border-color:rgba(201,168,76,.5);box-shadow:0 4px 16px rgba(201,168,76,.08)}
     .result-card.best{border-color:rgba(201,168,76,.3)}
     .result-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-    .rbadge{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em}
+    .rbadge{font-family:'Inter', sans-serif;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em}
     .rbadge-v{background:rgba(0,200,120,.15);color:#00C878}
     .rbadge-c{background:rgba(201,168,76,.15);color:var(--bleu)}
-    .result-mins{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--texte);margin-left:auto}
+    .result-mins{font-family:'Inter', sans-serif;font-size:22px;font-weight:800;color:var(--texte);margin-left:auto}
     .etape{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--bordure)}
     .etape:last-child{border-bottom:none}
     .etape-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:44px}
-    .etape-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;padding:4px 6px;border-radius:6px;color:white;text-align:center;width:100%}
+    .etape-num{font-family:'Inter', sans-serif;font-size:11px;font-weight:800;padding:4px 6px;border-radius:6px;color:white;text-align:center;width:100%}
     .etape-line{width:2px;flex:1;min-height:14px;margin:3px 0;border-radius:1px}
     .etape-from{font-size:13px;font-weight:600;color:var(--texte)}
     .etape-to{font-size:12px;color:var(--texte-sec);margin-top:2px}
@@ -59,7 +59,7 @@
     .corresp{display:flex;align-items:center;gap:6px;padding:6px 10px;margin:3px 0;background:rgba(201,168,76,.05);border-radius:6px;font-size:12px;color:var(--texte-sec)}
     .error-box{background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);border-radius:var(--radius-sm);padding:1rem;color:#E74C3C;font-size:14px}
     .loading{text-align:center;padding:2rem;color:var(--texte-sec);font-size:14px}
-    .pos-btn{font-size:12px;color:var(--bleu);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:3px 0}
+    .pos-btn{font-size:12px;color:var(--bleu);background:none;border:none;cursor:pointer;font-family:'Inter', sans-serif;padding:3px 0}
     .info-box{background:var(--bleu-pale);border:1px solid rgba(201,168,76,.2);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:var(--texte-sec);margin-bottom:1rem}
   </style>
 </head>
@@ -70,14 +70,14 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html" class="active">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a></div></div><a href="itineraire.html" class="active">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
 
 <div class="page">
   <div style="margin-bottom:1.5rem">
-    <h1 style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;margin-bottom:4px;color:var(--texte)">Recherche d'itinéraire</h1>
+    <h1 style="font-family:Inter, sans-serif;font-size:28px;font-weight:800;margin-bottom:4px;color:var(--texte)">Recherche d'itinéraire</h1>
     <p style="color:var(--texte-sec);font-size:14px">Trouvez le meilleur trajet sur le réseau GGMobilités</p>
   </div>
 
@@ -125,7 +125,7 @@
 
         <!-- Sélecteur jour/heure -->
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bordure)">
-          <div style="font-size:11px;color:var(--texte-sec);font-weight:600;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Départ</div>
+          <div style="font-size:11px;color:var(--texte-sec);font-weight:600;font-family:'Inter', sans-serif;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Départ</div>
           <div class="datetime-row">
             <div>
               <span class="dt-label">Jour</span>
@@ -141,7 +141,7 @@
             </div>
           </div>
           <div style="margin-top:6px">
-            <button onclick="maintenant()" style="font-size:12px;color:var(--bleu);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif">⏱ Maintenant</button>
+            <button onclick="maintenant()" style="font-size:12px;color:var(--bleu);background:none;border:none;cursor:pointer;font-family:'Inter', sans-serif">⏱ Maintenant</button>
           </div>
         </div>
 
@@ -155,7 +155,7 @@
     <div style="position:sticky;top:80px">
       <div class="carte-ph" id="carte-ph">
         <div style="font-size:40px">🗺️</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--texte)">Carte de l'itinéraire</div>
+        <div style="font-family:'Inter', sans-serif;font-weight:700;color:var(--texte)">Carte de l'itinéraire</div>
         <div style="font-size:13px">Apparaît après la recherche</div>
       </div>
       <div id="carte" style="display:none"></div>
@@ -471,7 +471,7 @@ function afficherResultats(res, existing) {
   const div=document.getElementById('resultats');
   if(!res.length){div.innerHTML=existing+'<div class="error-box">❌ Aucun itinéraire trouvé pour ce jour et cette heure.</div>';return;}
 
-  let html=existing+`<div style="font-family:Syne,sans-serif;font-size:12px;color:var(--texte-sec);margin-bottom:.75rem;font-weight:600">${res.length} itinéraire${res.length>1?'s':''} · <strong style="color:var(--texte)">${_dep}</strong> → <strong style="color:var(--texte)">${_arr}</strong></div>`;
+  let html=existing+`<div style="font-family:Inter, sans-serif;font-size:12px;color:var(--texte-sec);margin-bottom:.75rem;font-weight:600">${res.length} itinéraire${res.length>1?'s':''} · <strong style="color:var(--texte)">${_dep}</strong> → <strong style="color:var(--texte)">${_arr}</strong></div>`;
 
   res.forEach((r,ri)=>{
     const et=etapes(r.chemin), t=tempsReel(r.chemin), nc=et.length-1;

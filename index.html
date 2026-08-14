@@ -6,7 +6,7 @@
   <title>Accueil — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
@@ -38,8 +38,8 @@
       </div>
 
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem">
-        <a href="reseau.html" style="padding:12px 24px;border-radius:10px;background:var(--or);color:#0F1923;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-decoration:none">Voir le réseau</a>
-        <a href="infotrafic.html" style="padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,0.4);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-decoration:none">Infotrafic</a>
+        <a href="reseau.html" style="padding:12px 24px;border-radius:10px;background:var(--or);color:#0F1923;font-family:'Inter', sans-serif;font-weight:700;font-size:14px;text-decoration:none">Voir le réseau</a>
+        <a href="infotrafic.html" style="padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,0.4);color:white;font-family:'Inter', sans-serif;font-weight:700;font-size:14px;text-decoration:none">Infotrafic</a>
       </div>
       <div class="hero-stats" style="justify-content:center">
         <div class="hero-stat"><div class="hero-stat-val" id="stat-lignes">—</div><div class="hero-stat-label">Lignes</div></div>
@@ -53,24 +53,24 @@
   <!-- Recherche d'itinéraire, en section normale (plus flottante) -->
   <div style="margin-bottom:2.5rem">
     <form action="itineraire.html" method="get" id="hero-itineraire-form" class="card" style="padding:1.5rem;display:grid;grid-template-columns:auto 1fr 1fr auto;gap:12px;align-items:center">
-      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--texte);white-space:nowrap;display:flex;align-items:center;gap:8px">🧭 Itinéraire</div>
+      <div style="font-family:'Inter', sans-serif;font-weight:800;font-size:14px;color:var(--texte);white-space:nowrap;display:flex;align-items:center;gap:8px">🧭 Itinéraire</div>
       <input type="text" name="depart" placeholder="Départ : arrêt / adresse" style="padding:12px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit">
       <input type="text" name="arrivee" placeholder="Arrivée : arrêt / adresse" style="padding:12px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit">
-      <button type="submit" id="btn-itineraire" style="padding:12px 26px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap">Rechercher</button>
+      <button type="submit" id="btn-itineraire" style="padding:12px 26px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Inter', sans-serif;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap">Rechercher</button>
     </form>
   </div>
 
   <!-- ── Prochains passages / Votre ligne, façon M Réso ── -->
   <div class="grid grid-2" style="margin-bottom:2.5rem">
     <div class="card" style="padding:1.5rem">
-      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px">🕐 Prochains passages</div>
+      <div style="font-family:'Inter', sans-serif;font-weight:800;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px">🕐 Prochains passages</div>
       <form action="horaires-arret.html" method="get" style="display:flex;gap:8px">
         <input type="text" name="q" placeholder="Choisissez un arrêt" style="flex:1;padding:11px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:13px;font-family:inherit">
         <button type="submit" style="padding:11px 18px;border-radius:10px;border:none;background:var(--bleu);color:white;cursor:pointer;font-size:15px">🔍</button>
       </form>
     </div>
     <div class="card" style="padding:1.5rem">
-      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px">🚌 Votre ligne en détail</div>
+      <div style="font-family:'Inter', sans-serif;font-weight:800;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px">🚌 Votre ligne en détail</div>
       <form id="ligne-quick-form" style="display:flex;gap:8px">
         <select id="ligne-quick-select" style="flex:1;padding:11px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:13px;font-family:inherit;background:white">
           <option value="">Choisissez une ligne</option>
@@ -114,27 +114,27 @@
     <div class="grid grid-3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
       <a href="reseau.html" class="card" style="text-decoration:none;text-align:center">
         <div style="font-size:32px;margin-bottom:10px">🗺️</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Le réseau</div>
+        <div style="font-family:'Inter', sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Le réseau</div>
         <p style="font-size:12px;color:var(--texte-sec)">Toutes les lignes GGMobilités et leurs horaires.</p>
       </a>
       <a href="itineraire.html" class="card" style="text-decoration:none;text-align:center">
         <div style="font-size:32px;margin-bottom:10px">🧭</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Itinéraires</div>
+        <div style="font-family:'Inter', sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Itinéraires</div>
         <p style="font-size:12px;color:var(--texte-sec)">Calculez le meilleur trajet d'un point à un autre.</p>
       </a>
       <a href="tarifs.html" class="card" style="text-decoration:none;text-align:center">
         <div style="font-size:32px;margin-bottom:10px">🎫</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Tarifs & vente</div>
+        <div style="font-family:'Inter', sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Tarifs & vente</div>
         <p style="font-size:12px;color:var(--texte-sec)">Titres de transport et points de vente.</p>
       </a>
       <a href="agences.html" class="card" style="text-decoration:none;text-align:center">
         <div style="font-size:32px;margin-bottom:10px">🏢</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Agences</div>
+        <div style="font-family:'Inter', sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Agences</div>
         <p style="font-size:12px;color:var(--texte-sec)">Trouvez une agence de mobilité près de vous.</p>
       </a>
       <a href="reseau.html" class="card" style="text-decoration:none;text-align:center">
         <div style="font-size:32px;margin-bottom:10px">🚐</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Transport à la demande</div>
+        <div style="font-family:'Inter', sans-serif;font-weight:700;font-size:14px;color:var(--texte);margin-bottom:6px">Transport à la demande</div>
         <p style="font-size:12px;color:var(--texte-sec)">Sur réservation, dans les zones peu desservies.</p>
       </a>
     </div>
@@ -146,21 +146,21 @@
       <div>
         <div style="display:flex;gap:14px;margin-bottom:1.5rem">
           <div style="font-size:26px">🔑</div>
-          <div><a href="objets-perdus.html" style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Un objet perdu</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Agissez rapidement pour augmenter vos chances de le retrouver.</p></div>
+          <div><a href="objets-perdus.html" style="font-family:'Inter', sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Un objet perdu</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Agissez rapidement pour augmenter vos chances de le retrouver.</p></div>
         </div>
         <div style="display:flex;gap:14px;margin-bottom:1.5rem">
           <div style="font-size:26px">🗺️</div>
-          <div><a href="infotrafic.html" style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Des conseils en déplacement</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Préparez votre trajet et suivez les perturbations en direct.</p></div>
+          <div><a href="infotrafic.html" style="font-family:'Inter', sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Des conseils en déplacement</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Préparez votre trajet et suivez les perturbations en direct.</p></div>
         </div>
         <div style="display:flex;gap:14px">
           <div style="font-size:26px">📮</div>
-          <div><a href="contact.html" style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Une réclamation ou suggestion</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Notre équipe vous répond personnellement.</p></div>
+          <div><a href="contact.html" style="font-family:'Inter', sans-serif;font-weight:700;font-size:14px;color:var(--bleu);text-decoration:none">Une réclamation ou suggestion</a><p style="font-size:12px;color:var(--texte-sec);margin-top:3px">Notre équipe vous répond personnellement.</p></div>
         </div>
       </div>
       <div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--texte);margin-bottom:10px">Vous souhaitez nous contacter ?</div>
+        <div style="font-family:'Inter', sans-serif;font-weight:800;font-size:22px;color:var(--texte);margin-bottom:10px">Vous souhaitez nous contacter ?</div>
         <p style="font-size:13px;color:var(--texte-sec);margin-bottom:16px;line-height:1.6">Nous mettons tout en œuvre pour répondre à vos questions et satisfaire vos demandes.</p>
-        <a href="contact.html" style="display:inline-block;padding:11px 22px;border-radius:10px;background:var(--bleu);color:white;text-decoration:none;font-family:'Syne',sans-serif;font-weight:700;font-size:13px">Nous écrire →</a>
+        <a href="contact.html" style="display:inline-block;padding:11px 22px;border-radius:10px;background:var(--bleu);color:white;text-decoration:none;font-family:'Inter', sans-serif;font-weight:700;font-size:13px">Nous écrire →</a>
       </div>
     </div>
   </div>
@@ -226,8 +226,8 @@ async function chargerLignesStructurantes(){
     grid.innerHTML = lignes.map(l => `
       <a href="ligne.html?code=${encodeURIComponent(l.code)}" class="card" style="text-decoration:none">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <span class="ligne-num" style="background:${l.couleur};font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;color:white">${l.code}</span>
-          <strong style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--texte)">${l.terminus_a} ↔ ${l.terminus_b}</strong>
+          <span class="ligne-num" style="background:${l.couleur};font-size:13px;padding:5px 12px;border-radius:8px;font-family:'Inter', sans-serif;font-weight:800;color:white">${l.code}</span>
+          <strong style="font-family:'Inter', sans-serif;font-size:15px;color:var(--texte)">${l.terminus_a} ↔ ${l.terminus_b}</strong>
         </div>
       </a>`).join("");
   }catch(e){ console.error(e); sec.style.display = "none"; }
@@ -317,8 +317,11 @@ function renderCar(){
     var img=typeof item==="string"?item:(item.img||"");
     var titre=typeof item==="object"?(item.titre||""):"";
     var desc=typeof item==="object"?(item.desc||""):"";
-    var overlay=titre?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.65));padding:1.25rem 1rem"><div style="color:white;font-size:16px;font-weight:700">'+titre+'</div>'+(desc?'<div style="color:rgba(255,255,255,0.8);font-size:13px;margin-top:3px">'+desc+'</div>':'')+'</div>':'';
-    return '<div style="width:'+(100/n)+'%;flex-shrink:0;position:relative"><img src="'+img+'" style="width:100%;height:300px;object-fit:cover;display:block">'+overlay+'</div>';
+    var btn=typeof item==="object"?(item.btn||""):"";
+    var link=typeof item==="object"?(item.link||""):"";
+    var btnHtml=(btn&&link)?'<a href="'+link+'" style="display:inline-block;margin-top:10px;padding:8px 18px;border-radius:8px;background:var(--or);color:#0F1923;font-family:Inter, sans-serif;font-weight:700;font-size:12px;text-decoration:none">'+btn+'</a>':'';
+    var overlay=(titre||btnHtml)?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.72));padding:1.5rem 1.25rem"><div style="color:white;font-size:18px;font-weight:800;font-family:Inter, sans-serif">'+titre+'</div>'+(desc?'<div style="color:rgba(255,255,255,0.85);font-size:13px;margin-top:4px">'+desc+'</div>':'')+btnHtml+'</div>':'';
+    return '<div style="width:'+(100/n)+'%;flex-shrink:0;position:relative"><img src="'+img+'" style="width:100%;height:340px;object-fit:cover;display:block">'+overlay+'</div>';
   }).join("");
   // Dots
   var dots=document.getElementById("car-dots");

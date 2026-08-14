@@ -6,28 +6,28 @@
 <title>Horaires par arrêt — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="styles.css">
 <style>
 .page-header{max-width:1200px;margin:0 auto;padding:2rem 2rem 1rem}
-.page-header h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--texte);margin-bottom:6px}
+.page-header h1{font-family:'Inter', sans-serif;font-size:28px;font-weight:800;color:var(--texte);margin-bottom:6px}
 .page-header p{color:var(--texte-sec);font-size:14px}
 .search-wrap{max-width:1200px;margin:0 auto;padding:0 2rem 1.5rem;position:sticky;top:64px;z-index:50;background:var(--fond);padding-top:1rem}
-.arret-search{width:100%;padding:14px 18px 14px 46px;border-radius:12px;border:1px solid var(--bordure);background:white;color:var(--texte);font-size:15px;font-family:'DM Sans',sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:border 0.2s}
+.arret-search{width:100%;padding:14px 18px 14px 46px;border-radius:12px;border:1px solid var(--bordure);background:white;color:var(--texte);font-size:15px;font-family:'Inter', sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:border 0.2s}
 .arret-search:focus{outline:none;border-color:var(--bleu);box-shadow:0 2px 16px rgba(24,95,165,0.1)}
 .search-icon{position:absolute;left:30px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none}
 .results-wrap{max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
 .arret-card{background:white;border:1px solid var(--bordure);border-radius:14px;margin-bottom:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.05);transition:box-shadow 0.2s}
 .arret-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.08)}
 .arret-name-bar{padding:14px 18px;border-bottom:1px solid var(--bordure);display:flex;align-items:center;gap:10px;background:var(--fond)}
-.arret-name-bar h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--texte)}
+.arret-name-bar h3{font-family:'Inter', sans-serif;font-size:16px;font-weight:700;color:var(--texte)}
 .ligne-section{padding:14px 18px;border-bottom:1px solid var(--bordure)}
 .ligne-section:last-child{border-bottom:none}
 .ligne-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.lbadge{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;padding:4px 12px;border-radius:6px;color:white}
+.lbadge{font-family:'Inter', sans-serif;font-size:12px;font-weight:800;padding:4px 12px;border-radius:6px;color:white}
 .ligne-dir{font-size:13px;color:var(--texte-sec);font-weight:500}
 .passages-next{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.pass-pill{padding:4px 12px;border-radius:20px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;transition:all 0.15s}
+.pass-pill{padding:4px 12px;border-radius:20px;font-family:'Inter', sans-serif;font-size:13px;font-weight:700;transition:all 0.15s}
 .pass-pill.proche{background:#FEE;color:#C0392B;border:1px solid rgba(192,57,43,0.2)}
 .pass-pill.normal{background:var(--bleu-pale);color:var(--bleu);border:1px solid var(--bordure)}
 .pass-pill.loin{background:var(--fond);color:var(--texte-sec);border:1px solid var(--bordure)}
@@ -47,7 +47,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="horaires-arret.html">Horaires par arrêt</a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
@@ -68,7 +68,7 @@
 <div class="results-wrap" id="results">
   <div class="no-result">
     <div class="no-result-icon">🚏</div>
-    <div style="font-family:Syne,sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Recherchez un arrêt</div>
+    <div style="font-family:Inter, sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Recherchez un arrêt</div>
     <div>Tapez le nom d'un arrêt pour voir tous les passages en temps réel</div>
   </div>
 </div>
@@ -105,7 +105,7 @@ async function chercherReel(){
   const hint = document.getElementById("hint");
 
   if(q.length < 2){
-    res.innerHTML = '<div class="no-result"><div class="no-result-icon">🚏</div><div style="font-family:Syne,sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Recherchez un arrêt</div><div>Tapez le nom d\'un arrêt pour voir tous les passages en temps réel</div></div>';
+    res.innerHTML = '<div class="no-result"><div class="no-result-icon">🚏</div><div style="font-family:Inter, sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Recherchez un arrêt</div><div>Tapez le nom d\'un arrêt pour voir tous les passages en temps réel</div></div>';
     hint.textContent = "Ex : Gares, Victor Hugo, Meylan Mairie...";
     return;
   }
@@ -118,7 +118,7 @@ async function chercherReel(){
   hint.textContent = (arrets?arrets.length:0) + " arrêt" + (arrets&&arrets.length>1?"s":"") + " trouvé" + (arrets&&arrets.length>1?"s":"");
 
   if(!arrets || !arrets.length){
-    res.innerHTML = '<div class="no-result"><div class="no-result-icon">😕</div><div style="font-family:Syne,sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Aucun arrêt trouvé</div><div>Vérifiez l\'orthographe, ou le réseau est peut-être encore en construction</div></div>';
+    res.innerHTML = '<div class="no-result"><div class="no-result-icon">😕</div><div style="font-family:Inter, sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Aucun arrêt trouvé</div><div>Vérifiez l\'orthographe, ou le réseau est peut-être encore en construction</div></div>';
     return;
   }
 
