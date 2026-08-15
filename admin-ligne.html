@@ -100,7 +100,14 @@ input[type=color]{height:40px;width:100%;padding:3px;border-radius:8px;border:1p
         <button class="sens-tab active" id="stab-aller" onclick="setSens('aller')">Sens Aller (A → B)</button>
         <button class="sens-tab" id="stab-retour" onclick="setSens('retour')">Sens Retour (B → A)</button>
       </div>
-      <div class="hint">Cliquez sur la carte pour ajouter un arrêt à la suite (le tracé se dessine automatiquement en reliant les arrêts dans l'ordre). Renommez chaque arrêt dans la liste à droite.</div>
+      <div id="retour-auto-note" class="hint" style="display:none;background:rgba(24,95,165,0.08);border:1px solid rgba(24,95,165,0.25);border-radius:8px;padding:8px 12px">
+        🔄 Le sens Retour est généré automatiquement à partir de l'Aller (inversé). Ajoutez un point ici pour le personnaliser, ou <a href="#" onclick="forcerRegenRetour();return false" style="color:var(--accent);font-weight:700">régénérez-le</a> à tout moment.
+      </div>
+      <div class="sens-tabs" style="margin-top:10px">
+        <button class="sens-tab active" id="mode-arret" onclick="setPlaceMode('arret')">📍 Poser un arrêt</button>
+        <button class="sens-tab" id="mode-passage" onclick="setPlaceMode('passage')">• Poser un point de passage</button>
+      </div>
+      <div class="hint">Cliquez sur la carte pour ajouter un point à la suite. Un <strong>arrêt</strong> est nommé et visible pour les voyageurs ; un <strong>point de passage</strong> sert juste à faire suivre au tracé la route réelle (ex : un virage).</div>
       <div id="map"></div>
     </div>
 
@@ -185,9 +192,22 @@ async function loadExistingLigne(code){
   document.getElementById("tad-hint").style.display = (l.type==="tad") ? "block" : "none";
 
   const { data: las } = await supabaseClient.from("ligne_arrets").select("*, arrets(*)").eq("ligne_code", code).order("ordre");
+  const { data: traces } = await supabaseClient.from("traces").select("*").eq("ligne_code", code);
+
   ["aller","retour"].forEach(s => {
-    stops[s] = (las||[]).filter(x=>x.sens===s).map(x=>({ lat:x.arrets.lat, lng:x.arrets.lng, nom:x.arrets.nom, lieu:x.arrets.lieu_nom||"", _existingId:x.arret_id }));
+    const arretsList = (las||[]).filter(x=>x.sens===s).map(x=>({ lat:x.arrets.lat, lng:x.arrets.lng, nom:x.arrets.nom, lieu:x.arrets.lieu_nom||"", type:"arret", _existingId:x.arret_id }));
+    const trace = (traces||[]).find(t=>t.sens===s);
+    if(trace && trace.points && trace.points.length){
+      // Reconstruit la liste complète (arrêts + points de passage) dans l'ordre du tracé
+      stops[s] = trace.points.map(p => {
+        const match = arretsList.find(a => Math.abs(a.lat-p.lat)<1e-9 && Math.abs(a.lng-p.lng)<1e-9);
+        return match || { lat:p.lat, lng:p.lng, type:"passage" };
+      });
+    } else {
+      stops[s] = arretsList;
+    }
   });
+  retourAuto = !(las||[]).some(x=>x.sens==="retour") && !(traces||[]).some(t=>t.sens==="retour");
   redrawSens(); renderStops();
   setSens("aller");
 
@@ -211,11 +231,22 @@ function initMap(){
   markersLayer.aller = L.layerGroup().addTo(map);
   markersLayer.retour = L.layerGroup();
   map.on("click", e => {
-    stops[sens].push({ lat: e.latlng.lat, lng: e.latlng.lng, nom: "Arrêt " + (stops[sens].length+1) });
+    const point = { lat: e.latlng.lat, lng: e.latlng.lng, type: placeMode };
+    if(placeMode === "arret") point.nom = "Arrêt " + (stops[sens].filter(p=>p.type==="arret").length+1);
+    stops[sens].push(point);
+    if(sens === "retour"){ retourAuto = false; document.getElementById("retour-auto-note").style.display = "none"; }
     redrawSens();
     renderStops();
   });
 }
+let placeMode = "arret";
+function setPlaceMode(m){
+  placeMode = m;
+  document.getElementById("mode-arret").classList.toggle("active", m==="arret");
+  document.getElementById("mode-passage").classList.toggle("active", m==="passage");
+}
+
+let retourAuto = true;
 
 function setSens(s){
   sens = s;
@@ -223,18 +254,45 @@ function setSens(s){
   document.getElementById("stab-retour").classList.toggle("active", s==="retour");
   document.getElementById("sens-label").textContent = s==="aller" ? "Aller" : "Retour";
   if(s==="aller"){ map.removeLayer(markersLayer.retour); markersLayer.aller.addTo(map); }
-  else { map.removeLayer(markersLayer.aller); markersLayer.retour.addTo(map); }
+  else {
+    map.removeLayer(markersLayer.aller); markersLayer.retour.addTo(map);
+    if(retourAuto) regenererRetour();
+  }
+  document.getElementById("retour-auto-note").style.display = (s==="retour" && retourAuto) ? "block" : "none";
+  redrawSens();
   renderStops();
+}
+
+function regenererRetour(){
+  stops.retour = stops.aller.slice().reverse().map(p => ({...p}));
+  retourAuto = true;
+}
+function forcerRegenRetour(){
+  regenererRetour();
+  redrawSens();
+  renderStops();
+  toastLocal("Retour régénéré depuis l'Aller.");
+}
+function toastLocal(msg){
+  const m = document.getElementById("msg");
+  m.className = "ok"; m.textContent = msg;
+  setTimeout(()=>{ if(m.textContent===msg) m.textContent=""; }, 2500);
 }
 
 function redrawSens(){
   const layer = markersLayer[sens];
   layer.clearLayers();
   const latlngs = [];
-  stops[sens].forEach((s,i)=>{
+  let numArret = 0;
+  stops[sens].forEach((s)=>{
     latlngs.push([s.lat, s.lng]);
-    const m = L.circleMarker([s.lat,s.lng], {radius:7, color:"#fff", weight:2, fillColor: sens==="aller" ? "#185FA5" : "#E4032E", fillOpacity:1}).addTo(layer);
-    m.bindTooltip(String(i+1), {permanent:true, direction:"top", className:"stop-tt"});
+    if(s.type === "passage"){
+      L.circleMarker([s.lat,s.lng], {radius:4, color:"#fff", weight:1.5, fillColor:"#999", fillOpacity:1}).addTo(layer);
+    } else {
+      numArret++;
+      const m = L.circleMarker([s.lat,s.lng], {radius:7, color:"#fff", weight:2, fillColor: sens==="aller" ? "#185FA5" : "#E4032E", fillOpacity:1}).addTo(layer);
+      m.bindTooltip(String(numArret), {permanent:true, direction:"top", className:"stop-tt"});
+    }
   });
   if(polylines[sens]) layer.removeLayer(polylines[sens]);
   if(latlngs.length>1){
@@ -245,24 +303,39 @@ function redrawSens(){
 function renderStops(){
   const el = document.getElementById("stops-list");
   const list = stops[sens];
-  if(!list.length){ el.innerHTML = '<div class="hint">Aucun arrêt. Cliquez sur la carte.</div>'; return; }
-  el.innerHTML = list.map((s,i)=>`
+  if(!list.length){ el.innerHTML = '<div class="hint">Aucun point. Cliquez sur la carte.</div>'; return; }
+  let numArret = 0;
+  el.innerHTML = list.map((s,i)=>{
+    if(s.type === "passage"){
+      return `
+      <div class="stop-row" style="opacity:.75">
+        <div class="stop-num" style="background:#999">•</div>
+        <div style="flex:1;font-size:12px;color:var(--txs);font-style:italic">Point de passage (façonne le tracé)</div>
+        <button class="icon-btn" onclick="moveStop(${i},-1)" title="Monter">↑</button>
+        <button class="icon-btn" onclick="moveStop(${i},1)" title="Descendre">↓</button>
+        <button class="icon-btn del" onclick="removeStop(${i})" title="Supprimer">✕</button>
+      </div>`;
+    }
+    numArret++;
+    return `
     <div class="stop-row" style="flex-wrap:wrap">
-      <div class="stop-num">${i+1}</div>
+      <div class="stop-num">${numArret}</div>
       <input type="text" value="${s.nom.replace(/"/g,"&quot;")}" onchange="renameStop(${i}, this.value)" placeholder="Nom de l'arrêt">
       <button class="icon-btn" onclick="moveStop(${i},-1)" title="Monter">↑</button>
       <button class="icon-btn" onclick="moveStop(${i},1)" title="Descendre">↓</button>
       <button class="icon-btn del" onclick="removeStop(${i})" title="Supprimer">✕</button>
       <input type="text" value="${(s.lieu||"").replace(/"/g,"&quot;")}" onchange="setLieu(${i}, this.value)" placeholder="📍 Lieu notable (optionnel, ex: Musée)" style="flex-basis:100%;margin-top:6px;font-size:11px;opacity:.85">
-    </div>`).join("");
+    </div>`;
+  }).join("");
 }
 function setLieu(i, val){ stops[sens][i].lieu = val; }
-function renameStop(i, val){ stops[sens][i].nom = val; }
-function removeStop(i){ stops[sens].splice(i,1); redrawSens(); renderStops(); }
+function renameStop(i, val){ stops[sens][i].nom = val; if(sens==="aller" && retourAuto){} }
+function removeStop(i){ stops[sens].splice(i,1); if(sens==="retour") retourAuto=false; redrawSens(); renderStops(); }
 function moveStop(i, dir){
   const arr = stops[sens]; const j = i+dir;
   if(j<0 || j>=arr.length) return;
   [arr[i],arr[j]] = [arr[j],arr[i]];
+  if(sens==="retour") retourAuto=false;
   redrawSens(); renderStops();
 }
 
@@ -326,6 +399,7 @@ async function saveLigne(){
   if(!stops.aller.length){
     msg.className="err"; msg.textContent="Ajoutez au moins un arrêt sur le sens Aller."; return;
   }
+  if(retourAuto) regenererRetour(); // garantit que le Retour sauvegardé reflète bien l'Aller actuel
 
   btn.disabled = true; msg.className=""; msg.textContent="Enregistrement en cours...";
   try{
@@ -352,16 +426,20 @@ async function saveLigne(){
 
     for(const s of ["aller","retour"]){
       if(!stops[s].length) continue;
+      const arretsOnly = stops[s].filter(st => st.type !== "passage");
       const arretIds = [];
-      for(const st of stops[s]){
+      for(const st of arretsOnly){
         const { data: a, error: ea } = await supabaseClient.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng, lieu_nom: st.lieu || null }).select("id").single();
         if(ea) throw ea;
         arretIds.push(a.id);
       }
-      const laRows = arretIds.map((id, idx) => ({ ligne_code: code, arret_id: id, sens: s, ordre: idx }));
-      const { error: ela } = await supabaseClient.from("ligne_arrets").insert(laRows);
-      if(ela) throw ela;
+      if(arretIds.length){
+        const laRows = arretIds.map((id, idx) => ({ ligne_code: code, arret_id: id, sens: s, ordre: idx }));
+        const { error: ela } = await supabaseClient.from("ligne_arrets").insert(laRows);
+        if(ela) throw ela;
+      }
 
+      // Le tracé inclut TOUS les points (arrêts + points de passage) pour suivre la route réelle
       const points = stops[s].map(st => ({ lat: st.lat, lng: st.lng }));
       const { error: et } = await supabaseClient.from("traces").insert({ ligne_code: code, sens: s, points });
       if(et) throw et;
