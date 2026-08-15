@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Régler une amende en ligne — GGMobilités</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .am-wrap{max-width:560px;margin:0 auto;padding:2.5rem 2rem 4rem}
+    .am-intro{font-size:14px;color:var(--texte-sec);margin-bottom:2rem;line-height:1.6}
+    .am-card{background:white;border:1px solid var(--bordure);border-radius:16px;padding:2rem;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+    .am-field{margin-bottom:16px}
+    .am-field label{display:block;font-size:12px;font-weight:600;color:var(--texte-sec);margin-bottom:5px}
+    .am-field input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit}
+    .am-field input:focus{outline:none;border-color:var(--bleu)}
+    .am-btn{width:100%;padding:13px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;cursor:pointer;margin-top:6px}
+    .am-msg{font-size:13px;margin-top:14px;text-align:center}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
+      GGMobilités
+    </a>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html" class="active">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
+  </div>
+</nav>
+<div class="accent-bar"></div>
+
+<div class="am-wrap">
+  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:10px">Régler une amende en ligne</h1>
+  <p class="am-intro">Remplissez ce formulaire pour régulariser une amende reçue à bord du réseau GGMobilités. Notre équipe vous recontacte pour finaliser le règlement.</p>
+
+  <div class="am-card">
+    <form id="am-form">
+      <div class="am-field"><label>Nom et prénom</label><input type="text" id="am-nom" required></div>
+      <div class="am-field"><label>Adresse mail</label><input type="email" id="am-email" required></div>
+      <div class="am-field"><label>Numéro de téléphone</label><input type="tel" id="am-tel"></div>
+      <div class="am-field"><label>Numéro de l'amende</label><input type="text" id="am-numero" required placeholder="Voir sur votre avis de contravention"></div>
+      <button type="submit" class="am-btn" id="am-btn">Envoyer ma demande</button>
+      <div class="am-msg" id="am-msg"></div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <div class="accent-bar"></div>
+  <div style="padding:2.5rem 2rem"><div class="footer-inner">
+    <div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div><p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région.</p></div>
+    <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan du réseau</a><a href="infotrafic.html">Infotrafic</a></div>
+    <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div>
+    <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div>
+  </div>
+</footer>
+
+<script>
+let supabaseClient;
+(async function(){
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+})();
+
+document.getElementById('am-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = document.getElementById('am-btn');
+  const msg = document.getElementById('am-msg');
+  if(typeof setBtnLoading === 'function') setBtnLoading(btn, 'Envoi...'); else { btn.disabled = true; btn.textContent = 'Envoi...'; }
+  msg.textContent = ''; msg.style.color = '';
+
+  const payload = {
+    nom_prenom: document.getElementById('am-nom').value.trim(),
+    email: document.getElementById('am-email').value.trim(),
+    telephone: document.getElementById('am-tel').value.trim() || null,
+    numero_amende: document.getElementById('am-numero').value.trim()
+  };
+
+  const { error } = await supabaseClient.from('amendes_reclamations').insert(payload);
+
+  if(typeof unsetBtnLoading === 'function') unsetBtnLoading(btn); else { btn.disabled = false; btn.textContent = 'Envoyer ma demande'; }
+
+  if(error){
+    msg.style.color = '#E4032E';
+    msg.textContent = "Erreur lors de l'envoi. Réessayez.";
+    console.error(error);
+    return;
+  }
+  msg.style.color = '#00A854';
+  msg.textContent = '✅ Demande envoyée ! Vous recevrez une confirmation par email.';
+  document.getElementById('am-form').reset();
+});
+</script>
+<script src="transitions.js"></script>
+</body>
+</html>
