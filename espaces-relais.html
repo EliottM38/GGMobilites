@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Les agences — GGMobilités</title>
+  <title>Les espaces relais — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
@@ -12,14 +12,17 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .ag-wrap{max-width:1300px;margin:0 auto;padding:2rem 2rem 4rem}
-    .ag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:2rem}
-    .ag-card{background:white;border:1px solid var(--bordure);border-radius:14px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
-    .ag-nom{font-family:'Inter',sans-serif;font-weight:800;font-size:16px;color:var(--texte);margin-bottom:10px}
-    .ag-row{display:flex;gap:8px;font-size:13px;color:var(--texte-sec);margin-bottom:6px;line-height:1.5}
-    .ag-row .ic{flex-shrink:0}
-    .ag-temp{margin-top:10px;background:rgba(228,83,11,0.08);border:1px solid rgba(228,83,11,0.25);border-radius:8px;padding:8px 10px;font-size:12px;color:#E4530B}
-    #ag-map{height:420px;border-radius:14px;border:1px solid var(--bordure)}
+    .er-wrap{max-width:1300px;margin:0 auto;padding:2rem 2rem 4rem}
+    .er-grid{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start}
+    @media(max-width:860px){.er-grid{grid-template-columns:1fr}}
+    .er-list{background:white;border:1px solid var(--bordure);border-radius:14px;max-height:600px;overflow-y:auto}
+    .er-item{padding:14px 18px;border-bottom:1px solid var(--bordure);cursor:pointer;transition:background .12s}
+    .er-item:last-child{border-bottom:none}
+    .er-item:hover,.er-item.active{background:var(--bleu-pale)}
+    .er-nom{font-family:'Inter',sans-serif;font-weight:700;font-size:14px;color:var(--texte)}
+    .er-adresse{font-size:12px;color:var(--texte-sec);margin-top:3px}
+    .er-horaires{font-size:11px;color:var(--bleu);margin-top:4px}
+    #er-map{height:600px;border-radius:14px;border:1px solid var(--bordure)}
   </style>
 </head>
 <body>
@@ -34,12 +37,14 @@
 </nav>
 <div class="accent-bar"></div>
 
-<div class="ag-wrap">
-  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:10px">Les agences</h1>
-  <p style="font-size:14px;color:var(--texte-sec);margin-bottom:1.5rem">Nos agences de mobilité vous accueillent pour toute demande.</p>
+<div class="er-wrap">
+  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:10px">Les espaces relais</h1>
+  <p style="font-size:14px;color:var(--texte-sec);margin-bottom:1.5rem">Rechargez votre titre de transport chez l'un de nos commerces partenaires.</p>
 
-  <div class="ag-grid" id="ag-grid"><div style="font-size:13px;color:var(--texte-sec)">Chargement...</div></div>
-  <div id="ag-map"></div>
+  <div class="er-grid">
+    <div class="er-list" id="er-list"><div style="padding:16px;font-size:13px;color:var(--texte-sec)">Chargement...</div></div>
+    <div id="er-map"></div>
+  </div>
 </div>
 
 <footer>
@@ -55,39 +60,55 @@
 </footer>
 
 <script>
+let map, markers = [];
+
 async function init(){
-  const map = L.map("ag-map").setView([45.1885, 5.7245], 12);
+  map = L.map("er-map").setView([45.1885, 5.7245], 12);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'© OpenStreetMap contributors'}).addTo(map);
 
   const cfg = await fetch('/api/config').then(r=>r.json());
   const supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-  const { data: agences, error } = await supabaseClient.from("agences_v2").select("*").order("nom");
+  const { data: espaces, error } = await supabaseClient.from("espaces_relais").select("*").order("nom");
 
-  const grid = document.getElementById("ag-grid");
-  if(error || !agences || !agences.length){
-    grid.innerHTML = '<div style="font-size:13px;color:var(--texte-sec)">Aucune agence pour le moment.</div>';
+  const listEl = document.getElementById("er-list");
+  if(error || !espaces || !espaces.length){
+    listEl.innerHTML = '<div style="padding:16px;font-size:13px;color:var(--texte-sec)">Aucun espace relais pour le moment.</div>';
     return;
   }
 
-  grid.innerHTML = agences.map(a => `
-    <div class="ag-card">
-      <div class="ag-nom">🏢 ${a.nom}</div>
-      <div class="ag-row"><span class="ic">📍</span><span>${a.adresse}</span></div>
-      ${a.horaires ? `<div class="ag-row"><span class="ic">🕐</span><span>${a.horaires}</span></div>` : ''}
-      ${a.services ? `<div class="ag-row"><span class="ic">🛎️</span><span>${a.services}</span></div>` : ''}
-      ${a.info_temp ? `<div class="ag-temp">ℹ️ ${a.info_temp}</div>` : ''}
+  const bounds = [];
+  listEl.innerHTML = espaces.map((e, i) => `
+    <div class="er-item" id="er-item-${i}" onclick="focusEspace(${i})">
+      <div class="er-nom">${e.nom}</div>
+      <div class="er-adresse">${e.adresse}</div>
+      ${e.horaires ? `<div class="er-horaires">🕐 ${e.horaires}</div>` : ''}
     </div>`).join("");
 
-  const bounds = [];
-  agences.forEach(a => {
-    if(a.lat && a.lng){
-      L.circleMarker([a.lat, a.lng], {radius:8, color:"#fff", weight:2, fillColor:"#185FA5", fillOpacity:1})
-        .addTo(map).bindPopup(`<strong>${a.nom}</strong><br>${a.adresse}`);
-      bounds.push([a.lat, a.lng]);
+  window._espaces = espaces;
+  espaces.forEach((e, i) => {
+    if(e.lat && e.lng){
+      const m = L.circleMarker([e.lat, e.lng], {radius:8, color:"#fff", weight:2, fillColor:"#185FA5", fillOpacity:1}).addTo(map);
+      m.bindPopup(`<strong>${e.nom}</strong><br>${e.adresse}`);
+      m.on("click", ()=>focusEspace(i));
+      markers.push(m);
+      bounds.push([e.lat, e.lng]);
+    } else {
+      markers.push(null);
     }
   });
   if(bounds.length) map.fitBounds(bounds, {padding:[30,30]});
 }
+
+function focusEspace(i){
+  document.querySelectorAll(".er-item").forEach(el=>el.classList.remove("active"));
+  document.getElementById("er-item-"+i).classList.add("active");
+  const e = window._espaces[i];
+  if(e.lat && e.lng){
+    map.flyTo([e.lat, e.lng], 15, {duration:0.6});
+    if(markers[i]) markers[i].openPopup();
+  }
+}
+
 init();
 </script>
 <script src="transitions.js"></script>

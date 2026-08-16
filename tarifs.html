@@ -3,11 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tarifs & vente — GGMobilités</title>
+  <title>Les tarifs — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .tf-wrap{max-width:900px;margin:0 auto;padding:2.5rem 2rem 4rem}
+    .tf-intro{font-size:14px;color:var(--texte-sec);margin-bottom:2rem;line-height:1.6}
+    .tf-calc{background:white;border:1px solid var(--bordure);border-radius:16px;padding:1.75rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);margin-bottom:2rem}
+    .tf-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+    .tf-group label{display:block;font-size:12px;font-weight:700;color:var(--texte-sec);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
+    .tf-opts{display:flex;gap:8px;flex-wrap:wrap}
+    .tf-opt{padding:9px 16px;border-radius:9px;border:1px solid var(--bordure);background:white;font-size:13px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer}
+    .tf-opt.active{background:var(--bleu);color:white;border-color:var(--bleu)}
+    .tf-price{margin-top:1.5rem;padding:1.5rem;border-radius:12px;background:var(--bleu-pale);text-align:center}
+    .tf-price-val{font-family:'Inter',sans-serif;font-weight:900;font-size:36px;color:var(--bleu)}
+    .tf-price-label{font-size:13px;color:var(--texte-sec);margin-top:4px}
+    .tf-tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+    .tf-tab{padding:10px 18px;border-radius:9px;border:1px solid var(--bordure);background:white;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
+    .tf-tab.active{background:var(--texte);color:white;border-color:var(--texte)}
+    .tf-form{background:white;border:1px solid var(--bordure);border-radius:16px;padding:1.75rem;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+    .tf-field{margin-bottom:14px}
+    .tf-field label{display:block;font-size:12px;font-weight:600;color:var(--texte-sec);margin-bottom:5px}
+    .tf-field input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit}
+    .tf-field input[type=file]{padding:8px}
+    .tf-btn{width:100%;padding:13px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;cursor:pointer;margin-top:6px}
+    .tf-msg{font-size:13px;margin-top:14px;text-align:center}
+    .tf-hint{font-size:11px;color:var(--texte-sec);margin-top:-8px;margin-bottom:14px}
+  </style>
 </head>
 <body>
 <nav>
@@ -16,34 +41,206 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html" class="active">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html" class="active">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
-<div class="page">
-  <div style="margin-bottom:2rem"><h1 style="font-family:'Inter', sans-serif;font-size:32px;font-weight:800;margin-bottom:6px;color:var(--texte)">Tarifs & titres</h1><p style="color:var(--texte-sec)">Des titres adaptés à tous vos besoins</p></div>
-  <div class="grid grid-3" style="margin-bottom:2rem">
-    <div class="titre-card"><div class="titre-couleur" style="background:#E91E8C;color:white">T</div><h3>Ticket 1h</h3><div class="prix">1,80 €</div><p>Ticket rose · Valable 1h avec correspondances</p></div>
-    <div class="titre-card"><div class="titre-couleur" style="background:#F4C430;color:#222">T</div><h3>Ticket 24h</h3><div class="prix">5,30 €</div><p>Ticket jaune · Voyages illimités pendant 24h</p></div>
-    <div class="titre-card"><div class="titre-couleur" style="background:#1565C0;color:white">M</div><h3>Abonnement mensuel</h3><div class="prix">62 €</div><p>Carte bleue · Voyages illimités pendant 1 mois</p></div>
+
+<div class="tf-wrap">
+  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:10px">Les tarifs</h1>
+  <p class="tf-intro">Sélectionnez votre catégorie d'âge et le type de titre pour connaître le tarif, puis commandez directement en ligne.</p>
+
+  <div class="tf-calc">
+    <div class="tf-row2">
+      <div class="tf-group">
+        <label>Catégorie d'âge</label>
+        <div class="tf-opts" id="opts-age">
+          <button type="button" class="tf-opt" data-val="0-4">0 – 4 ans</button>
+          <button type="button" class="tf-opt" data-val="4-17">4 – 17 ans</button>
+          <button type="button" class="tf-opt active" data-val="17+">17 ans et +</button>
+        </div>
+      </div>
+      <div class="tf-group">
+        <label>Type de titre</label>
+        <div class="tf-opts" id="opts-type">
+          <button type="button" class="tf-opt active" data-val="unitaire">Unitaire</button>
+          <button type="button" class="tf-opt" data-val="journee">Journée</button>
+          <button type="button" class="tf-opt" data-val="mensuel">Mensuel</button>
+        </div>
+      </div>
+    </div>
+    <div class="tf-price">
+      <div class="tf-price-val" id="tf-price-val">—</div>
+      <div class="tf-price-label" id="tf-price-label">Sélectionnez vos critères</div>
+    </div>
   </div>
-  <div class="card" style="border-color:rgba(201,168,76,0.3);background:var(--bleu-pale);margin-bottom:3rem"><h3 style="color:var(--bleu);margin-bottom:6px">🎉 Gratuité pour les moins de 4 ans</h3><p style="color:var(--texte-sec)">Les enfants de moins de 4 ans voyagent gratuitement sur présentation d'une carte d'identité.</p></div>
-  <h2 style="font-family:'Inter', sans-serif;font-size:22px;font-weight:700;margin-bottom:1.25rem;color:var(--texte)">Où acheter ?</h2>
-  <div class="grid grid-2"><div class="card"><span class="card-icon">🚌</span><h3>Dans les bus</h3><p>Achetez votre ticket directement auprès du conducteur en montant dans le bus.</p></div><div class="card"><span class="card-icon">🏢</span><h3>Agences de mobilités</h3><p>Retrouvez nos agences en centre-ville pour acheter abonnements et titres rechargeables.</p></div><div class="card"><span class="card-icon">🏪</span><h3>Points de vente partenaires</h3><p>Tabacs, maisons de la presse et commerces partenaires dans toute l'agglomération.</p></div><div class="card"><span class="card-icon">📱</span><h3>Application mobile</h3><p>Rechargez votre carte et achetez vos titres directement depuis votre smartphone.</p></div></div>
+
+  <div class="tf-tabs">
+    <button class="tf-tab active" id="tab-nouvelle" onclick="setTab('nouvelle')">Commander une carte nominative</button>
+    <button class="tf-tab" id="tab-recharge" onclick="setTab('recharge')">Recharger ma carte</button>
+  </div>
+
+  <!-- Formulaire 1 : nouvelle carte nominative -->
+  <form class="tf-form" id="form-nouvelle">
+    <div class="tf-row2">
+      <div class="tf-field"><label>Nom et prénom</label><input type="text" id="n-nom" required></div>
+      <div class="tf-field"><label>Date de naissance</label><input type="date" id="n-naissance" required></div>
+    </div>
+    <div class="tf-field"><label>Adresse</label><input type="text" id="n-adresse" required></div>
+    <div class="tf-row2">
+      <div class="tf-field"><label>Adresse mail</label><input type="email" id="n-email" required></div>
+      <div class="tf-field"><label>Téléphone</label><input type="tel" id="n-tel"></div>
+    </div>
+    <div class="tf-row2">
+      <div class="tf-field"><label>Photo carte d'identité</label><input type="file" id="n-photo-carte" accept="image/*,.pdf" required></div>
+      <div class="tf-field"><label>Photo d'identité</label><input type="file" id="n-photo-identite" accept="image/*" required></div>
+    </div>
+    <button type="submit" class="tf-btn" id="n-btn">Commander ma carte</button>
+    <div class="tf-msg" id="n-msg"></div>
+  </form>
+
+  <!-- Formulaire 2 : recharger une carte existante -->
+  <form class="tf-form" id="form-recharge" style="display:none">
+    <div class="tf-field"><label>Nom et prénom</label><input type="text" id="r-nom" required></div>
+    <div class="tf-row2">
+      <div class="tf-field"><label>Numéro de carte de transport</label><input type="text" id="r-carte" required></div>
+      <div class="tf-field"><label>Date de début du titre</label><input type="date" id="r-debut" required></div>
+    </div>
+    <div class="tf-field"><label>Adresse mail</label><input type="email" id="r-email" required></div>
+    <div class="tf-field" id="r-photo-wrap" style="display:none">
+      <label>Photo pièce d'identité (obligatoire pour un titre mensuel)</label>
+      <input type="file" id="r-photo" accept="image/*,.pdf">
+    </div>
+    <button type="submit" class="tf-btn" id="r-btn">Recharger ma carte</button>
+    <div class="tf-msg" id="r-msg"></div>
+  </form>
 </div>
+
 <footer>
   <div class="accent-bar"></div>
-  <div style="padding:3rem 2rem">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div>
-        <p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région. Partenaire de vos déplacements quotidiens.</p>
-      </div>
-      <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="reseau.html">Horaires</a><a href="reseau.html">Transport à la demande</a></div>
-      <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a></div>
-      <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div></div></footer>
+  <div style="padding:2.5rem 2rem"><div class="footer-inner">
+    <div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div><p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région.</p></div>
+    <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan du réseau</a><a href="infotrafic.html">Infotrafic</a></div>
+    <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div>
+    <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div>
+  </div>
+</footer>
+
+<script>
+let supabaseClient;
+let grille = [];
+let ageSel = "17+", typeSel = "unitaire";
+
+async function init(){
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  const { data } = await supabaseClient.from('tarifs_grille').select('*');
+  grille = data || [];
+  updatePrice();
+
+  document.querySelectorAll('#opts-age .tf-opt').forEach(btn => btn.addEventListener('click', function(){
+    document.querySelectorAll('#opts-age .tf-opt').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active'); ageSel = this.dataset.val; updatePrice();
+  }));
+  document.querySelectorAll('#opts-type .tf-opt').forEach(btn => btn.addEventListener('click', function(){
+    document.querySelectorAll('#opts-type .tf-opt').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active'); typeSel = this.dataset.val; updatePrice();
+    document.getElementById('r-photo-wrap').style.display = (typeSel==='mensuel') ? 'block' : 'none';
+    document.getElementById('r-photo').required = (typeSel==='mensuel');
+  }));
+}
+
+function updatePrice(){
+  const row = grille.find(g => g.categorie_age===ageSel && g.type_titre===typeSel);
+  const label = {'0-4':'0-4 ans','4-17':'4-17 ans','17+':'17 ans et +'}[ageSel] + ' · ' + {'unitaire':'Titre unitaire','journee':'Pass journée','mensuel':'Abonnement mensuel'}[typeSel];
+  if(row){
+    document.getElementById('tf-price-val').textContent = row.prix.toFixed(2).replace('.',',') + ' €';
+    document.getElementById('tf-price-label').textContent = label;
+  } else {
+    document.getElementById('tf-price-val').textContent = '—';
+    document.getElementById('tf-price-label').textContent = 'Tarif non disponible pour cette combinaison';
+  }
+}
+
+function setTab(t){
+  document.getElementById('tab-nouvelle').classList.toggle('active', t==='nouvelle');
+  document.getElementById('tab-recharge').classList.toggle('active', t==='recharge');
+  document.getElementById('form-nouvelle').style.display = (t==='nouvelle') ? 'block' : 'none';
+  document.getElementById('form-recharge').style.display = (t==='recharge') ? 'block' : 'none';
+}
+
+async function uploadFichier(file, prefix){
+  if(!file) return null;
+  const path = prefix + '/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  const { error } = await supabaseClient.storage.from('documents-tarifs').upload(path, file);
+  if(error) throw error;
+  return path;
+}
+
+document.getElementById('form-nouvelle').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = document.getElementById('n-btn'), msg = document.getElementById('n-msg');
+  if(typeof setBtnLoading === 'function') setBtnLoading(btn, 'Envoi...'); else { btn.disabled=true; btn.textContent='Envoi...'; }
+  msg.textContent = ''; msg.style.color = '';
+  try{
+    const photoCarteFile = document.getElementById('n-photo-carte').files[0];
+    const photoIdFile = document.getElementById('n-photo-identite').files[0];
+    const photoCarteUrl = await uploadFichier(photoCarteFile, 'carte-identite');
+    const photoIdUrl = await uploadFichier(photoIdFile, 'photo-identite');
+
+    const { error } = await supabaseClient.from('commandes_titre').insert({
+      type_commande: 'nouvelle_carte',
+      categorie_age: ageSel, type_titre: typeSel,
+      nom_prenom: document.getElementById('n-nom').value.trim(),
+      adresse: document.getElementById('n-adresse').value.trim(),
+      date_naissance: document.getElementById('n-naissance').value,
+      email: document.getElementById('n-email').value.trim(),
+      telephone: document.getElementById('n-tel').value.trim() || null,
+      photo_identite_url: photoIdUrl,
+      photo_carte_url: photoCarteUrl
+    });
+    if(error) throw error;
+    msg.style.color = '#00A854'; msg.textContent = '✅ Commande envoyée ! Vous recevrez une confirmation par email.';
+    document.getElementById('form-nouvelle').reset();
+  }catch(err){
+    console.error(err);
+    msg.style.color = '#E4032E'; msg.textContent = "Erreur lors de l'envoi. Réessayez.";
+  }
+  if(typeof unsetBtnLoading === 'function') unsetBtnLoading(btn); else { btn.disabled=false; btn.textContent='Commander ma carte'; }
+});
+
+document.getElementById('form-recharge').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = document.getElementById('r-btn'), msg = document.getElementById('r-msg');
+  if(typeof setBtnLoading === 'function') setBtnLoading(btn, 'Envoi...'); else { btn.disabled=true; btn.textContent='Envoi...'; }
+  msg.textContent = ''; msg.style.color = '';
+  try{
+    const photoFile = document.getElementById('r-photo').files[0];
+    const photoUrl = await uploadFichier(photoFile, 'recharge-identite');
+
+    const { error } = await supabaseClient.from('commandes_titre').insert({
+      type_commande: 'recharge',
+      categorie_age: ageSel, type_titre: typeSel,
+      nom_prenom: document.getElementById('r-nom').value.trim(),
+      numero_carte: document.getElementById('r-carte').value.trim(),
+      date_debut: document.getElementById('r-debut').value,
+      email: document.getElementById('r-email').value.trim(),
+      photo_identite_url: photoUrl
+    });
+    if(error) throw error;
+    msg.style.color = '#00A854'; msg.textContent = '✅ Demande envoyée ! Vous recevrez une confirmation par email.';
+    document.getElementById('form-recharge').reset();
+  }catch(err){
+    console.error(err);
+    msg.style.color = '#E4032E'; msg.textContent = "Erreur lors de l'envoi. Réessayez.";
+  }
+  if(typeof unsetBtnLoading === 'function') unsetBtnLoading(btn); else { btn.disabled=false; btn.textContent='Recharger ma carte'; }
+});
+
+init();
+</script>
 <script src="transitions.js"></script>
 </body>
 </html>

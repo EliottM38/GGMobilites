@@ -86,7 +86,11 @@ input[type=color]{height:40px;width:100%;padding:3px;border-radius:8px;border:1p
       </div>
       <label>Type de ligne</label>
       <select id="f-type" style="margin-bottom:12px">
-        <option value="fixe">Ligne fixe (horaires/fréquences classiques)</option>
+        <option value="tram">Tram</option>
+        <option value="urbain" selected>Urbaine</option>
+        <option value="periurbain">Périurbaine</option>
+        <option value="suburbain">Suburbaine</option>
+        <option value="scolaire">Scolaire</option>
         <option value="tad">Transport à la demande (TAD — formulaire de réservation)</option>
       </select>
       <label>Icône de la ligne (lien URL vers une image)</label>
@@ -188,14 +192,14 @@ async function loadExistingLigne(code){
   document.getElementById("f-term-a").value = l.terminus_a;
   document.getElementById("f-term-b").value = l.terminus_b;
   document.getElementById("f-icone").value = l.icone_url || "";
-  document.getElementById("f-type").value = l.type || "fixe";
+  document.getElementById("f-type").value = l.type || "urbain";
   document.getElementById("tad-hint").style.display = (l.type==="tad") ? "block" : "none";
 
   const { data: las } = await supabaseClient.from("ligne_arrets").select("*, arrets(*)").eq("ligne_code", code).order("ordre");
   const { data: traces } = await supabaseClient.from("traces").select("*").eq("ligne_code", code);
 
   ["aller","retour"].forEach(s => {
-    const arretsList = (las||[]).filter(x=>x.sens===s).map(x=>({ lat:x.arrets.lat, lng:x.arrets.lng, nom:x.arrets.nom, lieu:x.arrets.lieu_nom||"", type:"arret", _existingId:x.arret_id }));
+    const arretsList = (las||[]).filter(x=>x.sens===s).map(x=>({ lat:x.arrets.lat, lng:x.arrets.lng, nom:x.arrets.nom, lieu:x.arrets.lieu_nom||"", type:"arret", temps:x.temps_depuis_precedent||0, _existingId:x.arret_id }));
     const trace = (traces||[]).find(t=>t.sens===s);
     if(trace && trace.points && trace.points.length){
       // Reconstruit la liste complète (arrêts + points de passage) dans l'ordre du tracé
@@ -317,6 +321,7 @@ function renderStops(){
       </div>`;
     }
     numArret++;
+    const isFirst = numArret === 1;
     return `
     <div class="stop-row" style="flex-wrap:wrap">
       <div class="stop-num">${numArret}</div>
@@ -325,9 +330,11 @@ function renderStops(){
       <button class="icon-btn" onclick="moveStop(${i},1)" title="Descendre">↓</button>
       <button class="icon-btn del" onclick="removeStop(${i})" title="Supprimer">✕</button>
       <input type="text" value="${(s.lieu||"").replace(/"/g,"&quot;")}" onchange="setLieu(${i}, this.value)" placeholder="📍 Lieu notable (optionnel, ex: Musée)" style="flex-basis:100%;margin-top:6px;font-size:11px;opacity:.85">
+      ${isFirst ? '' : `<div style="flex-basis:100%;display:flex;align-items:center;gap:6px;margin-top:4px"><span style="font-size:11px;color:var(--txs)">⏱️ Temps depuis l'arrêt précédent :</span><input type="number" min="0" value="${s.temps||1}" onchange="setTemps(${i}, this.value)" style="width:60px;padding:4px 8px;font-size:11px"><span style="font-size:11px;color:var(--txs)">min</span></div>`}
     </div>`;
   }).join("");
 }
+function setTemps(i, val){ stops[sens][i].temps = Math.max(0, parseInt(val)||0); }
 function setLieu(i, val){ stops[sens][i].lieu = val; }
 function renameStop(i, val){ stops[sens][i].nom = val; if(sens==="aller" && retourAuto){} }
 function removeStop(i){ stops[sens].splice(i,1); if(sens==="retour") retourAuto=false; redrawSens(); renderStops(); }
@@ -434,7 +441,7 @@ async function saveLigne(){
         arretIds.push(a.id);
       }
       if(arretIds.length){
-        const laRows = arretIds.map((id, idx) => ({ ligne_code: code, arret_id: id, sens: s, ordre: idx }));
+        const laRows = arretIds.map((id, idx) => ({ ligne_code: code, arret_id: id, sens: s, ordre: idx, temps_depuis_precedent: arretsOnly[idx].temps||0 }));
         const { error: ela } = await supabaseClient.from("ligne_arrets").insert(laRows);
         if(ela) throw ela;
       }

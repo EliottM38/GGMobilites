@@ -3,11 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tarifs & vente — GGMobilités</title>
+  <title>Où acheter — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .oa-wrap{max-width:1100px;margin:0 auto;padding:2.5rem 2rem 4rem}
+    .oa-intro{font-size:15px;color:var(--texte-sec);margin-bottom:2rem;line-height:1.6;max-width:640px}
+    .oa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+    .oa-card{background:white;border:1px solid var(--bordure);border-radius:16px;padding:2rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.05);display:flex;flex-direction:column;align-items:center}
+    .oa-icon{font-size:40px;margin-bottom:14px}
+    .oa-title{font-family:'Inter',sans-serif;font-weight:800;font-size:17px;color:var(--texte);margin-bottom:8px}
+    .oa-desc{font-size:13px;color:var(--texte-sec);line-height:1.6;margin-bottom:20px;flex:1}
+    .oa-btn{padding:11px 24px;border-radius:10px;background:var(--bleu);color:white;text-decoration:none;font-family:'Inter',sans-serif;font-weight:700;font-size:13px}
+  </style>
 </head>
 <body>
 <nav>
@@ -16,34 +26,48 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html" class="active">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html" class="active">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
-<div class="page">
-  <div style="margin-bottom:2rem"><h1 style="font-family:'Inter', sans-serif;font-size:32px;font-weight:800;margin-bottom:6px;color:var(--texte)">Tarifs & titres</h1><p style="color:var(--texte-sec)">Des titres adaptés à tous vos besoins</p></div>
-  <div class="grid grid-3" style="margin-bottom:2rem">
-    <div class="titre-card"><div class="titre-couleur" style="background:#E91E8C;color:white">T</div><h3>Ticket 1h</h3><div class="prix">1,80 €</div><p>Ticket rose · Valable 1h avec correspondances</p></div>
-    <div class="titre-card"><div class="titre-couleur" style="background:#F4C430;color:#222">T</div><h3>Ticket 24h</h3><div class="prix">5,30 €</div><p>Ticket jaune · Voyages illimités pendant 24h</p></div>
-    <div class="titre-card"><div class="titre-couleur" style="background:#1565C0;color:white">M</div><h3>Abonnement mensuel</h3><div class="prix">62 €</div><p>Carte bleue · Voyages illimités pendant 1 mois</p></div>
+
+<div class="oa-wrap">
+  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:10px">Où acheter ?</h1>
+  <p class="oa-intro">Retrouvez tous les points de vente et solutions pour acheter ou recharger votre titre de transport.</p>
+
+  <div class="oa-grid">
+    <div class="oa-card">
+      <div class="oa-icon">🏢</div>
+      <div class="oa-title">Les agences</div>
+      <div class="oa-desc">Nos agences de mobilité vous accueillent pour toute demande de carte, titre ou renseignement.</div>
+      <a href="agences.html" class="oa-btn">Voir les agences →</a>
+    </div>
+    <div class="oa-card">
+      <div class="oa-icon">🏪</div>
+      <div class="oa-title">Les espaces relais</div>
+      <div class="oa-desc">Rechargez votre titre chez l'un de nos commerces partenaires, proche de chez vous.</div>
+      <a href="espaces-relais.html" class="oa-btn">Voir les espaces relais →</a>
+    </div>
+    <div class="oa-card">
+      <div class="oa-icon">🛒</div>
+      <div class="oa-title">La boutique en ligne</div>
+      <div class="oa-desc">Achetez ou rechargez votre titre de transport directement en ligne, en quelques clics.</div>
+      <a href="tarifs.html" class="oa-btn">Acheter en ligne →</a>
+    </div>
   </div>
-  <div class="card" style="border-color:rgba(201,168,76,0.3);background:var(--bleu-pale);margin-bottom:3rem"><h3 style="color:var(--bleu);margin-bottom:6px">🎉 Gratuité pour les moins de 4 ans</h3><p style="color:var(--texte-sec)">Les enfants de moins de 4 ans voyagent gratuitement sur présentation d'une carte d'identité.</p></div>
-  <h2 style="font-family:'Inter', sans-serif;font-size:22px;font-weight:700;margin-bottom:1.25rem;color:var(--texte)">Où acheter ?</h2>
-  <div class="grid grid-2"><div class="card"><span class="card-icon">🚌</span><h3>Dans les bus</h3><p>Achetez votre ticket directement auprès du conducteur en montant dans le bus.</p></div><div class="card"><span class="card-icon">🏢</span><h3>Agences de mobilités</h3><p>Retrouvez nos agences en centre-ville pour acheter abonnements et titres rechargeables.</p></div><div class="card"><span class="card-icon">🏪</span><h3>Points de vente partenaires</h3><p>Tabacs, maisons de la presse et commerces partenaires dans toute l'agglomération.</p></div><div class="card"><span class="card-icon">📱</span><h3>Application mobile</h3><p>Rechargez votre carte et achetez vos titres directement depuis votre smartphone.</p></div></div>
 </div>
+
 <footer>
   <div class="accent-bar"></div>
-  <div style="padding:3rem 2rem">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div>
-        <p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région. Partenaire de vos déplacements quotidiens.</p>
-      </div>
-      <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="infotrafic.html">Infotrafic</a><a href="reseau.html">Horaires</a><a href="reseau.html">Transport à la demande</a></div>
-      <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a></div>
-      <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div></div></footer>
+  <div style="padding:2.5rem 2rem"><div class="footer-inner">
+    <div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div><p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région.</p></div>
+    <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan du réseau</a><a href="infotrafic.html">Infotrafic</a></div>
+    <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div>
+    <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div>
+  </div>
+</footer>
 <script src="transitions.js"></script>
 </body>
 </html>

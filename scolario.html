@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Le réseau — GGMobilités</title>
+<title>Scolario — Le service scolaire — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
@@ -21,8 +21,8 @@
 <div class="accent-bar"></div>
 <div class="page">
   <div style="margin-bottom:2rem">
-    <h1 style="font-family:Inter, sans-serif;font-size:32px;font-weight:800;margin-bottom:6px;color:var(--texte)">Le réseau GGMobilités</h1>
-    <p style="color:var(--texte-sec);font-size:15px">Cliquez sur une ligne pour voir les horaires en temps réel</p>
+    <h1 style="font-family:Inter, sans-serif;font-size:32px;font-weight:800;margin-bottom:6px;color:var(--texte)">🎒 Scolario — Le service scolaire</h1>
+    <p style="color:var(--texte-sec);font-size:15px">Les lignes de desserte des établissements scolaires.</p>
   </div>
   <div id="lignes-container">
     <div style="text-align:center;padding:3rem;color:var(--texte-sec)">Chargement du réseau...</div>
@@ -44,11 +44,7 @@ async function chargerLignes(){
     }
 
     const CATEGORIES = [
-      {key:"tram", titre:"Tram"},
-      {key:"urbain", titre:"Lignes urbaines"},
-      {key:"periurbain", titre:"Lignes périurbaines"},
-      {key:"suburbain", titre:"Lignes suburbaines"},
-      {key:"tad", titre:"Transport à la demande (TAD)"},
+      {key:"scolaire", titre:"Lignes scolaires"},
     ];
     const groupes = CATEGORIES.map(c => ({titre:c.titre, items: lignes.filter(l => (l.type||"urbain")===c.key)})).filter(g => g.items.length);
 

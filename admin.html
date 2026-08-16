@@ -119,9 +119,10 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
       <div class="si on" onclick="sw('db')"><span class="si-ic">📊</span>Tableau de bord</div>
       <div class="si" onclick="sw('lig')"><span class="si-ic">🚌</span>Lignes</div>
       <div class="si" onclick="sw('it')"><span class="si-ic">⚠️</span>Infotrafic</div>
-      <div class="si" onclick="sw('hor')"><span class="si-ic">🕐</span>Horaires</div>
       <div class="si" onclick="sw('art')"><span class="si-ic">📰</span>Actualités</div>
       <div class="si" onclick="sw('age')"><span class="si-ic">🏢</span>Agences</div>
+      <div class="si" onclick="sw('relais')"><span class="si-ic">🏪</span>Espaces relais</div>
+      <div class="si" onclick="sw('tarifs')"><span class="si-ic">💶</span>Tarifs</div>
       <div class="si" onclick="sw('med')"><span class="si-ic">🖼️</span>Images</div>
       <div class="si" onclick="sw('pop')"><span class="si-ic">💬</span>Pop-up</div>
       <div class="ss">Paramètres</div>
@@ -244,14 +245,45 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
             <div class="fd"><label>Adresse</label><input type="text" id="ag-a" placeholder="Place de la Gare, Grenoble"></div>
           </div>
           <div class="fr2">
-            <div class="fd"><label>Horaires semaine</label><input type="text" id="ag-s" placeholder="Lun–Ven : 8h–19h"></div>
-            <div class="fd"><label>Horaires sam/dim</label><input type="text" id="ag-w" placeholder="Sam : 9h–17h"></div>
+            <div class="fd"><label>Horaires</label><input type="text" id="ag-h" placeholder="Lun-Ven 8h-19h, Sam 9h-17h"></div>
+            <div class="fd"><label>Services</label><input type="text" id="ag-sv" placeholder="Vente, abonnements..."></div>
           </div>
-          <div class="fd"><label>Services</label><input type="text" id="ag-sv" placeholder="Vente, abonnements..."></div>
-          <button class="bor" onclick="addAge()">Ajouter</button>
+          <div class="fr2">
+            <div class="fd"><label>Latitude</label><input type="text" id="ag-lat" placeholder="45.1885"></div>
+            <div class="fd"><label>Longitude</label><input type="text" id="ag-lng" placeholder="5.7245"></div>
+          </div>
+          <div class="fd"><label>Info temporaire (optionnel)</label><input type="text" id="ag-temp" placeholder="Ex : fermeture exceptionnelle le..."></div>
+          <button class="bor" onclick="addAgeSupa()">Ajouter l'agence</button>
         </div>
         <div class="stl">Agences existantes</div>
         <div id="age-list"></div>
+      </div>
+
+      <div class="pn" id="pn-relais">
+        <h2>Espaces relais</h2>
+        <div class="fc">
+          <div class="fr2">
+            <div class="fd"><label>Nom</label><input type="text" id="er-n" placeholder="Tabac de la Gare"></div>
+            <div class="fd"><label>Adresse</label><input type="text" id="er-a" placeholder="12 rue de la Gare, Grenoble"></div>
+          </div>
+          <div class="fr2">
+            <div class="fd"><label>Horaires</label><input type="text" id="er-h" placeholder="Lun-Sam 7h-20h"></div>
+            <div class="fd"></div>
+          </div>
+          <div class="fr2">
+            <div class="fd"><label>Latitude</label><input type="text" id="er-lat" placeholder="45.1885"></div>
+            <div class="fd"><label>Longitude</label><input type="text" id="er-lng" placeholder="5.7245"></div>
+          </div>
+          <button class="bor" onclick="addRelais()">Ajouter l'espace relais</button>
+        </div>
+        <div class="stl">Espaces relais existants</div>
+        <div id="relais-list"></div>
+      </div>
+
+      <div class="pn" id="pn-tarifs">
+        <h2>Grille tarifaire</h2>
+        <div class="ib"><strong>Prix affichés sur la page Tarifs</strong> — modifiez et enregistrez chaque case.</div>
+        <div id="tarifs-grille-list"></div>
       </div>
 
       <div class="pn" id="pn-med">
@@ -348,7 +380,7 @@ let linesData=[];
 let curUser=null,saving=false,hAction=null,nbP=0;
 
 // ── TABS (index correspond à l'ordre des .si dans la sidebar) ─────────
-const TABS=["db","lig","it","hor","art","age","med","pop","cfg","cpt"];
+const TABS=["db","lig","it","art","age","relais","tarifs","med","pop","cfg","cpt"];
 function sw(n){
   document.querySelectorAll(".si").forEach((s,i)=>s.classList.toggle("on",TABS[i]===n));
   document.querySelectorAll(".pn").forEach(p=>p.classList.toggle("on",p.id==="pn-"+n));
@@ -356,6 +388,9 @@ function sw(n){
   if(n==="pop")renderPopPrev();
   if(n==="cfg")openCfg();
   if(n==="lig")renderLig();
+  if(n==="age")renderAge();
+  if(n==="relais")renderRelais();
+  if(n==="tarifs")renderTarifsGrille();
 }
 
 // ── SYNC JSONBin ──────────────────────────────────────────────────────
@@ -751,20 +786,76 @@ function fillLigneSelects(){
   const hcode=document.getElementById("h-code");if(hcode){const cur=hcode.value;hcode.innerHTML='<option value="">— Choisir —</option>'+opts;if([...hcode.options].some(o=>o.value===cur))hcode.value=cur;}
 }
 
-function renderAge(){
+async function renderAge(){
   const el=document.getElementById("age-list");if(!el)return;
-  el.innerHTML=db.agences.map(function(a,i){return'<div class="agec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><strong style="font-size:14px;color:var(--tx)">'+a.nom+'</strong><button class="bdel" onclick="delAge('+i+')">Supprimer</button></div><div style="font-size:12px;color:var(--txs);margin-bottom:2px">📍 '+a.adr+'</div><div style="font-size:12px;color:var(--txs);margin-bottom:2px">🕐 '+a.sem+'</div><div style="font-size:12px;color:var(--txs);margin-bottom:2px">'+a.we+'</div><div style="font-size:12px;color:var(--txs)">🔧 '+a.svc+'</div></div>';}).join("");
+  if(!supabaseClient){el.innerHTML='<div style="color:var(--txs);font-size:13px">Connexion Supabase indisponible.</div>';return;}
+  const {data,error}=await supabaseClient.from("agences_v2").select("*").order("nom");
+  if(error){el.innerHTML='<div style="color:var(--txs);font-size:13px">Erreur de chargement.</div>';return;}
+  window._supaAgences=data||[];
+  if(!window._supaAgences.length){el.innerHTML='<div style="color:var(--txs);font-size:13px">Aucune agence.</div>';return;}
+  el.innerHTML=window._supaAgences.map(function(a){return'<div class="agec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><strong style="font-size:14px;color:var(--tx)">'+a.nom+'</strong><button class="bdel" onclick="delAgeSupa(\''+a.id+'\')">Supprimer</button></div><div style="font-size:12px;color:var(--txs);margin-bottom:2px">📍 '+a.adresse+'</div>'+(a.horaires?'<div style="font-size:12px;color:var(--txs);margin-bottom:2px">🕐 '+a.horaires+'</div>':'')+(a.services?'<div style="font-size:12px;color:var(--txs)">🔧 '+a.services+'</div>':'')+(a.info_temp?'<div style="font-size:12px;color:#E4530B;margin-top:4px">ℹ️ '+a.info_temp+'</div>':'')+'</div>';}).join("");
 }
-async function addAge(){
+async function addAgeSupa(){
   const n=document.getElementById("ag-n").value.trim(),a=document.getElementById("ag-a").value.trim();
-  const s=document.getElementById("ag-s").value.trim(),w=document.getElementById("ag-w").value.trim();
-  const sv=document.getElementById("ag-sv").value.trim();
+  const h=document.getElementById("ag-h").value.trim(),sv=document.getElementById("ag-sv").value.trim();
+  const lat=parseFloat(document.getElementById("ag-lat").value),lng=parseFloat(document.getElementById("ag-lng").value);
+  const temp=document.getElementById("ag-temp").value.trim();
   if(!n||!a){toast("Remplissez nom et adresse.",true);return;}
-  db.agences.push({nom:n,adr:a,sem:s,we:w,svc:sv});
-  document.getElementById("ag-n").value="";document.getElementById("ag-a").value="";
-  log("Agence : "+n);renderAll();await saveDB();toast("Agence ajoutée !");
+  const {error}=await supabaseClient.from("agences_v2").insert({nom:n,adresse:a,horaires:h||null,services:sv||null,lat:isNaN(lat)?null:lat,lng:isNaN(lng)?null:lng,info_temp:temp||null});
+  if(error){toast("Erreur : "+error.message,true);return;}
+  ["ag-n","ag-a","ag-h","ag-sv","ag-lat","ag-lng","ag-temp"].forEach(id=>document.getElementById(id).value="");
+  log("Agence : "+n);renderAge();toast("Agence ajoutée !");
 }
-async function delAge(i){if(!confirm("Supprimer ?"))return;db.agences.splice(i,1);renderAll();await saveDB();toast("Agence supprimée.");}
+async function delAgeSupa(id){
+  if(!confirm("Supprimer ?"))return;
+  const {error}=await supabaseClient.from("agences_v2").delete().eq("id",id);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  log("Agence supprimée");renderAge();toast("Agence supprimée.");
+}
+
+async function renderRelais(){
+  const el=document.getElementById("relais-list");if(!el)return;
+  if(!supabaseClient){el.innerHTML='<div style="color:var(--txs);font-size:13px">Connexion Supabase indisponible.</div>';return;}
+  const {data,error}=await supabaseClient.from("espaces_relais").select("*").order("nom");
+  if(error){el.innerHTML='<div style="color:var(--txs);font-size:13px">Erreur de chargement.</div>';return;}
+  window._supaRelais=data||[];
+  if(!window._supaRelais.length){el.innerHTML='<div style="color:var(--txs);font-size:13px">Aucun espace relais.</div>';return;}
+  el.innerHTML=window._supaRelais.map(function(r){return'<div class="agec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><strong style="font-size:14px;color:var(--tx)">'+r.nom+'</strong><button class="bdel" onclick="delRelais(\''+r.id+'\')">Supprimer</button></div><div style="font-size:12px;color:var(--txs);margin-bottom:2px">📍 '+r.adresse+'</div>'+(r.horaires?'<div style="font-size:12px;color:var(--txs)">🕐 '+r.horaires+'</div>':'')+'</div>';}).join("");
+}
+async function addRelais(){
+  const n=document.getElementById("er-n").value.trim(),a=document.getElementById("er-a").value.trim();
+  const h=document.getElementById("er-h").value.trim();
+  const lat=parseFloat(document.getElementById("er-lat").value),lng=parseFloat(document.getElementById("er-lng").value);
+  if(!n||!a){toast("Remplissez nom et adresse.",true);return;}
+  const {error}=await supabaseClient.from("espaces_relais").insert({nom:n,adresse:a,horaires:h||null,lat:isNaN(lat)?null:lat,lng:isNaN(lng)?null:lng});
+  if(error){toast("Erreur : "+error.message,true);return;}
+  ["er-n","er-a","er-h","er-lat","er-lng"].forEach(id=>document.getElementById(id).value="");
+  log("Espace relais : "+n);renderRelais();toast("Espace relais ajouté !");
+}
+async function delRelais(id){
+  if(!confirm("Supprimer ?"))return;
+  const {error}=await supabaseClient.from("espaces_relais").delete().eq("id",id);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  log("Espace relais supprimé");renderRelais();toast("Espace relais supprimé.");
+}
+
+async function renderTarifsGrille(){
+  const el=document.getElementById("tarifs-grille-list");if(!el)return;
+  if(!supabaseClient){el.innerHTML='<div style="color:var(--txs);font-size:13px">Connexion Supabase indisponible.</div>';return;}
+  const {data,error}=await supabaseClient.from("tarifs_grille").select("*").order("categorie_age").order("type_titre");
+  if(error){el.innerHTML='<div style="color:var(--txs);font-size:13px">Erreur de chargement.</div>';return;}
+  window._supaTarifs=data||[];
+  const ageLabel={"0-4":"0-4 ans","4-17":"4-17 ans","17+":"17 ans et +"};
+  const typeLabel={"unitaire":"Unitaire","journee":"Journée","mensuel":"Mensuel"};
+  el.innerHTML='<div class="fc">'+window._supaTarifs.map(function(t){return'<div class="fr3" style="align-items:center;margin-bottom:8px"><div style="font-size:13px;color:var(--tx)">'+ageLabel[t.categorie_age]+'</div><div style="font-size:13px;color:var(--txs)">'+typeLabel[t.type_titre]+'</div><div style="display:flex;gap:6px"><input type="number" step="0.10" value="'+t.prix+'" id="tg-'+t.id+'" style="width:90px;padding:6px 10px;background:#111;border:1px solid var(--bord);border-radius:6px;color:var(--tx)"><button class="bgh" style="padding:6px 12px" onclick="saveTarif(\''+t.id+'\')">💾</button></div></div>';}).join("")+'</div>';
+}
+async function saveTarif(id){
+  const val=parseFloat(document.getElementById("tg-"+id).value);
+  if(isNaN(val)){toast("Prix invalide.",true);return;}
+  const {error}=await supabaseClient.from("tarifs_grille").update({prix:val}).eq("id",id);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  log("Tarif mis à jour");toast("Tarif enregistré !");
+}
 
 // ── IMAGES ────────────────────────────────────────────────────────────
 function hFiles(files){Array.from(files).forEach(function(f){if(f.size>2097152){toast(f.name+" trop lourde",true);return;}const r=new FileReader();r.onload=function(e){db.images.push({name:f.name,data:e.target.result,date:new Date().toLocaleDateString("fr-FR")});renderImgs();saveDB();toast("Image ajoutée !");};r.readAsDataURL(f);});}
