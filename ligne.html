@@ -60,7 +60,7 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a><a href="lignes-speciales.html"><strong>Lignes spéciales</strong><span>Événements, nature et lignes ponctuelles.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a><a href="combinez-transports.html"><strong>Combinez les transports</strong><span>Un même tarif pour tous vos modes de transport.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a><a href="nous-rejoindre.html"><strong>Nous rejoindre</strong><span>Nos offres d'emploi.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
@@ -80,6 +80,24 @@
   <div class="main-grid">
     <div>
       <div id="map"></div>
+      <div class="lieux-box" id="speciale-box" style="display:none">
+        <h3>🎟️ Réserver une place</h3>
+        <div id="speciale-desc" style="font-size:13px;color:var(--texte-sec,#666);margin-bottom:14px;line-height:1.5"></div>
+        <form id="speciale-form">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Nom et prénom</label><input type="text" id="sp-nom" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Nombre de places</label><input type="number" id="sp-places" min="1" value="1" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Adresse mail</label><input type="email" id="sp-email" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Téléphone</label><input type="tel" id="sp-tel" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Passage souhaité</label>
+          <input type="text" id="sp-passage" required placeholder="Ex : Samedi 12h30 depuis Gares" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5);margin-bottom:12px">
+          <button type="submit" id="sp-submit" style="width:100%;padding:12px;border-radius:9px;border:none;background:var(--badge,#185FA5);color:white;font-family:'Inter', sans-serif;font-weight:700;font-size:13px;cursor:pointer">Réserver ma place</button>
+          <div id="sp-msg" style="font-size:12px;margin-top:10px;text-align:center"></div>
+        </form>
+      </div>
       <div class="lieux-box" id="tad-box" style="display:none">
         <h3>🚐 Réserver un trajet</h3>
         <form id="tad-form">
@@ -111,13 +129,13 @@
       </div>
     </div>
     <div>
-      <div class="thermo-box" style="margin-bottom:14px">
-        <div class="thermo-h" id="thermo-title-aller">Arrêts</div>
-        <div id="thermo-list-aller"><div style="padding:16px;color:rgba(255,255,255,0.4);font-size:12px">Chargement...</div></div>
-      </div>
-      <div class="thermo-box" id="thermo-box-retour">
-        <div class="thermo-h" id="thermo-title-retour">Arrêts</div>
-        <div id="thermo-list-retour"><div style="padding:16px;color:rgba(255,255,255,0.4);font-size:12px">Chargement...</div></div>
+      <div class="thermo-box">
+        <div class="thermo-h" id="thermo-title" style="display:flex;align-items:center">
+          <span style="flex:1">Arrêts</span>
+          <span id="thermo-col-a" style="width:52px;text-align:center;font-size:10px;color:rgba(255,255,255,0.55)"></span>
+          <span id="thermo-col-r" style="width:52px;text-align:center;font-size:10px;color:rgba(255,255,255,0.55)"></span>
+        </div>
+        <div id="thermo-list"><div style="padding:16px;color:rgba(255,255,255,0.4);font-size:12px">Chargement...</div></div>
       </div>
     </div>
   </div>
@@ -152,6 +170,15 @@ async function init(){
     document.getElementById("tad-box").style.display = "block";
     document.getElementById("tad-date").min = new Date().toISOString().split("T")[0];
     document.getElementById("tad-form").addEventListener("submit", envoyerReservationTad);
+  }
+
+  if(ligne.type === "speciale"){
+    document.getElementById("speciale-box").style.display = "block";
+    if(ligne.description || ligne.date_debut){
+      const dates = ligne.date_debut ? `📅 Du ${new Date(ligne.date_debut).toLocaleDateString('fr-FR')}${ligne.date_fin ? ' au '+new Date(ligne.date_fin).toLocaleDateString('fr-FR') : ''}` : '';
+      document.getElementById("speciale-desc").innerHTML = (dates ? `<strong>${dates}</strong><br>` : '') + (ligne.description || '');
+    }
+    document.getElementById("speciale-form").addEventListener("submit", envoyerReservationSpeciale);
   }
 
   initMap();
@@ -239,33 +266,24 @@ async function loadFichiers(){
 }
 
 function afficherDeuxSens(){
-  document.getElementById("thermo-title-aller").textContent = "Aller — " + ligne.terminus_a + " → " + ligne.terminus_b;
-  document.getElementById("thermo-title-retour").textContent = "Retour — " + ligne.terminus_b + " → " + ligne.terminus_a;
-
+  document.getElementById("thermo-title").firstElementChild.textContent = ligne.terminus_a + " ↔ " + ligne.terminus_b;
+  document.getElementById("thermo-col-a").textContent = "→ " + ligne.terminus_b;
+  document.getElementById("thermo-col-r").textContent = "→ " + ligne.terminus_a;
   if(!stopsByS.retour.filter(Boolean).length){
-    document.getElementById("thermo-box-retour").style.display = "none";
+    document.getElementById("thermo-col-r").style.display = "none";
   }
 
-  ["aller","retour"].forEach(s => {
-    if(polylines[s]) polylines[s].addTo(map);
-  });
-  const allBounds = [];
-  ["aller","retour"].forEach(s => {
-    if(polylines[s]) allBounds.push(...polylines[s].getLatLngs());
-  });
-  if(allBounds.length) map.fitBounds(allBounds, {padding:[30,30]});
+  // Carte : uniquement le sens Aller, pour ne pas surcharger visuellement
+  if(polylines.aller){
+    polylines.aller.addTo(map);
+    map.fitBounds(polylines.aller.getLatLngs(), {padding:[30,30]});
+  }
+  window._stopMarkers = stopsByS.aller.filter(Boolean).map(a =>
+    L.circleMarker([a.lat,a.lng], {radius:6, color:"#fff", weight:2, fillColor:ligne.couleur, fillOpacity:1})
+      .addTo(map).bindPopup(`<strong>${a.nom}</strong><br><a href="arret.html?id=${a.id}">Voir l'arrêt →</a>`)
+  );
 
-  window._stopMarkers = [];
-  ["aller","retour"].forEach(s => {
-    stopsByS[s].filter(Boolean).forEach(a => {
-      const m = L.circleMarker([a.lat,a.lng], {radius:6, color:"#fff", weight:2, fillColor: s==="aller"?ligne.couleur:"#888", fillOpacity:1})
-        .addTo(map).bindPopup(`<strong>${a.nom}</strong><br><span style="font-size:11px;color:#888">Sens ${s==="aller"?"Aller":"Retour"}</span><br><a href="arret.html?id=${a.id}">Voir l'arrêt →</a>`);
-      window._stopMarkers.push(m);
-    });
-  });
-
-  renderThermo("aller");
-  renderThermo("retour");
+  renderThermoAll();
 }
 
 function jourType(){ const j=new Date().getDay(); return j===6?"samedi":j===0?"dimanche":"semaine"; }
@@ -279,32 +297,53 @@ function nextDeparture(f, nowMin){
   return nextMin>fin ? null : nextMin-nowMin;
 }
 
-function renderThermo(s){
-  const stops = stopsByS[s].filter(Boolean);
-  const el = document.getElementById("thermo-list-"+s);
-  if(!el) return;
-  if(!stops.length){ el.innerHTML = '<div style="padding:16px;color:rgba(255,255,255,0.4);font-size:12px">Aucun arrêt renseigné pour ce sens.</div>'; return; }
-
+function prochainPourSens(s){
   const jour = jourType();
   const nowMin = new Date().getHours()*60 + new Date().getMinutes();
   const relevantFreqs = freqsByS[s].filter(f=>f.jour===jour);
   let nextMins = null;
   relevantFreqs.forEach(f=>{ const n=nextDeparture(f,nowMin); if(n!==null && (nextMins===null||n<nextMins)) nextMins=n; });
+  return nextMins;
+}
 
-  el.innerHTML = stops.map((a,i) => {
+function renderThermoAll(){
+  const el = document.getElementById("thermo-list");
+  const stopsAller = stopsByS.aller.filter(Boolean);
+  if(!stopsAller.length){ el.innerHTML = '<div style="padding:16px;color:rgba(255,255,255,0.4);font-size:12px">Aucun arrêt renseigné.</div>'; return; }
+
+  const stopsRetour = stopsByS.retour.filter(Boolean);
+  const nextAller = prochainPourSens("aller");
+  const nextRetour = prochainPourSens("retour");
+  const hasRetour = stopsRetour.length > 0;
+
+  el.innerHTML = stopsAller.map((a,i) => {
     const corr = correspByStop[a.id] || [];
     const corrHtml = corr.length ? `<div class="tcorr">${corr.map(c=>`<div class="tcorr-badge" style="background:${c.couleur}">${c.code}</div>`).join("")}</div>` : "";
-    const arretMins = nextMins===null ? null : nextMins + (a._cumulMin||0);
-    const timeLabel = arretMins===null ? "—" : (arretMins<=0 ? "≈" : arretMins+" min");
+
+    const minsA = nextAller===null ? null : nextAller + (a._cumulMin||0);
+    const labelA = minsA===null ? "—" : (minsA<=0 ? "≈" : minsA+" min");
+
+    // Cherche l'arrêt correspondant côté Retour (par nom, car ce sont des entrées distinctes en base)
+    let labelR = "";
+    if(hasRetour){
+      const match = stopsRetour.find(r => r.nom.trim().toLowerCase() === a.nom.trim().toLowerCase());
+      if(match){
+        const minsR = nextRetour===null ? null : nextRetour + (match._cumulMin||0);
+        labelR = minsR===null ? "—" : (minsR<=0 ? "≈" : minsR+" min");
+      } else {
+        labelR = "—";
+      }
+    }
+
     return `
     <div class="tstop" onclick="location.href='arret.html?id=${a.id}'">
-      <div class="tdot-wrap"><div class="tdot"></div>${i<stops.length-1 ? '<div class="tline"></div>' : ''}</div>
+      <div class="tdot-wrap"><div class="tdot"></div>${i<stopsAller.length-1 ? '<div class="tline"></div>' : ''}</div>
       <div class="tinfo"><div class="tname">${a.nom}</div>${corrHtml}</div>
-      <div class="ttime">${timeLabel}</div>
+      <div class="ttime" style="width:52px;text-align:center">${labelA}</div>
+      ${hasRetour ? `<div class="ttime" style="width:52px;text-align:center;color:#9AB0C9">${labelR}</div>` : ''}
     </div>`;
   }).join("");
 }
-function renderThermoAll(){ renderThermo("aller"); renderThermo("retour"); }
 
 function genPDF(){
   window.open("generer-pdf.html?code="+encodeURIComponent(CODE)+"&sens=aller", "_blank");
@@ -341,6 +380,37 @@ async function envoyerReservationTad(e){
   msg.style.color = "#00A854";
   msg.textContent = "✅ Demande envoyée ! Nous vous recontactons pour confirmer.";
   document.getElementById("tad-form").reset();
+}
+
+async function envoyerReservationSpeciale(e){
+  e.preventDefault();
+  const btn = document.getElementById("sp-submit");
+  const msg = document.getElementById("sp-msg");
+  if(typeof setBtnLoading === "function") setBtnLoading(btn, "Envoi..."); else { btn.disabled=true; btn.textContent="Envoi..."; }
+  msg.textContent = ""; msg.style.color = "";
+
+  const payload = {
+    ligne_code: CODE,
+    nom_prenom: document.getElementById("sp-nom").value.trim(),
+    email: document.getElementById("sp-email").value.trim(),
+    telephone: document.getElementById("sp-tel").value.trim() || null,
+    passage_choisi: document.getElementById("sp-passage").value.trim(),
+    nb_places: parseInt(document.getElementById("sp-places").value) || 1
+  };
+
+  const { error } = await supabaseClient.from("reservations_speciale").insert(payload);
+
+  if(typeof unsetBtnLoading === "function") unsetBtnLoading(btn); else { btn.disabled=false; btn.textContent="Réserver ma place"; }
+
+  if(error){
+    msg.style.color = "#E4032E";
+    msg.textContent = "Erreur lors de l'envoi. Réessayez.";
+    console.error(error);
+    return;
+  }
+  msg.style.color = "#00A854";
+  msg.textContent = "✅ Réservation envoyée ! Vous recevrez une confirmation par email.";
+  document.getElementById("speciale-form").reset();
 }
 
 init();

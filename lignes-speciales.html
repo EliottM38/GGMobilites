@@ -8,6 +8,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .ls-wrap{max-width:1100px;margin:0 auto;padding:2.5rem 2rem 4rem}
+    .ls-intro{font-size:14px;color:var(--texte-sec);margin-bottom:2rem;line-height:1.6;background:var(--fond);border-radius:12px;padding:1.25rem 1.5rem}
+    .ls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+    .ls-card{background:white;border:1px solid var(--bordure);border-radius:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+    .ls-card-head{padding:14px 18px;display:flex;align-items:center;gap:10px}
+    .ls-badge{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:800;font-size:12px;color:white;flex-shrink:0}
+    .ls-nom{font-family:'Inter',sans-serif;font-weight:800;font-size:15px;color:white}
+    .ls-body{padding:16px 18px}
+    .ls-dates{font-size:12px;color:var(--bleu);font-weight:600;margin-bottom:6px}
+    .ls-trajet{font-size:13px;color:var(--texte);margin-bottom:10px}
+    .ls-desc{font-size:12px;color:var(--texte-sec);line-height:1.5;margin-bottom:14px}
+    .ls-btn{display:inline-block;padding:9px 18px;border-radius:9px;background:var(--bleu);color:white;text-decoration:none;font-family:'Inter',sans-serif;font-weight:700;font-size:12px}
+  </style>
 </head>
 <body>
 <nav>
@@ -16,71 +31,63 @@
       <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
       GGMobilités
     </a>
-    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a></div></div></div>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a><a href="lignes-speciales.html"><strong>Lignes spéciales</strong><span>Événements, nature et lignes ponctuelles.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a><a href="combinez-transports.html"><strong>Combinez les transports</strong><span>Un même tarif pour tous vos modes de transport.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a><a href="nous-rejoindre.html"><strong>Nous rejoindre</strong><span>Nos offres d'emploi.</span></a></div></div></div>
   </div>
 </nav>
 <div class="accent-bar"></div>
 
-<div class="page">
-  <div style="margin-bottom:2rem">
-    <h1 style="font-family:'Inter', sans-serif;font-size:32px;font-weight:800;margin-bottom:6px;color:var(--texte)">Lignes spéciales</h1>
-    <p style="color:var(--texte-sec)">Lignes saisonnières, événementielles et services à la demande</p>
-  </div>
+<div class="ls-wrap">
+  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:14px">Lignes spéciales</h1>
+  <p class="ls-intro">Les lignes spéciales sont mises en place afin de vous accompagner sur les différents évènements spéciaux, vous replonger en nature et bien plus. Certaines sont gratuites, d'autres à tarif spécial, d'autres sur réservation.</p>
 
-  <div style="margin-bottom:2.5rem">
-    <div style="font-size:11px;font-weight:700;color:var(--texte-sec);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:1rem">Transport à la demande (TAD)</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
-      <div style="background:var(--noir-card);border:1px solid var(--bordure);border-radius:14px;padding:1.5rem">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <span style="background:#534AB7;color:white;font-family:'Inter', sans-serif;font-weight:800;font-size:13px;padding:5px 12px;border-radius:8px">TAD 901</span>
-          <span style="font-size:13px;font-weight:600;color:var(--texte)">Service à la demande</span>
-        </div>
-        <div style="background:var(--noir);border-radius:10px;overflow:hidden;margin-bottom:12px">
-          <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/11/map-27-scaled.png" style="width:100%;height:auto;display:block">
-        </div>
-        <p style="font-size:13px;color:var(--texte-sec);margin-bottom:12px">Service de transport à la demande sur réservation préalable.</p>
-        <a href="reseau.html" class="btn btn-or" style="font-size:13px;padding:8px 18px;display:inline-flex">Réserver</a>
-      </div>
-      <div style="background:var(--noir-card);border:1px solid var(--bordure);border-radius:14px;padding:1.5rem">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <span style="background:#534AB7;color:white;font-family:'Inter', sans-serif;font-weight:800;font-size:13px;padding:5px 12px;border-radius:8px">TAD 902</span>
-          <span style="font-size:13px;font-weight:600;color:var(--texte)">Service à la demande</span>
-        </div>
-        <div style="background:var(--noir);border-radius:10px;overflow:hidden;margin-bottom:12px">
-          <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/11/map-28-scaled.png" style="width:100%;height:auto;display:block">
-        </div>
-        <p style="font-size:13px;color:var(--texte-sec);margin-bottom:12px">Service de transport à la demande sur réservation préalable.</p>
-        <a href="reseau.html" class="btn btn-or" style="font-size:13px;padding:8px 18px;display:inline-flex">Réserver</a>
-      </div>
-    </div>
-  </div>
-
-  <div style="margin-bottom:2.5rem">
-    <div style="font-size:11px;font-weight:700;color:var(--texte-sec);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:1rem">Lignes saisonnières</div>
-    <div style="background:var(--noir-card);border:1px solid var(--bordure);border-radius:14px;padding:2rem;text-align:center">
-      <div style="font-size:36px;margin-bottom:1rem">🌞</div>
-      <h3 style="font-family:'Inter', sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;color:var(--texte)">Lignes saisonnières</h3>
-      <p style="font-size:14px;color:var(--texte-sec);max-width:400px;margin:0 auto 1.5rem">Les lignes saisonnières et événementielles sont mises en place ponctuellement. Consultez les actualités pour les prochaines activations.</p>
-      <a href="actualites.html" class="btn btn-or" style="font-size:13px;padding:8px 18px;display:inline-flex">Voir les actualités</a>
-    </div>
-  </div>
+  <div class="ls-grid" id="ls-grid"><div style="font-size:13px;color:var(--texte-sec)">Chargement...</div></div>
 </div>
 
 <footer>
   <div class="accent-bar"></div>
-  <div style="padding:3rem 2rem">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo"><img src="logo.png" alt="GGMobilités"> GGMobilités</div>
-        <p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région.</p>
-      </div>
-      <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan du réseau</a><a href="lignes-speciales.html">Lignes spéciales</a><a href="infotrafic.html">Infotrafic</a></div>
-      <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div>
-      <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div>
+  <div style="padding:2.5rem 2rem"><div class="footer-inner">
+    <div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div><p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région.</p></div>
+    <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan du réseau</a><a href="infotrafic.html">Infotrafic</a></div>
+    <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div>
+    <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div>
   </div>
 </footer>
+
+<script>
+async function init(){
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  const supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  const { data: lignes, error } = await supabaseClient.from('lignes').select('*').eq('type','speciale').eq('actif', true).order('date_debut');
+
+  const grid = document.getElementById('ls-grid');
+  if(error || !lignes || !lignes.length){
+    grid.innerHTML = '<div style="font-size:13px;color:var(--texte-sec)">Aucune ligne spéciale programmée pour le moment.</div>';
+    return;
+  }
+
+  grid.innerHTML = lignes.map(l => {
+    const dates = (l.date_debut || l.date_fin)
+      ? `📅 Du ${l.date_debut ? new Date(l.date_debut).toLocaleDateString('fr-FR') : '—'} au ${l.date_fin ? new Date(l.date_fin).toLocaleDateString('fr-FR') : '—'}`
+      : '';
+    return `
+    <div class="ls-card">
+      <div class="ls-card-head" style="background:${l.couleur}">
+        <div class="ls-badge" style="background:rgba(255,255,255,0.25)">${l.code}</div>
+        <div class="ls-nom">${l.nom}</div>
+      </div>
+      <div class="ls-body">
+        ${dates ? `<div class="ls-dates">${dates}</div>` : ''}
+        <div class="ls-trajet">${l.terminus_a} ↔ ${l.terminus_b}</div>
+        ${l.description ? `<div class="ls-desc">${l.description}</div>` : ''}
+        <a href="ligne.html?code=${encodeURIComponent(l.code)}" class="ls-btn">Plus d'infos →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+init();
+</script>
 <script src="transitions.js"></script>
 </body>
 </html>

@@ -122,6 +122,8 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
       <div class="si" onclick="sw('art')"><span class="si-ic">📰</span>Actualités</div>
       <div class="si" onclick="sw('age')"><span class="si-ic">🏢</span>Agences</div>
       <div class="si" onclick="sw('relais')"><span class="si-ic">🏪</span>Espaces relais</div>
+      <div class="si" onclick="sw('arrets')"><span class="si-ic">🚏</span>Arrêts</div>
+      <div class="si" onclick="sw('emploi')"><span class="si-ic">💼</span>Offres d'emploi</div>
       <div class="si" onclick="sw('tarifs')"><span class="si-ic">💶</span>Tarifs</div>
       <div class="si" onclick="sw('med')"><span class="si-ic">🖼️</span>Images</div>
       <div class="si" onclick="sw('pop')"><span class="si-ic">💬</span>Pop-up</div>
@@ -280,6 +282,29 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
         <div id="relais-list"></div>
       </div>
 
+      <div class="pn" id="pn-arrets">
+        <h2>Arrêts</h2>
+        <div class="ib"><strong>Tous les arrêts du réseau</strong> — modifiez l'adresse, le statut, l'anecdote ou le lieu notable de n'importe quel arrêt. La suppression d'un arrêt le retire aussi des lignes qui le desservent.</div>
+        <div class="fd"><input type="text" id="arrets-search" placeholder="🔍 Rechercher un arrêt par nom..." oninput="renderArrets()"></div>
+        <div id="arrets-list"></div>
+      </div>
+
+      <div class="pn" id="pn-emploi">
+        <h2>Offres d'emploi</h2>
+        <div class="fc">
+          <div class="fr2">
+            <div class="fd"><label>Titre du poste</label><input type="text" id="em-titre" placeholder="Conducteur de bus H/F"></div>
+            <div class="fd"><label>Salaire</label><input type="text" id="em-salaire" placeholder="Ex : 1 900 € à 2 200 € brut/mois"></div>
+          </div>
+          <div class="fd"><label>Description</label><textarea id="em-desc" placeholder="Missions, profil recherché..."></textarea></div>
+          <button class="bor" onclick="addEmploi()">Publier l'offre</button>
+        </div>
+        <div class="stl">Offres publiées</div>
+        <div id="emploi-list"></div>
+        <div class="stl">Candidatures reçues</div>
+        <div id="candidatures-list"></div>
+      </div>
+
       <div class="pn" id="pn-tarifs">
         <h2>Grille tarifaire</h2>
         <div class="ib"><strong>Prix affichés sur la page Tarifs</strong> — modifiez et enregistrez chaque case.</div>
@@ -380,7 +405,7 @@ let linesData=[];
 let curUser=null,saving=false,hAction=null,nbP=0;
 
 // ── TABS (index correspond à l'ordre des .si dans la sidebar) ─────────
-const TABS=["db","lig","it","art","age","relais","tarifs","med","pop","cfg","cpt"];
+const TABS=["db","lig","it","art","age","relais","arrets","emploi","tarifs","med","pop","cfg","cpt"];
 function sw(n){
   document.querySelectorAll(".si").forEach((s,i)=>s.classList.toggle("on",TABS[i]===n));
   document.querySelectorAll(".pn").forEach(p=>p.classList.toggle("on",p.id==="pn-"+n));
@@ -390,6 +415,8 @@ function sw(n){
   if(n==="lig")renderLig();
   if(n==="age")renderAge();
   if(n==="relais")renderRelais();
+  if(n==="arrets")renderArrets();
+  if(n==="emploi")renderEmploi();
   if(n==="tarifs")renderTarifsGrille();
 }
 
@@ -855,6 +882,85 @@ async function saveTarif(id){
   const {error}=await supabaseClient.from("tarifs_grille").update({prix:val}).eq("id",id);
   if(error){toast("Erreur : "+error.message,true);return;}
   log("Tarif mis à jour");toast("Tarif enregistré !");
+}
+
+// ── ARRÊTS ────────────────────────────────────────────────────────────
+const STATUT_OPTS=[["normal","Normal"],["deplace","Déplacé"],["supprime","Fermé"],["travaux","Travaux"],["info","Info"]];
+async function renderArrets(){
+  const el=document.getElementById("arrets-list");if(!el)return;
+  if(!supabaseClient){el.innerHTML='<div style="color:var(--txs);font-size:13px">Connexion Supabase indisponible.</div>';return;}
+  const q=(document.getElementById("arrets-search")?.value||"").trim();
+  let query=supabaseClient.from("arrets").select("*").order("nom");
+  if(q) query=query.ilike("nom","%"+q+"%");
+  const {data,error}=await query;
+  if(error){el.innerHTML='<div style="color:var(--txs);font-size:13px">Erreur de chargement.</div>';return;}
+  window._supaArrets=data||[];
+  if(!window._supaArrets.length){el.innerHTML='<div style="color:var(--txs);font-size:13px">Aucun arrêt trouvé.</div>';return;}
+  el.innerHTML=window._supaArrets.map(function(a){
+    return '<div class="fc" style="margin-bottom:10px">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><strong style="font-size:14px;color:var(--tx)">🚏 '+a.nom+'</strong><button class="bdel" onclick="delArret(\''+a.id+'\')">Supprimer</button></div>'
+      +'<div class="fr2" style="margin-bottom:8px">'
+      +'<div class="fd" style="margin:0"><label>Adresse</label><input type="text" id="ar-adr-'+a.id+'" value="'+(a.adresse||"").replace(/"/g,"&quot;")+'"></div>'
+      +'<div class="fd" style="margin:0"><label>Statut</label><select id="ar-st-'+a.id+'">'+STATUT_OPTS.map(function(o){return '<option value="'+o[0]+'"'+(a.statut===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join("")+'</select></div>'
+      +'</div>'
+      +'<div class="fd" style="margin-bottom:8px"><label>Détail du statut (optionnel)</label><input type="text" id="ar-std-'+a.id+'" value="'+(a.statut_detail||"").replace(/"/g,"&quot;")+'" placeholder="Ex : fermé pour travaux jusqu\'au..."></div>'
+      +'<div class="fr2">'
+      +'<div class="fd" style="margin:0"><label>Lieu notable</label><input type="text" id="ar-lieu-'+a.id+'" value="'+(a.lieu_nom||"").replace(/"/g,"&quot;")+'"></div>'
+      +'<div class="fd" style="margin:0"><label>Anecdote</label><input type="text" id="ar-an-'+a.id+'" value="'+(a.anecdote||"").replace(/"/g,"&quot;")+'"></div>'
+      +'</div>'
+      +'<button class="bgh" style="margin-top:8px" onclick="saveArret(\''+a.id+'\')">💾 Enregistrer</button>'
+      +'</div>';
+  }).join("");
+}
+async function saveArret(id){
+  const payload={
+    adresse: document.getElementById("ar-adr-"+id).value.trim()||null,
+    statut: document.getElementById("ar-st-"+id).value,
+    statut_detail: document.getElementById("ar-std-"+id).value.trim()||null,
+    lieu_nom: document.getElementById("ar-lieu-"+id).value.trim()||null,
+    anecdote: document.getElementById("ar-an-"+id).value.trim()||null
+  };
+  const {error}=await supabaseClient.from("arrets").update(payload).eq("id",id);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  log("Arrêt mis à jour");toast("Arrêt enregistré !");
+}
+async function delArret(id){
+  if(!confirm("Supprimer cet arrêt ? Il sera retiré de toutes les lignes qui le desservent."))return;
+  const {error}=await supabaseClient.from("arrets").delete().eq("id",id);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  log("Arrêt supprimé");renderArrets();toast("Arrêt supprimé.");
+}
+
+// ── OFFRES D'EMPLOI ──────────────────────────────────────────────────
+async function renderEmploi(){
+  const el=document.getElementById("emploi-list");if(!el)return;
+  if(!supabaseClient)return;
+  const {data:offres}=await supabaseClient.from("offres_emploi").select("*").order("created_at",{ascending:false});
+  window._supaOffres=offres||[];
+  el.innerHTML=window._supaOffres.length?window._supaOffres.map(function(o){return'<div class="cptc"><div style="flex:1"><strong style="font-size:13px;color:var(--tx)">'+o.titre+'</strong>'+(o.salaire?' · <span style="color:var(--txs);font-size:12px">'+o.salaire+'</span>':'')+(o.actif?'':' <span style="color:#E4530B;font-size:11px">(masquée)</span>')+'</div><button class="bgh" style="padding:6px 12px" onclick="toggleEmploi(\''+o.id+'\','+(!o.actif)+')">'+(o.actif?'Masquer':'Publier')+'</button><button class="bdel" onclick="delEmploi(\''+o.id+'\')">Supprimer</button></div>';}).join(""):'<div style="color:var(--txs);font-size:13px">Aucune offre.</div>';
+
+  const cEl=document.getElementById("candidatures-list");
+  const {data:candid}=await supabaseClient.from("candidatures").select("*").order("created_at",{ascending:false}).limit(30);
+  cEl.innerHTML=(candid&&candid.length)?candid.map(function(c){return'<div class="cptc"><div style="flex:1"><strong style="font-size:13px;color:var(--tx)">'+c.nom_prenom+'</strong> — <span style="color:var(--txs);font-size:12px">'+(c.offre_titre||"—")+'</span><div style="font-size:11px;color:var(--txs)">'+c.email+(c.telephone?' · '+c.telephone:'')+' · '+new Date(c.created_at).toLocaleDateString("fr-FR")+'</div></div>'+(c.cv_url?'<span style="font-size:11px;color:var(--txs)">📎 CV joint</span>':'')+'</div>';}).join(""):'<div style="color:var(--txs);font-size:13px">Aucune candidature.</div>';
+}
+async function addEmploi(){
+  const t=document.getElementById("em-titre").value.trim(),s=document.getElementById("em-salaire").value.trim(),d=document.getElementById("em-desc").value.trim();
+  if(!t){toast("Entrez un titre.",true);return;}
+  const {error}=await supabaseClient.from("offres_emploi").insert({titre:t,salaire:s||null,description:d||null});
+  if(error){toast("Erreur : "+error.message,true);return;}
+  document.getElementById("em-titre").value="";document.getElementById("em-salaire").value="";document.getElementById("em-desc").value="";
+  log("Offre publiée : "+t);renderEmploi();toast("Offre publiée !");
+}
+async function toggleEmploi(id,val){
+  const {error}=await supabaseClient.from("offres_emploi").update({actif:val}).eq("id",id);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  renderEmploi();
+}
+async function delEmploi(id){
+  if(!confirm("Supprimer cette offre ?"))return;
+  const {error}=await supabaseClient.from("offres_emploi").delete().eq("id",id);
+  if(error){toast("Erreur : "+error.message,true);return;}
+  log("Offre supprimée");renderEmploi();toast("Offre supprimée.");
 }
 
 // ── IMAGES ────────────────────────────────────────────────────────────

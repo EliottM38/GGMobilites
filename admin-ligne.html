@@ -92,7 +92,16 @@ input[type=color]{height:40px;width:100%;padding:3px;border-radius:8px;border:1p
         <option value="suburbain">Suburbaine</option>
         <option value="scolaire">Scolaire</option>
         <option value="tad">Transport à la demande (TAD — formulaire de réservation)</option>
+        <option value="speciale">Ligne spéciale (événementielle — dates + réservation)</option>
       </select>
+      <div id="speciale-fields" style="display:none;margin-bottom:12px">
+        <div class="row2">
+          <div><label>Date de début</label><input type="date" id="f-date-debut"></div>
+          <div><label>Date de fin</label><input type="date" id="f-date-fin"></div>
+        </div>
+        <label>Description (affichée sur la fiche de la ligne)</label>
+        <textarea id="f-description" rows="3" placeholder="Détails de l'événement, contexte, informations pratiques..." style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bord);background:#0F0F18;color:var(--tx);font-family:inherit;margin-bottom:0"></textarea>
+      </div>
       <label>Icône de la ligne (lien URL vers une image)</label>
       <input type="url" id="f-icone" placeholder="https://...">
     </div>
@@ -193,6 +202,10 @@ async function loadExistingLigne(code){
   document.getElementById("f-term-b").value = l.terminus_b;
   document.getElementById("f-icone").value = l.icone_url || "";
   document.getElementById("f-type").value = l.type || "urbain";
+  document.getElementById("speciale-fields").style.display = (l.type==="speciale") ? "block" : "none";
+  document.getElementById("f-date-debut").value = l.date_debut || "";
+  document.getElementById("f-date-fin").value = l.date_fin || "";
+  document.getElementById("f-description").value = l.description || "";
   document.getElementById("tad-hint").style.display = (l.type==="tad") ? "block" : "none";
 
   const { data: las } = await supabaseClient.from("ligne_arrets").select("*, arrets(*)").eq("ligne_code", code).order("ordre");
@@ -396,6 +409,9 @@ async function saveLigne(){
   const termB = document.getElementById("f-term-b").value.trim();
   const icone = document.getElementById("f-icone").value.trim();
   const type = document.getElementById("f-type").value;
+  const dateDebut = document.getElementById("f-date-debut").value || null;
+  const dateFin = document.getElementById("f-date-fin").value || null;
+  const description = document.getElementById("f-description").value.trim() || null;
 
   if(!code || !nom || !termA || !termB){
     msg.className="err"; msg.textContent="Code, nom et les deux terminus sont obligatoires."; return;
@@ -412,7 +428,7 @@ async function saveLigne(){
   try{
     if(EDIT_CODE){
       const { error: eu } = await supabaseClient.from("lignes").update({
-        nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur, type
+        nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur, type, date_debut: dateDebut, date_fin: dateFin, description
       }).eq("code", code);
       if(eu) throw eu;
 
@@ -426,7 +442,7 @@ async function saveLigne(){
       await supabaseClient.from("fichiers_ligne").delete().eq("ligne_code", code);
     } else {
       const { error: e1 } = await supabaseClient.from("lignes").insert({
-        code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur, type
+        code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur, type, date_debut: dateDebut, date_fin: dateFin, description
       });
       if(e1) throw e1;
     }
@@ -488,6 +504,7 @@ function syncColorInputs(){
 }
 document.getElementById("f-type").addEventListener("change", function(){
   document.getElementById("tad-hint").style.display = (this.value==="tad") ? "block" : "none";
+  document.getElementById("speciale-fields").style.display = (this.value==="speciale") ? "block" : "none";
 });
 syncColorInputs();
 initSupabase();

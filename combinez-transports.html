@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Les espaces relais — GGMobilités</title>
+  <title>Combinez les transports — GGMobilités</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .er-wrap{max-width:1300px;margin:0 auto;padding:2rem 2rem 4rem}
-    .er-grid{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start}
-    @media(max-width:860px){.er-grid{grid-template-columns:1fr}}
-    .er-list{background:white;border:1px solid var(--bordure);border-radius:14px;max-height:600px;overflow-y:auto}
-    .er-item{padding:14px 18px;border-bottom:1px solid var(--bordure);cursor:pointer;transition:background .12s}
-    .er-item:last-child{border-bottom:none}
-    .er-item:hover,.er-item.active{background:var(--bleu-pale)}
-    .er-nom{font-family:'Inter',sans-serif;font-weight:700;font-size:14px;color:var(--texte)}
-    .er-adresse{font-size:12px;color:var(--texte-sec);margin-top:3px}
-    .er-horaires{font-size:11px;color:var(--bleu);margin-top:4px}
-    #er-map{height:600px;border-radius:14px;border:1px solid var(--bordure)}
+    .ct-hero{background:linear-gradient(135deg,var(--bleu) 0%,#0A2240 100%);padding:3.5rem 2rem;text-align:center;color:white}
+    .ct-hero-label{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--or);margin-bottom:10px}
+    .ct-hero h1{font-family:'Inter',sans-serif;font-size:34px;font-weight:800;margin-bottom:10px}
+    .ct-hero p{font-size:15px;color:rgba(255,255,255,0.8);max-width:520px;margin:0 auto}
+    .ct-wrap{max-width:1100px;margin:0 auto;padding:3rem 2rem 4rem}
+    .ct-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:2rem}
+    .ct-card{background:white;border:1px solid var(--bordure);border-radius:18px;padding:1.75rem 1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.05);transition:transform 0.2s, box-shadow 0.2s}
+    .ct-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,0.1)}
+    .ct-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+    .ct-mode{font-family:'Inter',sans-serif;font-weight:800;font-size:15px;color:var(--texte);margin-bottom:6px}
+    .ct-tag{font-size:12px;color:var(--texte-sec);line-height:1.5}
+    .ct-tarif{background:var(--fond);border-radius:18px;padding:2rem;text-align:center;margin-top:1rem}
+    .ct-tarif-title{font-family:'Inter',sans-serif;font-weight:800;font-size:20px;color:var(--texte);margin-bottom:8px}
+    .ct-tarif-desc{font-size:14px;color:var(--texte-sec);max-width:480px;margin:0 auto 20px}
   </style>
 </head>
 <body>
@@ -37,13 +37,45 @@
 </nav>
 <div class="accent-bar"></div>
 
-<div class="er-wrap">
-  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:10px">Les espaces relais</h1>
-  <p style="font-size:14px;color:var(--texte-sec);margin-bottom:1.5rem">Rechargez votre titre de transport chez l'un de nos commerces partenaires.</p>
+<div class="ct-hero">
+  <div class="ct-hero-label">Multimodalité</div>
+  <h1>Combinez les transports</h1>
+  <p>Un même tarif, cinq façons de vous déplacer. Toute la mobilité de l'agglomération, à la carte.</p>
+</div>
 
-  <div class="er-grid">
-    <div class="er-list" id="er-list"><div style="padding:16px;font-size:13px;color:var(--texte-sec)">Chargement...</div></div>
-    <div id="er-map"></div>
+<div class="ct-wrap">
+  <div class="ct-grid">
+    <div class="ct-card">
+      <div class="ct-icon" style="background:#E6F1FB">🚋</div>
+      <div class="ct-mode">BHNS</div>
+      <div class="ct-tag">Pour ne pas avoir de contraintes horaires.</div>
+    </div>
+    <div class="ct-card">
+      <div class="ct-icon" style="background:#FFF4E0">🚌</div>
+      <div class="ct-mode">Bus</div>
+      <div class="ct-tag">Pour aller partout dans l'agglomération sans stress.</div>
+    </div>
+    <div class="ct-card">
+      <div class="ct-icon" style="background:#E6F9F0">🚐</div>
+      <div class="ct-mode">TAD</div>
+      <div class="ct-tag">Pour se déplacer de façon 100% flexible.</div>
+    </div>
+    <div class="ct-card">
+      <div class="ct-icon" style="background:#F3E8FD">🚆</div>
+      <div class="ct-mode">Trains</div>
+      <div class="ct-tag">Pour les longues distances, en mode express.</div>
+    </div>
+    <div class="ct-card">
+      <div class="ct-icon" style="background:#FDEAEA">🚲</div>
+      <div class="ct-mode">Vélos</div>
+      <div class="ct-tag">Pistes cyclables et parc vélo 100% gratuit.</div>
+    </div>
+  </div>
+
+  <div class="ct-tarif">
+    <div class="ct-tarif-title">Un même tarif pour les trois</div>
+    <div class="ct-tarif-desc">BHNS, Bus et TAD sont inclus dans un seul et même titre de transport. Combinez-les librement selon vos trajets, sans surcoût.</div>
+    <a href="tarifs.html" style="display:inline-block;padding:11px 26px;border-radius:10px;background:var(--bleu);color:white;text-decoration:none;font-family:'Inter',sans-serif;font-weight:700;font-size:13px">Voir les tarifs →</a>
   </div>
 </div>
 
@@ -58,59 +90,6 @@
   <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div>
   </div>
 </footer>
-
-<script>
-let map, markers = [];
-
-async function init(){
-  map = L.map("er-map").setView([45.1885, 5.7245], 12);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'© OpenStreetMap contributors'}).addTo(map);
-
-  const cfg = await fetch('/api/config').then(r=>r.json());
-  const supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-  const { data: espaces, error } = await supabaseClient.from("espaces_relais").select("*").order("nom");
-
-  const listEl = document.getElementById("er-list");
-  if(error || !espaces || !espaces.length){
-    listEl.innerHTML = '<div style="padding:16px;font-size:13px;color:var(--texte-sec)">Aucun espace relais pour le moment.</div>';
-    return;
-  }
-
-  const bounds = [];
-  listEl.innerHTML = espaces.map((e, i) => `
-    <div class="er-item" id="er-item-${i}" onclick="focusEspace(${i})">
-      <div class="er-nom">${e.nom}</div>
-      <div class="er-adresse">${e.adresse}</div>
-      ${e.horaires ? `<div class="er-horaires">🕐 ${e.horaires}</div>` : ''}
-    </div>`).join("");
-
-  window._espaces = espaces;
-  espaces.forEach((e, i) => {
-    if(e.lat && e.lng){
-      const m = L.circleMarker([e.lat, e.lng], {radius:8, color:"#fff", weight:2, fillColor:"#185FA5", fillOpacity:1}).addTo(map);
-      m.bindPopup(`<strong>${e.nom}</strong><br>${e.adresse}`);
-      m.on("click", ()=>focusEspace(i));
-      markers.push(m);
-      bounds.push([e.lat, e.lng]);
-    } else {
-      markers.push(null);
-    }
-  });
-  if(bounds.length) map.fitBounds(bounds, {padding:[30,30]});
-}
-
-function focusEspace(i){
-  document.querySelectorAll(".er-item").forEach(el=>el.classList.remove("active"));
-  document.getElementById("er-item-"+i).classList.add("active");
-  const e = window._espaces[i];
-  if(e.lat && e.lng){
-    map.flyTo([e.lat, e.lng], 15, {duration:0.6});
-    if(markers[i]) markers[i].openPopup();
-  }
-}
-
-init();
-</script>
 <script src="transitions.js"></script>
 </body>
 </html>

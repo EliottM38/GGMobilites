@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Postuler — GGMobilités</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .cd-wrap{max-width:560px;margin:0 auto;padding:2.5rem 2rem 4rem}
+    .cd-offre{font-size:13px;color:var(--bleu);font-weight:700;margin-bottom:6px}
+    .cd-card{background:white;border:1px solid var(--bordure);border-radius:16px;padding:2rem;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+    .cd-field{margin-bottom:16px}
+    .cd-field label{display:block;font-size:12px;font-weight:600;color:var(--texte-sec);margin-bottom:5px}
+    .cd-field input,.cd-field textarea{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--bordure);font-size:14px;font-family:inherit}
+    .cd-field input[type=file]{padding:8px}
+    .cd-btn{width:100%;padding:13px;border-radius:10px;border:none;background:var(--bleu);color:white;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
+    .cd-msg{font-size:13px;margin-top:14px;text-align:center}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
+      GGMobilités
+    </a>
+    <div class="nav-links"><a href="index.html">Accueil</a><a href="nous-rejoindre.html">Nous rejoindre</a></div>
+  </div>
+</nav>
+<div class="accent-bar"></div>
+
+<div class="cd-wrap">
+  <div class="cd-offre" id="cd-offre-titre">Chargement de l'offre...</div>
+  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:10px">Postuler</h1>
+  <p style="font-size:14px;color:var(--texte-sec);margin-bottom:2rem">Remplissez ce formulaire pour candidater. Notre équipe RH vous recontacte rapidement.</p>
+
+  <div class="cd-card">
+    <form id="cd-form">
+      <div class="cd-field"><label>Nom et prénom</label><input type="text" id="cd-nom" required></div>
+      <div class="cd-field"><label>Adresse mail</label><input type="email" id="cd-email" required></div>
+      <div class="cd-field"><label>Téléphone</label><input type="tel" id="cd-tel"></div>
+      <div class="cd-field"><label>Message (optionnel)</label><textarea id="cd-message" rows="4" placeholder="Motivation, disponibilités..."></textarea></div>
+      <div class="cd-field"><label>CV</label><input type="file" id="cd-cv" accept=".pdf,.doc,.docx,image/*" required></div>
+      <button type="submit" class="cd-btn" id="cd-btn">Envoyer ma candidature</button>
+      <div class="cd-msg" id="cd-msg"></div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <div class="accent-bar"></div>
+  <div style="padding:2.5rem 2rem"><div class="footer-inner">
+    <div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div></div>
+  </div></div>
+</footer>
+
+<script>
+let supabaseClient, offre;
+const OFFRE_ID = new URLSearchParams(location.search).get('offre');
+
+async function init(){
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  if(OFFRE_ID){
+    const { data } = await supabaseClient.from('offres_emploi').select('*').eq('id', OFFRE_ID).single();
+    offre = data;
+    document.getElementById('cd-offre-titre').textContent = offre ? '📌 ' + offre.titre : 'Candidature spontanée';
+  } else {
+    document.getElementById('cd-offre-titre').textContent = 'Candidature spontanée';
+  }
+}
+
+document.getElementById('cd-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = document.getElementById('cd-btn');
+  const msg = document.getElementById('cd-msg');
+  if(typeof setBtnLoading === 'function') setBtnLoading(btn, 'Envoi...'); else { btn.disabled=true; btn.textContent='Envoi...'; }
+  msg.textContent = ''; msg.style.color = '';
+
+  try{
+    let cvUrl = null;
+    const cvFile = document.getElementById('cd-cv').files[0];
+    if(cvFile){
+      const path = 'cv/' + Date.now() + '_' + cvFile.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+      const { error: upErr } = await supabaseClient.storage.from('candidatures-cv').upload(path, cvFile);
+      if(upErr) throw upErr;
+      cvUrl = path;
+    }
+
+    const { error } = await supabaseClient.from('candidatures').insert({
+      offre_id: OFFRE_ID || null,
+      offre_titre: offre ? offre.titre : 'Candidature spontanée',
+      nom_prenom: document.getElementById('cd-nom').value.trim(),
+      email: document.getElementById('cd-email').value.trim(),
+      telephone: document.getElementById('cd-tel').value.trim() || null,
+      message: document.getElementById('cd-message').value.trim() || null,
+      cv_url: cvUrl
+    });
+    if(error) throw error;
+
+    msg.style.color = '#00A854';
+    msg.textContent = '✅ Candidature envoyée ! Merci pour votre intérêt.';
+    document.getElementById('cd-form').reset();
+  }catch(err){
+    console.error(err);
+    msg.style.color = '#E4032E';
+    msg.textContent = "Erreur lors de l'envoi. Réessayez.";
+  }
+  if(typeof unsetBtnLoading === 'function') unsetBtnLoading(btn); else { btn.disabled=false; btn.textContent='Envoyer ma candidature'; }
+});
+
+init();
+</script>
+<script src="transitions.js"></script>
+</body>
+</html>

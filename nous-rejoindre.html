@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nous rejoindre — GGMobilités</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .nr-wrap{max-width:1100px;margin:0 auto;padding:2.5rem 2rem 4rem}
+    .nr-intro{font-size:14px;color:var(--texte);line-height:1.7;background:linear-gradient(135deg,var(--bleu),#0A2240);color:white;border-radius:16px;padding:1.75rem 2rem;margin-bottom:2rem}
+    .nr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+    .nr-card{background:white;border:1px solid var(--bordure);border-radius:16px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);display:flex;flex-direction:column}
+    .nr-titre{font-family:'Inter',sans-serif;font-weight:800;font-size:16px;color:var(--texte);margin-bottom:6px}
+    .nr-salaire{font-size:13px;color:var(--bleu);font-weight:700;margin-bottom:10px}
+    .nr-desc{font-size:13px;color:var(--texte-sec);line-height:1.6;margin-bottom:16px;flex:1}
+    .nr-btn{padding:10px;border-radius:9px;background:var(--bleu);color:white;text-align:center;text-decoration:none;font-family:'Inter',sans-serif;font-weight:700;font-size:13px}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
+      GGMobilités
+    </a>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a><a href="lignes-speciales.html"><strong>Lignes spéciales</strong><span>Événements, nature et lignes ponctuelles.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a><a href="combinez-transports.html"><strong>Combinez les transports</strong><span>Un même tarif pour tous vos modes de transport.</span></a></div></div><div class="nav-dropdown"><a href="contact.html" class="active">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a><a href="nous-rejoindre.html"><strong>Nous rejoindre</strong><span>Nos offres d'emploi.</span></a></div></div></div>
+  </div>
+</nav>
+<div class="accent-bar"></div>
+
+<div class="nr-wrap">
+  <h1 style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;margin-bottom:14px">Nous rejoindre</h1>
+  <div class="nr-intro">Chez GGMobilités vous êtes sûr de tomber sur une équipe conviviale, où l'entraide est la principale caractéristique. Vous pourrez bénéficier d'avantages employés, abonnement offert pour la famille (mari/femme + enfants), 4 tickets-resto/semaine, chèques-vacances et bien plus. Alors tentez votre chance et postulez à une de nos offres disponibles !</div>
+
+  <div class="nr-grid" id="nr-grid"><div style="font-size:13px;color:var(--texte-sec)">Chargement...</div></div>
+</div>
+
+<footer>
+  <div class="accent-bar"></div>
+  <div style="padding:2.5rem 2rem"><div class="footer-inner">
+    <div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités"> GGMobilités</div><p class="footer-desc">Le réseau de transport urbain de Grenoble et sa région.</p></div>
+    <div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan du réseau</a><a href="infotrafic.html">Infotrafic</a></div>
+    <div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a><a href="ou-acheter.html">Où acheter ?</a><a href="agences.html">Agences</a></div>
+    <div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a><a href="objets-perdus.html">Objets perdus</a><a href="actualites.html">Actualités</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div>
+  </div>
+</footer>
+
+<script>
+async function init(){
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  const supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  const { data: offres, error } = await supabaseClient.from('offres_emploi').select('*').eq('actif', true).order('created_at', {ascending:false});
+
+  const grid = document.getElementById('nr-grid');
+  if(error || !offres || !offres.length){
+    grid.innerHTML = '<div style="font-size:13px;color:var(--texte-sec)">Aucune offre disponible pour le moment. Revenez bientôt !</div>';
+    return;
+  }
+
+  grid.innerHTML = offres.map(o => `
+    <div class="nr-card">
+      <div class="nr-titre">${o.titre}</div>
+      ${o.salaire ? `<div class="nr-salaire">💶 ${o.salaire}</div>` : ''}
+      ${o.description ? `<div class="nr-desc">${o.description}</div>` : '<div class="nr-desc"></div>'}
+      <a href="candidature.html?offre=${o.id}" class="nr-btn">Postuler →</a>
+    </div>`).join('');
+}
+init();
+</script>
+<script src="transitions.js"></script>
+</body>
+</html>
