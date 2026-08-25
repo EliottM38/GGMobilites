@@ -2,553 +2,421 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Créer une ligne — Admin GGMobilités</title>
+<title id="page-title">Ligne — GGMobilités</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="styles.css">
 <style>
-:root{--bg:#0B0B14;--panel:#15151F;--bord:#26263a;--tx:#F2F2F7;--txs:#8A8A9C;--accent:#185FA5;--danger:#E4032E;--ok:#00C878}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:'DM Sans',Arial,sans-serif;font-size:14px}
-h1,h2,h3{font-family:'Syne',Arial,sans-serif;margin:0}
-a{color:inherit}
-.topbar{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--bord);position:sticky;top:0;background:var(--bg);z-index:100}
-.topbar h1{font-size:16px;font-weight:800}
-.topbar a.back{color:var(--txs);text-decoration:none;font-size:13px}
-#login-gate{max-width:360px;margin:80px auto;padding:28px;background:var(--panel);border:1px solid var(--bord);border-radius:14px}
-#login-gate h2{margin-bottom:16px}
-#login-gate input{width:100%;padding:10px 12px;margin-bottom:10px;background:#0F0F18;border:1px solid var(--bord);border-radius:8px;color:var(--tx)}
-#login-gate button{width:100%;padding:11px;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif}
-#err-login{color:var(--danger);font-size:12px;margin-top:8px;min-height:16px}
-#app{display:none;max-width:1300px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 420px;gap:22px}
-.card{background:var(--panel);border:1px solid var(--bord);border-radius:14px;padding:18px;margin-bottom:18px}
-.card h3{font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-label{display:block;font-size:11px;color:var(--txs);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
-input[type=text],input[type=url],input[type=time],input[type=number],select{width:100%;padding:9px 11px;background:#0F0F18;border:1px solid var(--bord);border-radius:8px;color:var(--tx);font-size:13px;margin-bottom:12px;font-family:inherit}
-input[type=color]{height:40px;width:100%;padding:3px;border-radius:8px;border:1px solid var(--bord);background:#0F0F18;cursor:pointer;margin-bottom:12px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-#map{height:460px;border-radius:12px;border:1px solid var(--bord)}
-.sens-tabs{display:flex;gap:6px;margin-bottom:12px}
-.sens-tab{padding:7px 16px;border-radius:8px;border:1px solid var(--bord);background:transparent;color:var(--txs);cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:12px}
-.sens-tab.active{background:var(--accent);color:white;border-color:var(--accent)}
-.stop-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#0F0F18;border:1px solid var(--bord);border-radius:8px;margin-bottom:6px}
-.stop-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
-.stop-row input{margin:0;flex:1;padding:6px 9px;font-size:12px}
-.icon-btn{background:transparent;border:1px solid var(--bord);color:var(--txs);border-radius:6px;padding:5px 8px;cursor:pointer;font-size:12px;flex-shrink:0}
-.icon-btn:hover{color:var(--tx);border-color:var(--tx)}
-.icon-btn.del:hover{color:var(--danger);border-color:var(--danger)}
-.hint{font-size:11px;color:var(--txs);margin-bottom:10px;line-height:1.5}
-.freq-row,.file-row{display:grid;grid-template-columns:1fr auto auto auto auto auto;gap:6px;align-items:end;margin-bottom:8px}
-.file-row{grid-template-columns:1fr 1fr auto}
-.btn-add{background:transparent;border:1px dashed var(--bord);color:var(--txs);border-radius:8px;padding:9px;cursor:pointer;width:100%;font-size:12px;margin-bottom:6px}
-.btn-add:hover{color:var(--tx);border-color:var(--accent)}
-.btn-save{position:sticky;bottom:20px;width:100%;padding:15px;background:var(--ok);color:#0B0B14;border:none;border-radius:10px;font-weight:800;font-family:'Syne',sans-serif;font-size:14px;cursor:pointer;box-shadow:0 6px 24px rgba(0,200,120,0.3)}
-.btn-save:disabled{opacity:.5;cursor:default}
-#msg{font-size:12px;margin-top:10px;min-height:16px}
-#msg.ok{color:var(--ok)}
-#msg.err{color:var(--danger)}
-@media(max-width:1000px){#app{grid-template-columns:1fr}}
+.lhero{background:var(--badge,#185FA5);padding:1.4rem 2rem}
+.lhero-in{max-width:1300px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.lhero-icon{width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.lhero-icon img{width:100%;height:100%;object-fit:cover}
+.lhero-icon span{font-family:'Inter', sans-serif;font-size:20px;font-weight:800;color:white}
+.lhero-title{font-family:'Inter', sans-serif;font-size:21px;font-weight:800;color:white}
+.lhero-btns{margin-left:auto;display:flex;gap:8px}
+.hbtn{padding:9px 16px;border-radius:9px;font-size:12px;font-weight:700;font-family:'Inter', sans-serif;cursor:pointer;border:1px solid rgba(255,255,255,0.35);color:white;background:rgba(255,255,255,0.15);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.hbtn.primary{background:white;color:var(--badge,#185FA5);border-color:white}
+.sens-bar{background:white;border-bottom:1px solid var(--bordure,#e5e5e5);padding:10px 2rem;display:flex;gap:8px;position:sticky;top:64px;z-index:60}
+.sens-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5);background:transparent;color:var(--texte-sec,#666);cursor:pointer;font-family:'Inter', sans-serif;font-weight:700;font-size:12px}
+.sens-btn.active{background:var(--badge,#185FA5);color:white;border-color:var(--badge,#185FA5)}
+.lbody{max-width:1300px;margin:0 auto;padding:1.5rem 2rem 4rem}
+.infotrafic-box{background:#FFF4E0;border:1px solid #F0C878;border-radius:12px;padding:14px 18px;margin-bottom:18px}
+.infotrafic-box.empty{background:#F0F4FA;border-color:var(--bordure,#e5e5e5)}
+.infotrafic-box h3{font-family:'Inter', sans-serif;font-size:13px;margin-bottom:8px}
+.pert-item{font-size:12px;padding:6px 0;border-top:1px solid rgba(0,0,0,0.06)}
+.pert-item:first-child{border-top:none}
+.main-grid{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+@media(max-width:960px){.main-grid{grid-template-columns:1fr}}
+#map{height:520px;border-radius:14px;border:1px solid var(--bordure,#e5e5e5)}
+.thermo-box{background:#1C1C2E;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.15);max-height:520px;overflow-y:auto}
+.thermo-h{padding:12px 16px;font-family:'Inter', sans-serif;font-weight:700;font-size:12px;color:white;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;background:#1C1C2E}
+.tstop{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:background .12s}
+.tstop:hover{background:rgba(255,255,255,0.04)}
+.tstop:last-child{border-bottom:none}
+.tdot-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.tdot{width:11px;height:11px;border-radius:50%;background:var(--badge,#185FA5);border:2px solid white}
+.tline{width:2px;flex:1;background:var(--badge,#185FA5);opacity:.5;min-height:14px}
+.tinfo{flex:1;min-width:0}
+.tname{font-size:13px;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tcorr{display:flex;gap:3px;margin-top:3px}
+.tcorr-badge{width:16px;height:16px;border-radius:4px;font-size:8px;font-weight:800;color:white;display:flex;align-items:center;justify-content:center}
+.ttime{font-family:'Inter', sans-serif;font-weight:800;font-size:13px;color:#FFB347;flex-shrink:0}
+.lieux-box{background:white;border:1px solid var(--bordure,#e5e5e5);border-radius:14px;padding:14px 18px;margin-top:18px}
+.lieux-box h3{font-family:'Inter', sans-serif;font-size:13px;margin-bottom:10px}
+.lieu-link{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:13px;color:var(--texte,#222);text-decoration:none;border-top:1px solid #f2f2f2}
+.lieu-link:first-of-type{border-top:none}
+.lieu-link:hover{color:var(--badge,#185FA5)}
+.fichiers-box{background:white;border:1px solid var(--bordure,#e5e5e5);border-radius:14px;padding:14px 18px;margin-top:18px}
+.fichier-link{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;color:var(--badge,#185FA5);text-decoration:none}
 </style>
 </head>
 <body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
+      GGMobilités
+    </a>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a><a href="lignes-speciales.html"><strong>Lignes spéciales</strong><span>Événements, nature et lignes ponctuelles.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a><a href="combinez-transports.html"><strong>Combinez les transports</strong><span>Un même tarif pour tous vos modes de transport.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a><a href="nous-rejoindre.html"><strong>Nous rejoindre</strong><span>Nos offres d'emploi.</span></a></div></div></div>
+  </div>
+</nav>
+<div class="accent-bar"></div>
 
-<div id="login-gate">
-  <h2>Connexion admin</h2>
-  <input type="text" id="l-email" placeholder="Email">
-  <input type="text" id="l-pass" placeholder="Mot de passe" style="-webkit-text-security:disc">
-  <button onclick="doLogin()">Se connecter</button>
-  <div id="err-login"></div>
-</div>
+<div class="lhero"><div class="lhero-in">
+  <div class="lhero-icon" id="hero-icon"><span id="hero-code">—</span></div>
+  <div class="lhero-title" id="hero-title">Chargement...</div>
+  <div class="lhero-btns">
+    <button class="hbtn primary" onclick="genPDF()">📄 Fiche horaire</button>
+    <a href="reseau.html" class="hbtn">← Retour</a>
+  </div>
+</div></div>
 
-<div class="topbar" id="topbar" style="display:none">
-  <a href="admin.html" class="back">← Admin</a>
-  <h1>Créer une ligne</h1>
-</div>
+<div class="lbody">
+  <div class="infotrafic-box empty" id="infotrafic"><h3>⚠️ Infotrafic</h3><div style="font-size:12px;color:var(--texte-sec,#666)">Chargement...</div></div>
 
-<div id="app">
-  <div>
-    <div class="card">
-      <h3>🚌 Informations générales</h3>
-      <div class="row3">
-        <div><label>Code (ex: 12)</label><input type="text" id="f-code"></div>
-        <div><label>Nom de la ligne</label><input type="text" id="f-nom" placeholder="Ex: Chrono 4"></div>
-        <div><label>Couleur</label>
-          <div style="display:flex;gap:8px">
-            <input type="color" id="f-couleur" value="#185FA5" style="flex:0 0 52px;padding:2px">
-            <input type="text" id="f-couleur-hex" value="#185FA5" placeholder="#185FA5" maxlength="7" style="flex:1">
-          </div>
-        </div>
-      </div>
-      <div class="row2">
-        <div><label>Terminus A</label><input type="text" id="f-term-a" placeholder="Ex: Gares"></div>
-        <div><label>Terminus B</label><input type="text" id="f-term-b" placeholder="Ex: Échirolles"></div>
-      </div>
-      <label>Type de ligne</label>
-      <select id="f-type" style="margin-bottom:12px">
-        <option value="tram">Tram</option>
-        <option value="urbain" selected>Urbaine</option>
-        <option value="periurbain">Périurbaine</option>
-        <option value="suburbain">Suburbaine</option>
-        <option value="scolaire">Scolaire</option>
-        <option value="tad">Transport à la demande (TAD — formulaire de réservation)</option>
-        <option value="speciale">Ligne spéciale (événementielle — dates + réservation)</option>
-      </select>
-      <div id="speciale-fields" style="display:none;margin-bottom:12px">
-        <div class="row2">
-          <div><label>Date de début</label><input type="date" id="f-date-debut"></div>
-          <div><label>Date de fin</label><input type="date" id="f-date-fin"></div>
-        </div>
-        <label>Description (affichée sur la fiche de la ligne)</label>
-        <textarea id="f-description" rows="3" placeholder="Détails de l'événement, contexte, informations pratiques..." style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bord);background:#0F0F18;color:var(--tx);font-family:inherit;margin-bottom:0"></textarea>
-      </div>
-      <label>Icône de la ligne (lien URL vers une image)</label>
-      <input type="url" id="f-icone" placeholder="https://...">
-    </div>
-    <div class="hint" id="tad-hint" style="display:none;margin-top:-4px">ℹ️ Pour une ligne TAD, les fréquences ci-dessous sont facultatives — un formulaire de réservation s'affichera automatiquement sur la page publique de la ligne.</div>
-
-    <div class="card">
-      <h3>🗺️ Tracé et arrêts sur la carte</h3>
-      <div class="sens-tabs">
-        <button class="sens-tab active" id="stab-aller" onclick="setSens('aller')">Sens Aller (A → B)</button>
-        <button class="sens-tab" id="stab-retour" onclick="setSens('retour')">Sens Retour (B → A)</button>
-      </div>
-      <div id="retour-auto-note" class="hint" style="display:none;background:rgba(24,95,165,0.08);border:1px solid rgba(24,95,165,0.25);border-radius:8px;padding:8px 12px">
-        🔄 Le sens Retour est généré automatiquement à partir de l'Aller (inversé). Ajoutez un point ici pour le personnaliser, ou <a href="#" onclick="forcerRegenRetour();return false" style="color:var(--accent);font-weight:700">régénérez-le</a> à tout moment.
-      </div>
-      <div class="sens-tabs" style="margin-top:10px">
-        <button class="sens-tab active" id="mode-arret" onclick="setPlaceMode('arret')">📍 Poser un arrêt</button>
-        <button class="sens-tab" id="mode-passage" onclick="setPlaceMode('passage')">• Poser un point de passage</button>
-      </div>
-      <div class="hint">Cliquez sur la carte pour ajouter un point à la suite. Un <strong>arrêt</strong> est nommé et visible pour les voyageurs ; un <strong>point de passage</strong> sert juste à faire suivre au tracé la route réelle (ex : un virage).</div>
+  <div class="main-grid">
+    <div>
       <div id="map"></div>
+      <div class="lieux-box" id="speciale-box" style="display:none">
+        <h3>🎟️ Réserver une place</h3>
+        <div id="speciale-desc" style="font-size:13px;color:var(--texte-sec,#666);margin-bottom:14px;line-height:1.5"></div>
+        <form id="speciale-form">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Nom et prénom</label><input type="text" id="sp-nom" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Nombre de places</label><input type="number" id="sp-places" min="1" value="1" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Adresse mail</label><input type="email" id="sp-email" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Téléphone</label><input type="tel" id="sp-tel" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Passage souhaité</label>
+          <input type="text" id="sp-passage" required placeholder="Ex : Samedi 12h30 depuis Gares" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5);margin-bottom:12px">
+          <button type="submit" id="sp-submit" style="width:100%;padding:12px;border-radius:9px;border:none;background:var(--badge,#185FA5);color:white;font-family:'Inter', sans-serif;font-weight:700;font-size:13px;cursor:pointer">Réserver ma place</button>
+          <div id="sp-msg" style="font-size:12px;margin-top:10px;text-align:center"></div>
+        </form>
+      </div>
+      <div class="lieux-box" id="tad-box" style="display:none">
+        <h3>🚐 Réserver un trajet</h3>
+        <form id="tad-form">
+          <div class="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Date</label><input type="date" id="tad-date" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Heure souhaitée</label><input type="time" id="tad-heure" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <div class="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Arrêt de départ</label><input type="text" id="tad-depart" required placeholder="Ex: Gares" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Arrêt d'arrivée</label><input type="text" id="tad-arrivee" required placeholder="Ex: Échirolles" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <div class="row2" style="display:grid;grid-template-columns:80px 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Places</label><input type="number" id="tad-places" min="1" value="1" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+            <div><label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Nom</label><input type="text" id="tad-nom" required style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5)"></div>
+          </div>
+          <label style="font-size:11px;color:var(--texte-sec,#666);display:block;margin-bottom:4px">Téléphone ou email</label>
+          <input type="text" id="tad-contact" required placeholder="06 12 34 56 78 ou vous@email.fr" style="width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--bordure,#e5e5e5);margin-bottom:12px">
+          <button type="submit" id="tad-submit" style="width:100%;padding:12px;border-radius:9px;border:none;background:var(--badge,#185FA5);color:white;font-family:'Inter', sans-serif;font-weight:700;font-size:13px;cursor:pointer">Envoyer la demande de réservation</button>
+          <div id="tad-msg" style="font-size:12px;margin-top:10px;text-align:center"></div>
+        </form>
+      </div>
+      <div class="lieux-box" id="lieux-box" style="display:none">
+        <h3>📍 Pour aller à</h3>
+        <div id="lieux-list"></div>
+      </div>
+      <div class="fichiers-box" id="fichiers-box" style="display:none">
+        <h3 style="font-family:'Inter', sans-serif;font-size:13px;margin-bottom:10px">📎 Fichiers & infos</h3>
+        <div id="fichiers-list"></div>
+      </div>
     </div>
-
-    <div class="card">
-      <h3>⏱️ Fréquences (créneaux + intervalle)</h3>
-      <div id="freq-list"></div>
-      <button class="btn-add" onclick="addFreqRow()">+ Ajouter un créneau</button>
+    <div>
+      <div class="thermo-box">
+        <div class="thermo-h" id="thermo-title" style="display:flex;align-items:center">
+          <span style="flex:1">Arrêts</span>
+          <span id="thermo-col-a" style="width:52px;text-align:center;font-size:10px;color:rgba(255,255,255,0.55)"></span>
+          <span id="thermo-col-r" style="width:52px;text-align:center;font-size:10px;color:rgba(255,255,255,0.55)"></span>
+        </div>
+        <div id="thermo-list"><div style="padding:16px;color:rgba(255,255,255,0.4);font-size:12px">Chargement...</div></div>
+      </div>
     </div>
-
-    <div class="card">
-      <h3>📎 Fichiers / infos spéciales</h3>
-      <div id="file-list"></div>
-      <button class="btn-add" onclick="addFileRow()">+ Ajouter un fichier / lien</button>
-    </div>
-  </div>
-
-  <div>
-    <div class="card">
-      <h3>📍 Arrêts — <span id="sens-label">Aller</span></h3>
-      <div id="stops-list"><div class="hint">Aucun arrêt. Cliquez sur la carte.</div></div>
-    </div>
-    <button class="btn-save" id="btn-save" onclick="saveLigne()">Enregistrer la ligne</button>
-    <div id="msg"></div>
   </div>
 </div>
+
+<footer><div class="accent-bar"></div><div style="padding:2.5rem 2rem"><div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</div></div></div></div></footer>
 
 <script>
-let supabaseClient, map, marker0;
-let sens = "aller";
-const stops = { aller: [], retour: [] };   // [{lat,lng,nom}]
-const polylines = { aller: null, retour: null };
-const markersLayer = { aller: null, retour: null };
-let freqRows = [];
-let fileRows = [];
+const CODE = new URLSearchParams(location.search).get("code") || "";
+let supabaseClient, map, ligne;
+let stopsByS = {aller:[], retour:[]};
+let freqsByS = {aller:[], retour:[]};
+let correspByStop = {};
+let polylines = {aller:null, retour:null};
+let ivl;
 
-async function initSupabase(){
+async function init(){
+  if(!CODE){ document.getElementById("hero-title").textContent="Ligne introuvable"; return; }
   const cfg = await fetch("/api/config").then(r=>r.json());
   supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-  const { data:{ session } } = await supabaseClient.auth.getSession();
-  if(session) showApp();
-}
 
-async function doLogin(){
-  const email = document.getElementById("l-email").value.trim();
-  const pass = document.getElementById("l-pass").value;
-  const errEl = document.getElementById("err-login");
-  errEl.textContent = "";
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
-  if(error){ errEl.textContent = "Connexion impossible : " + error.message; return; }
-  const { data: adminRow } = await supabaseClient.from("admins").select("id").eq("id", data.user.id).maybeSingle();
-  if(!adminRow){ errEl.textContent = "Ce compte n'a pas les droits admin."; await supabaseClient.auth.signOut(); return; }
-  showApp();
-}
+  const { data: l, error } = await supabaseClient.from("lignes").select("*").eq("code", CODE).single();
+  if(error || !l){ document.getElementById("hero-title").textContent="Ligne introuvable"; return; }
+  ligne = l;
+  document.documentElement.style.setProperty("--badge", ligne.couleur);
+  document.getElementById("page-title").textContent = "Ligne "+CODE+" — GGMobilités";
+  document.getElementById("hero-code").textContent = CODE;
+  document.getElementById("hero-title").textContent = ligne.terminus_a + " ↔ " + ligne.terminus_b;
+  if(ligne.icone_url){ document.getElementById("hero-icon").innerHTML = `<img src="${ligne.icone_url}" alt="">`; }
 
-const EDIT_CODE = new URLSearchParams(location.search).get("code") || null;
+  if(ligne.type === "tad"){
+    document.getElementById("tad-box").style.display = "block";
+    document.getElementById("tad-date").min = new Date().toISOString().split("T")[0];
+    document.getElementById("tad-form").addEventListener("submit", envoyerReservationTad);
+  }
 
-function showApp(){
-  document.getElementById("login-gate").style.display="none";
-  document.getElementById("topbar").style.display="flex";
-  document.getElementById("app").style.display="grid";
-  initMap();
-  if(EDIT_CODE){ loadExistingLigne(EDIT_CODE); }
-  else { addFreqRow(); renderStops(); }
-}
-
-async function loadExistingLigne(code){
-  document.getElementById("msg").className=""; document.getElementById("msg").textContent="Chargement de la ligne "+code+"...";
-  document.querySelector(".topbar h1").textContent = "Modifier la ligne " + code;
-  document.getElementById("btn-save").textContent = "Enregistrer les modifications";
-  document.getElementById("f-code").disabled = true;
-
-  const { data: l } = await supabaseClient.from("lignes").select("*").eq("code", code).single();
-  if(!l){ document.getElementById("msg").className="err"; document.getElementById("msg").textContent="Ligne introuvable."; return; }
-  document.getElementById("f-code").value = l.code;
-  document.getElementById("f-nom").value = l.nom;
-  document.getElementById("f-couleur").value = l.couleur;
-  document.getElementById("f-couleur-hex").value = l.couleur;
-  document.getElementById("f-term-a").value = l.terminus_a;
-  document.getElementById("f-term-b").value = l.terminus_b;
-  document.getElementById("f-icone").value = l.icone_url || "";
-  document.getElementById("f-type").value = l.type || "urbain";
-  document.getElementById("speciale-fields").style.display = (l.type==="speciale") ? "block" : "none";
-  document.getElementById("f-date-debut").value = l.date_debut || "";
-  document.getElementById("f-date-fin").value = l.date_fin || "";
-  document.getElementById("f-description").value = l.description || "";
-  document.getElementById("tad-hint").style.display = (l.type==="tad") ? "block" : "none";
-
-  const { data: las } = await supabaseClient.from("ligne_arrets").select("*, arrets(*)").eq("ligne_code", code).order("ordre");
-  const { data: traces } = await supabaseClient.from("traces").select("*").eq("ligne_code", code);
-
-  ["aller","retour"].forEach(s => {
-    const arretsList = (las||[]).filter(x=>x.sens===s).map(x=>({ lat:x.arrets.lat, lng:x.arrets.lng, nom:x.arrets.nom, lieu:x.arrets.lieu_nom||"", type:"arret", temps:x.temps_depuis_precedent||0, _existingId:x.arret_id }));
-    const trace = (traces||[]).find(t=>t.sens===s);
-    if(trace && trace.points && trace.points.length){
-      // Reconstruit la liste complète (arrêts + points de passage) dans l'ordre du tracé
-      stops[s] = trace.points.map(p => {
-        const match = arretsList.find(a => Math.abs(a.lat-p.lat)<1e-9 && Math.abs(a.lng-p.lng)<1e-9);
-        return match || { lat:p.lat, lng:p.lng, type:"passage" };
-      });
-    } else {
-      stops[s] = arretsList;
+  if(ligne.type === "speciale"){
+    document.getElementById("speciale-box").style.display = "block";
+    if(ligne.description || ligne.date_debut){
+      const dates = ligne.date_debut ? `📅 Du ${new Date(ligne.date_debut).toLocaleDateString('fr-FR')}${ligne.date_fin ? ' au '+new Date(ligne.date_fin).toLocaleDateString('fr-FR') : ''}` : '';
+      document.getElementById("speciale-desc").innerHTML = (dates ? `<strong>${dates}</strong><br>` : '') + (ligne.description || '');
     }
-  });
-  retourAuto = !(las||[]).some(x=>x.sens==="retour") && !(traces||[]).some(t=>t.sens==="retour");
-  redrawSens(); renderStops();
-  setSens("aller");
+    document.getElementById("speciale-form").addEventListener("submit", envoyerReservationSpeciale);
+  }
 
-  const { data: freqs } = await supabaseClient.from("frequences").select("*").eq("ligne_code", code);
-  freqRows = (freqs||[]).map(f => ({ sens:f.sens, jour:f.jour, debut:f.heure_debut.slice(0,5), fin:f.heure_fin.slice(0,5), intervalle:f.intervalle_minutes }));
-  if(!freqRows.length) freqRows.push({sens:"aller", jour:"semaine", debut:"07:00", fin:"09:00", intervalle:10});
-  renderFreq();
+  initMap();
+  await loadAlertes();
+  await loadStopsAndFreqs();
+  afficherDeuxSens();
+  await loadFichiers();
 
-  const { data: fichiers } = await supabaseClient.from("fichiers_ligne").select("*").eq("ligne_code", code);
-  fileRows = (fichiers||[]).map(f => ({ nom:f.nom, url:f.url }));
-  renderFiles();
-
-  document.getElementById("msg").className=""; document.getElementById("msg").textContent="";
+  ivl = setInterval(renderThermoAll, 30000);
 }
 
 function initMap(){
-  map = L.map("map").setView([45.1885, 5.7245], 13); // Grenoble
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    attribution:'© OpenStreetMap contributors', maxZoom:19
-  }).addTo(map);
-  markersLayer.aller = L.layerGroup().addTo(map);
-  markersLayer.retour = L.layerGroup();
-  map.on("click", e => {
-    const point = { lat: e.latlng.lat, lng: e.latlng.lng, type: placeMode };
-    if(placeMode === "arret") point.nom = "Arrêt " + (stops[sens].filter(p=>p.type==="arret").length+1);
-    stops[sens].push(point);
-    if(sens === "retour"){ retourAuto = false; document.getElementById("retour-auto-note").style.display = "none"; }
-    redrawSens();
-    renderStops();
-  });
-}
-let placeMode = "arret";
-function setPlaceMode(m){
-  placeMode = m;
-  document.getElementById("mode-arret").classList.toggle("active", m==="arret");
-  document.getElementById("mode-passage").classList.toggle("active", m==="passage");
+  map = L.map("map").setView([45.1885, 5.7245], 13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'© OpenStreetMap contributors'}).addTo(map);
 }
 
-let retourAuto = true;
-
-function setSens(s){
-  sens = s;
-  document.getElementById("stab-aller").classList.toggle("active", s==="aller");
-  document.getElementById("stab-retour").classList.toggle("active", s==="retour");
-  document.getElementById("sens-label").textContent = s==="aller" ? "Aller" : "Retour";
-  if(s==="aller"){ map.removeLayer(markersLayer.retour); markersLayer.aller.addTo(map); }
-  else {
-    map.removeLayer(markersLayer.aller); markersLayer.retour.addTo(map);
-    if(retourAuto) regenererRetour();
+async function loadAlertes(){
+  const { data: alertes } = await supabaseClient.from("alertes").select("*").eq("ligne_code", CODE).order("created_at",{ascending:false});
+  const box = document.getElementById("infotrafic");
+  if(!alertes || !alertes.length){
+    box.className = "infotrafic-box empty";
+    box.innerHTML = '<h3>✅ Infotrafic</h3><div style="font-size:12px;color:var(--texte-sec,#666)">Aucune perturbation signalée sur cette ligne.</div>';
+    return;
   }
-  document.getElementById("retour-auto-note").style.display = (s==="retour" && retourAuto) ? "block" : "none";
-  redrawSens();
-  renderStops();
+  box.className = "infotrafic-box";
+  box.innerHTML = '<h3>⚠️ Infotrafic</h3>' + alertes.map(a => `
+    <div class="pert-item"><strong>${a.titre}</strong>${a.description ? " — "+a.description : ""}</div>
+  `).join("");
 }
 
-function regenererRetour(){
-  stops.retour = stops.aller.slice().reverse().map(p => ({...p}));
-  retourAuto = true;
-}
-function forcerRegenRetour(){
-  regenererRetour();
-  redrawSens();
-  renderStops();
-  toastLocal("Retour régénéré depuis l'Aller.");
-}
-function toastLocal(msg){
-  const m = document.getElementById("msg");
-  m.className = "ok"; m.textContent = msg;
-  setTimeout(()=>{ if(m.textContent===msg) m.textContent=""; }, 2500);
-}
+async function loadStopsAndFreqs(){
+  const { data: las } = await supabaseClient.from("ligne_arrets").select("*, arrets(*)").eq("ligne_code", CODE).order("ordre");
+  ["aller","retour"].forEach(s => {
+    let cumul = 0;
+    stopsByS[s] = (las||[])
+      .filter(x => x.sens===s && x.arrets) // ignore une éventuelle liaison orpheline (arrêt supprimé) au lieu de faire planter la carte
+      .map(x => {
+        cumul += x.temps_depuis_precedent||0;
+        return { ...x.arrets, _cumulMin: cumul };
+      });
+  });
 
-function redrawSens(){
-  const layer = markersLayer[sens];
-  layer.clearLayers();
-  const latlngs = [];
-  let numArret = 0;
-  stops[sens].forEach((s)=>{
-    latlngs.push([s.lat, s.lng]);
-    if(s.type === "passage"){
-      L.circleMarker([s.lat,s.lng], {radius:4, color:"#fff", weight:1.5, fillColor:"#999", fillOpacity:1}).addTo(layer);
-    } else {
-      numArret++;
-      const m = L.circleMarker([s.lat,s.lng], {radius:7, color:"#fff", weight:2, fillColor: sens==="aller" ? "#185FA5" : "#E4032E", fillOpacity:1}).addTo(layer);
-      m.bindTooltip(String(numArret), {permanent:true, direction:"top", className:"stop-tt"});
+  const allStopIds = [...new Set((las||[]).map(x=>x.arret_id))];
+  if(allStopIds.length){
+    const { data: allLas } = await supabaseClient.from("ligne_arrets").select("ligne_code, arret_id").in("arret_id", allStopIds);
+    const { data: allLignes } = await supabaseClient.from("lignes").select("code,couleur");
+    const ligneColor = Object.fromEntries((allLignes||[]).map(l=>[l.code,l.couleur]));
+    correspByStop = {};
+    (allLas||[]).forEach(x=>{
+      if(x.ligne_code===CODE) return;
+      if(!correspByStop[x.arret_id]) correspByStop[x.arret_id] = [];
+      if(!correspByStop[x.arret_id].some(c=>c.code===x.ligne_code)){
+        correspByStop[x.arret_id].push({code:x.ligne_code, couleur: ligneColor[x.ligne_code]||"#888"});
+      }
+    });
+  }
+
+  const { data: freqs } = await supabaseClient.from("frequences").select("*").eq("ligne_code", CODE);
+  ["aller","retour"].forEach(s => { freqsByS[s] = (freqs||[]).filter(f=>f.sens===s); });
+
+  const { data: trace } = await supabaseClient.from("traces").select("*").eq("ligne_code", CODE);
+  ["aller","retour"].forEach(s => {
+    const t = (trace||[]).find(x=>x.sens===s);
+    if(t && t.points && t.points.length>1){
+      const latlngs = t.points.map(p=>[p.lat,p.lng]);
+      polylines[s] = L.polyline(latlngs, {color: s==="aller"?ligne.couleur:"#888", weight:4, opacity:.85});
     }
   });
-  if(polylines[sens]) layer.removeLayer(polylines[sens]);
-  if(latlngs.length>1){
-    polylines[sens] = L.polyline(latlngs, {color: sens==="aller" ? "#185FA5" : "#E4032E", weight:4, opacity:.8}).addTo(layer);
+
+  const lieux = stopsByS.aller.concat(stopsByS.retour).filter(a=>a && a.lieu_nom);
+  if(lieux.length){
+    document.getElementById("lieux-box").style.display = "block";
+    document.getElementById("lieux-list").innerHTML = lieux.map(a => `
+      <a class="lieu-link" href="arret.html?id=${a.id}">📍 <span>${a.lieu_nom}</span><span style="color:var(--texte-sec,#999);font-size:11px;margin-left:auto">${a.nom}</span></a>
+    `).join("");
   }
 }
 
-function renderStops(){
-  const el = document.getElementById("stops-list");
-  const list = stops[sens];
-  if(!list.length){ el.innerHTML = '<div class="hint">Aucun point. Cliquez sur la carte.</div>'; return; }
-  let numArret = 0;
-  el.innerHTML = list.map((s,i)=>{
-    if(s.type === "passage"){
-      return `
-      <div class="stop-row" style="opacity:.75">
-        <div class="stop-num" style="background:#999">•</div>
-        <div style="flex:1;font-size:12px;color:var(--txs);font-style:italic">Point de passage (façonne le tracé)</div>
-        <button class="icon-btn" onclick="moveStop(${i},-1)" title="Monter">↑</button>
-        <button class="icon-btn" onclick="moveStop(${i},1)" title="Descendre">↓</button>
-        <button class="icon-btn del" onclick="removeStop(${i})" title="Supprimer">✕</button>
-      </div>`;
+async function loadFichiers(){
+  const { data: fichiers } = await supabaseClient.from("fichiers_ligne").select("*").eq("ligne_code", CODE);
+  if(fichiers && fichiers.length){
+    document.getElementById("fichiers-box").style.display = "block";
+    document.getElementById("fichiers-list").innerHTML = fichiers.map(f => `
+      <a class="fichier-link" href="${f.url}" target="_blank" rel="noopener">📎 ${f.nom}</a>
+    `).join("");
+  }
+}
+
+function afficherDeuxSens(){
+  document.getElementById("thermo-title").firstElementChild.textContent = ligne.terminus_a + " ↔ " + ligne.terminus_b;
+  document.getElementById("thermo-col-a").textContent = "→ " + ligne.terminus_b;
+  document.getElementById("thermo-col-r").textContent = "→ " + ligne.terminus_a;
+  if(!stopsByS.retour.filter(Boolean).length){
+    document.getElementById("thermo-col-r").style.display = "none";
+  }
+
+  // Carte : uniquement le sens Aller, pour ne pas surcharger visuellement
+  if(polylines.aller){
+    polylines.aller.addTo(map);
+    map.fitBounds(polylines.aller.getLatLngs(), {padding:[30,30]});
+  }
+  window._stopMarkers = stopsByS.aller.filter(Boolean).map(a =>
+    L.circleMarker([a.lat,a.lng], {radius:6, color:"#fff", weight:2, fillColor:ligne.couleur, fillOpacity:1})
+      .addTo(map).bindPopup(`<strong>${a.nom}</strong><br><a href="arret.html?id=${a.id}">Voir l'arrêt →</a>`)
+  );
+
+  renderThermoAll();
+}
+
+function jourType(){ const j=new Date().getDay(); return j===6?"samedi":j===0?"dimanche":"semaine"; }
+function nextDeparture(f, nowMin){
+  const [dh,dm]=f.heure_debut.split(":").map(Number), [fh,fm]=f.heure_fin.split(":").map(Number);
+  const debut=dh*60+dm, fin=fh*60+fm, itv=f.intervalle_minutes;
+  if(nowMin<debut) return debut-nowMin;
+  if(nowMin>fin) return null;
+  const nextOffset = Math.ceil((nowMin-debut)/itv)*itv;
+  const nextMin = debut+nextOffset;
+  return nextMin>fin ? null : nextMin-nowMin;
+}
+
+function prochainPourSens(s){
+  const jour = jourType();
+  const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+  const relevantFreqs = freqsByS[s].filter(f=>f.jour===jour);
+  let nextMins = null;
+  relevantFreqs.forEach(f=>{ const n=nextDeparture(f,nowMin); if(n!==null && (nextMins===null||n<nextMins)) nextMins=n; });
+  return nextMins;
+}
+
+function renderThermoAll(){
+  const el = document.getElementById("thermo-list");
+  const stopsAller = stopsByS.aller.filter(Boolean);
+  if(!stopsAller.length){ el.innerHTML = '<div style="padding:16px;color:rgba(255,255,255,0.4);font-size:12px">Aucun arrêt renseigné.</div>'; return; }
+
+  const stopsRetour = stopsByS.retour.filter(Boolean);
+  const nextAller = prochainPourSens("aller");
+  const nextRetour = prochainPourSens("retour");
+  const hasRetour = stopsRetour.length > 0;
+
+  el.innerHTML = stopsAller.map((a,i) => {
+    const corr = correspByStop[a.id] || [];
+    const corrHtml = corr.length ? `<div class="tcorr">${corr.map(c=>`<div class="tcorr-badge" style="background:${c.couleur}">${c.code}</div>`).join("")}</div>` : "";
+
+    const minsA = nextAller===null ? null : nextAller + (a._cumulMin||0);
+    const labelA = minsA===null ? "—" : (minsA<=0 ? "≈" : minsA+" min");
+
+    // Cherche l'arrêt correspondant côté Retour (par nom, car ce sont des entrées distinctes en base)
+    let labelR = "";
+    if(hasRetour){
+      const match = stopsRetour.find(r => r.nom.trim().toLowerCase() === a.nom.trim().toLowerCase());
+      if(match){
+        const minsR = nextRetour===null ? null : nextRetour + (match._cumulMin||0);
+        labelR = minsR===null ? "—" : (minsR<=0 ? "≈" : minsR+" min");
+      } else {
+        labelR = "—";
+      }
     }
-    numArret++;
-    const isFirst = numArret === 1;
+
     return `
-    <div class="stop-row" style="flex-wrap:wrap">
-      <div class="stop-num">${numArret}</div>
-      <input type="text" value="${s.nom.replace(/"/g,"&quot;")}" onchange="renameStop(${i}, this.value)" placeholder="Nom de l'arrêt">
-      <button class="icon-btn" onclick="moveStop(${i},-1)" title="Monter">↑</button>
-      <button class="icon-btn" onclick="moveStop(${i},1)" title="Descendre">↓</button>
-      <button class="icon-btn del" onclick="removeStop(${i})" title="Supprimer">✕</button>
-      <input type="text" value="${(s.lieu||"").replace(/"/g,"&quot;")}" onchange="setLieu(${i}, this.value)" placeholder="📍 Lieu notable (optionnel, ex: Musée)" style="flex-basis:100%;margin-top:6px;font-size:11px;opacity:.85">
-      ${isFirst ? '' : `<div style="flex-basis:100%;display:flex;align-items:center;gap:6px;margin-top:4px"><span style="font-size:11px;color:var(--txs)">⏱️ Temps depuis l'arrêt précédent :</span><input type="number" min="0" value="${s.temps||1}" onchange="setTemps(${i}, this.value)" style="width:60px;padding:4px 8px;font-size:11px"><span style="font-size:11px;color:var(--txs)">min</span></div>`}
+    <div class="tstop" onclick="location.href='arret.html?id=${a.id}'">
+      <div class="tdot-wrap"><div class="tdot"></div>${i<stopsAller.length-1 ? '<div class="tline"></div>' : ''}</div>
+      <div class="tinfo"><div class="tname">${a.nom}</div>${corrHtml}</div>
+      <div class="ttime" style="width:52px;text-align:center">${labelA}</div>
+      ${hasRetour ? `<div class="ttime" style="width:52px;text-align:center;color:#9AB0C9">${labelR}</div>` : ''}
     </div>`;
   }).join("");
 }
-function setTemps(i, val){ stops[sens][i].temps = Math.max(0, parseInt(val)||0); }
-function setLieu(i, val){ stops[sens][i].lieu = val; }
-function renameStop(i, val){ stops[sens][i].nom = val; if(sens==="aller" && retourAuto){} }
-function removeStop(i){ stops[sens].splice(i,1); if(sens==="retour") retourAuto=false; redrawSens(); renderStops(); }
-function moveStop(i, dir){
-  const arr = stops[sens]; const j = i+dir;
-  if(j<0 || j>=arr.length) return;
-  [arr[i],arr[j]] = [arr[j],arr[i]];
-  if(sens==="retour") retourAuto=false;
-  redrawSens(); renderStops();
+
+function genPDF(){
+  window.open("generer-pdf.html?code="+encodeURIComponent(CODE)+"&sens=aller", "_blank");
 }
 
-// ── FRÉQUENCES ──────────────────────────────────────────────
-function addFreqRow(){
-  freqRows.push({sens:"aller", jour:"semaine", debut:"07:00", fin:"09:00", intervalle:10});
-  renderFreq();
-}
-function delFreqRow(i){ freqRows.splice(i,1); renderFreq(); }
-function renderFreq(){
-  const el = document.getElementById("freq-list");
-  el.innerHTML = freqRows.map((f,i)=>`
-    <div class="freq-row">
-      <select onchange="freqRows[${i}].sens=this.value">
-        <option value="aller" ${f.sens==="aller"?"selected":""}>Aller</option>
-        <option value="retour" ${f.sens==="retour"?"selected":""}>Retour</option>
-      </select>
-      <select onchange="freqRows[${i}].jour=this.value">
-        <option value="semaine" ${f.jour==="semaine"?"selected":""}>Lun-Ven</option>
-        <option value="samedi" ${f.jour==="samedi"?"selected":""}>Samedi</option>
-        <option value="dimanche" ${f.jour==="dimanche"?"selected":""}>Dimanche</option>
-      </select>
-      <input type="time" value="${f.debut}" onchange="freqRows[${i}].debut=this.value" style="margin:0">
-      <input type="time" value="${f.fin}" onchange="freqRows[${i}].fin=this.value" style="margin:0">
-      <input type="number" min="1" value="${f.intervalle}" onchange="freqRows[${i}].intervalle=parseInt(this.value)" style="margin:0" title="Intervalle en minutes">
-      <button class="icon-btn del" onclick="delFreqRow(${i})">✕</button>
-    </div>`).join("");
-}
+async function envoyerReservationTad(e){
+  e.preventDefault();
+  const btn = document.getElementById("tad-submit");
+  const msg = document.getElementById("tad-msg");
+  setBtnLoading ? setBtnLoading(btn, "Envoi...") : (btn.disabled=true, btn.textContent="Envoi...");
+  msg.textContent = ""; msg.style.color = "";
 
-// ── FICHIERS ────────────────────────────────────────────────
-function addFileRow(){ fileRows.push({nom:"", url:""}); renderFiles(); }
-function delFileRow(i){ fileRows.splice(i,1); renderFiles(); }
-function renderFiles(){
-  const el = document.getElementById("file-list");
-  el.innerHTML = fileRows.map((f,i)=>`
-    <div class="file-row">
-      <input type="text" placeholder="Nom (ex: Fiche horaire PDF)" value="${f.nom.replace(/"/g,"&quot;")}" onchange="fileRows[${i}].nom=this.value" style="margin:0">
-      <input type="url" placeholder="https://..." value="${f.url.replace(/"/g,"&quot;")}" onchange="fileRows[${i}].url=this.value" style="margin:0">
-      <button class="icon-btn del" onclick="delFileRow(${i})">✕</button>
-    </div>`).join("");
-}
+  const payload = {
+    ligne_code: CODE,
+    date_trajet: document.getElementById("tad-date").value,
+    heure_trajet: document.getElementById("tad-heure").value,
+    arret_depart: document.getElementById("tad-depart").value.trim(),
+    arret_arrivee: document.getElementById("tad-arrivee").value.trim(),
+    nb_places: parseInt(document.getElementById("tad-places").value) || 1,
+    nom: document.getElementById("tad-nom").value.trim(),
+    contact: document.getElementById("tad-contact").value.trim()
+  };
 
-// ── SAUVEGARDE ──────────────────────────────────────────────
-async function saveLigne(){
-  const msg = document.getElementById("msg");
-  const btn = document.getElementById("btn-save");
-  const code = document.getElementById("f-code").value.trim();
-  const nom = document.getElementById("f-nom").value.trim();
-  const couleur = document.getElementById("f-couleur-hex").value.trim();
-  const termA = document.getElementById("f-term-a").value.trim();
-  const termB = document.getElementById("f-term-b").value.trim();
-  const icone = document.getElementById("f-icone").value.trim();
-  const type = document.getElementById("f-type").value;
-  const dateDebut = document.getElementById("f-date-debut").value || null;
-  const dateFin = document.getElementById("f-date-fin").value || null;
-  const description = document.getElementById("f-description").value.trim() || null;
+  const { error } = await supabaseClient.from("reservations_tad").insert(payload);
 
-  if(!code || !nom || !termA || !termB){
-    msg.className="err"; msg.textContent="Code, nom et les deux terminus sont obligatoires."; return;
+  if(typeof unsetBtnLoading === "function") unsetBtnLoading(btn); else { btn.disabled=false; btn.textContent="Envoyer la demande de réservation"; }
+
+  if(error){
+    msg.style.color = "#E4032E";
+    msg.textContent = "Erreur lors de l'envoi. Réessayez.";
+    console.error(error);
+    return;
   }
-  if(!/^#[0-9A-Fa-f]{6}$/.test(couleur)){
-    msg.className="err"; msg.textContent="Couleur invalide — format attendu : #RRGGBB (ex: #dc241f)."; return;
-  }
-  if(!stops.aller.length){
-    msg.className="err"; msg.textContent="Ajoutez au moins un arrêt sur le sens Aller."; return;
-  }
-  if(retourAuto) regenererRetour(); // garantit que le Retour sauvegardé reflète bien l'Aller actuel
-
-  btn.disabled = true; msg.className=""; msg.textContent="Enregistrement en cours...";
-  try{
-    if(EDIT_CODE){
-      const { error: eu } = await supabaseClient.from("lignes").update({
-        nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur, type, date_debut: dateDebut, date_fin: dateFin, description
-      }).eq("code", code);
-      if(eu) throw eu;
-
-      // On repart propre : on supprime les anciens tracés/fréquences/fichiers de cette ligne.
-      const { data: oldLas } = await supabaseClient.from("ligne_arrets").select("arret_id").eq("ligne_code", code);
-      const oldArretIds = [...new Set((oldLas||[]).map(x=>x.arret_id))];
-      await supabaseClient.from("ligne_arrets").delete().eq("ligne_code", code);
-      if(oldArretIds.length){
-        // On ne supprime un arrêt que s'il n'est plus utilisé par AUCUNE ligne (y compris une autre ligne
-        // que celle-ci) : un arrêt partagé (ex: correspondance) ne doit jamais disparaître pour les autres.
-        const { data: encoreUtilises } = await supabaseClient.from("ligne_arrets").select("arret_id").in("arret_id", oldArretIds);
-        const utilisesSet = new Set((encoreUtilises||[]).map(x=>x.arret_id));
-        const aSupprimer = oldArretIds.filter(id => !utilisesSet.has(id));
-        if(aSupprimer.length) await supabaseClient.from("arrets").delete().in("id", aSupprimer);
-      }
-      await supabaseClient.from("traces").delete().eq("ligne_code", code);
-      await supabaseClient.from("frequences").delete().eq("ligne_code", code);
-      await supabaseClient.from("fichiers_ligne").delete().eq("ligne_code", code);
-    } else {
-      const { error: e1 } = await supabaseClient.from("lignes").insert({
-        code, nom, icone_url: icone || null, terminus_a: termA, terminus_b: termB, couleur, type, date_debut: dateDebut, date_fin: dateFin, description
-      });
-      if(e1) throw e1;
-    }
-
-    // Un même arrêt physique dessert souvent l'Aller ET le Retour d'une ligne, et peut aussi être
-    // partagé avec d'autres lignes (correspondance). Avant de créer un arrêt, on vérifie s'il existe
-    // déjà en base (même nom, position très proche) pour éviter tout doublon, quelle que soit la ligne
-    // ou le sens qui l'a créé initialement.
-    const arretCache = {};
-    const clePoint = (st) => st.lat.toFixed(6) + "," + st.lng.toFixed(6);
-    const normNom = (nom) => (nom||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
-    const distanceMetres = (lat1,lng1,lat2,lng2) => {
-      const R=6371000, toRad=Math.PI/180;
-      const dLat=(lat2-lat1)*toRad, dLng=(lng2-lng1)*toRad;
-      const a=Math.sin(dLat/2)**2 + Math.cos(lat1*toRad)*Math.cos(lat2*toRad)*Math.sin(dLng/2)**2;
-      return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    };
-    const SEUIL_FUSION_M = 40; // même nom + moins de 40m = même arrêt physique
-    const { data: arretsExistants } = await supabaseClient.from("arrets").select("id,nom,lat,lng");
-
-    async function trouverOuCreerArret(st){
-      const cle = clePoint(st);
-      if(arretCache[cle]) return arretCache[cle];
-
-      const nomCible = normNom(st.nom);
-      const trouve = (arretsExistants||[]).find(a =>
-        normNom(a.nom) === nomCible && distanceMetres(st.lat, st.lng, a.lat, a.lng) <= SEUIL_FUSION_M
-      );
-      if(trouve){
-        arretCache[cle] = trouve.id;
-        return trouve.id;
-      }
-
-      const { data: a, error: ea } = await supabaseClient.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng, lieu_nom: st.lieu || null }).select("id").single();
-      if(ea) throw ea;
-      arretCache[cle] = a.id;
-      arretsExistants.push({ id: a.id, nom: st.nom, lat: st.lat, lng: st.lng }); // visible pour la suite de cette même sauvegarde
-      return a.id;
-    }
-
-    for(const s of ["aller","retour"]){
-      if(!stops[s].length) continue;
-      const arretsOnly = stops[s].filter(st => st.type !== "passage");
-      const arretIds = [];
-      for(const st of arretsOnly){
-        arretIds.push(await trouverOuCreerArret(st));
-      }
-      if(arretIds.length){
-        const laRows = arretIds.map((id, idx) => ({ ligne_code: code, arret_id: id, sens: s, ordre: idx, temps_depuis_precedent: arretsOnly[idx].temps||0 }));
-        const { error: ela } = await supabaseClient.from("ligne_arrets").insert(laRows);
-        if(ela) throw ela;
-      }
-
-      // Le tracé inclut TOUS les points (arrêts + points de passage) pour suivre la route réelle
-      const points = stops[s].map(st => ({ lat: st.lat, lng: st.lng }));
-      const { error: et } = await supabaseClient.from("traces").insert({ ligne_code: code, sens: s, points });
-      if(et) throw et;
-    }
-
-    const validFreq = freqRows.filter(f=>f.debut && f.fin && f.intervalle);
-    if(validFreq.length){
-      const freqInsert = validFreq.map(f => ({ ligne_code: code, sens: f.sens, jour: f.jour, heure_debut: f.debut, heure_fin: f.fin, intervalle_minutes: f.intervalle }));
-      const { error: ef } = await supabaseClient.from("frequences").insert(freqInsert);
-      if(ef) throw ef;
-    }
-
-    const validFiles = fileRows.filter(f=>f.nom && f.url);
-    if(validFiles.length){
-      const fileInsert = validFiles.map(f => ({ ligne_code: code, nom: f.nom, url: f.url }));
-      const { error: efi } = await supabaseClient.from("fichiers_ligne").insert(fileInsert);
-      if(efi) throw efi;
-    }
-
-    msg.className="ok"; msg.textContent="Ligne enregistrée ! Redirection...";
-    setTimeout(()=> location.href = "ligne.html?code=" + encodeURIComponent(code), 1200);
-  }catch(err){
-    console.error(err);
-    msg.className="err"; msg.textContent="Erreur : " + (err.message || JSON.stringify(err));
-    btn.disabled = false;
-  }
+  msg.style.color = "#00A854";
+  msg.textContent = "✅ Demande envoyée ! Nous vous recontactons pour confirmer.";
+  document.getElementById("tad-form").reset();
 }
 
-function syncColorInputs(){
-  const picker = document.getElementById("f-couleur");
-  const hex = document.getElementById("f-couleur-hex");
-  picker.addEventListener("input", () => { hex.value = picker.value; });
-  hex.addEventListener("input", () => {
-    let v = hex.value.trim();
-    if(!v.startsWith("#")) v = "#"+v;
-    if(/^#[0-9A-Fa-f]{6}$/.test(v)){ picker.value = v; hex.style.borderColor = ""; }
-    else { hex.style.borderColor = "#E4032E"; }
-  });
+async function envoyerReservationSpeciale(e){
+  e.preventDefault();
+  const btn = document.getElementById("sp-submit");
+  const msg = document.getElementById("sp-msg");
+  if(typeof setBtnLoading === "function") setBtnLoading(btn, "Envoi..."); else { btn.disabled=true; btn.textContent="Envoi..."; }
+  msg.textContent = ""; msg.style.color = "";
+
+  const payload = {
+    ligne_code: CODE,
+    nom_prenom: document.getElementById("sp-nom").value.trim(),
+    email: document.getElementById("sp-email").value.trim(),
+    telephone: document.getElementById("sp-tel").value.trim() || null,
+    passage_choisi: document.getElementById("sp-passage").value.trim(),
+    nb_places: parseInt(document.getElementById("sp-places").value) || 1
+  };
+
+  const { error } = await supabaseClient.from("reservations_speciale").insert(payload);
+
+  if(typeof unsetBtnLoading === "function") unsetBtnLoading(btn); else { btn.disabled=false; btn.textContent="Réserver ma place"; }
+
+  if(error){
+    msg.style.color = "#E4032E";
+    msg.textContent = "Erreur lors de l'envoi. Réessayez.";
+    console.error(error);
+    return;
+  }
+  msg.style.color = "#00A854";
+  msg.textContent = "✅ Réservation envoyée ! Vous recevrez une confirmation par email.";
+  document.getElementById("speciale-form").reset();
 }
-document.getElementById("f-type").addEventListener("change", function(){
-  document.getElementById("tad-hint").style.display = (this.value==="tad") ? "block" : "none";
-  document.getElementById("speciale-fields").style.display = (this.value==="speciale") ? "block" : "none";
-});
-syncColorInputs();
-initSupabase();
+
+init();
 </script>
+<script src="transitions.js"></script>
 </body>
 </html>
