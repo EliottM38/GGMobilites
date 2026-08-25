@@ -432,11 +432,18 @@ async function saveLigne(){
       }).eq("code", code);
       if(eu) throw eu;
 
-      // On repart propre : on supprime les anciens arrêts/tracés/fréquences/fichiers de cette ligne, puis on réinsère.
+      // On repart propre : on supprime les anciens tracés/fréquences/fichiers de cette ligne.
       const { data: oldLas } = await supabaseClient.from("ligne_arrets").select("arret_id").eq("ligne_code", code);
       const oldArretIds = [...new Set((oldLas||[]).map(x=>x.arret_id))];
       await supabaseClient.from("ligne_arrets").delete().eq("ligne_code", code);
-      if(oldArretIds.length) await supabaseClient.from("arrets").delete().in("id", oldArretIds);
+      if(oldArretIds.length){
+        // On ne supprime un arrêt que s'il n'est plus utilisé par AUCUNE ligne (y compris une autre ligne
+        // que celle-ci) : un arrêt partagé (ex: correspondance) ne doit jamais disparaître pour les autres.
+        const { data: encoreUtilises } = await supabaseClient.from("ligne_arrets").select("arret_id").in("arret_id", oldArretIds);
+        const utilisesSet = new Set((encoreUtilises||[]).map(x=>x.arret_id));
+        const aSupprimer = oldArretIds.filter(id => !utilisesSet.has(id));
+        if(aSupprimer.length) await supabaseClient.from("arrets").delete().in("id", aSupprimer);
+      }
       await supabaseClient.from("traces").delete().eq("ligne_code", code);
       await supabaseClient.from("frequences").delete().eq("ligne_code", code);
       await supabaseClient.from("fichiers_ligne").delete().eq("ligne_code", code);
@@ -447,14 +454,48 @@ async function saveLigne(){
       if(e1) throw e1;
     }
 
+    // Un même arrêt physique dessert souvent l'Aller ET le Retour d'une ligne, et peut aussi être
+    // partagé avec d'autres lignes (correspondance). Avant de créer un arrêt, on vérifie s'il existe
+    // déjà en base (même nom, position très proche) pour éviter tout doublon, quelle que soit la ligne
+    // ou le sens qui l'a créé initialement.
+    const arretCache = {};
+    const clePoint = (st) => st.lat.toFixed(6) + "," + st.lng.toFixed(6);
+    const normNom = (nom) => (nom||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
+    const distanceMetres = (lat1,lng1,lat2,lng2) => {
+      const R=6371000, toRad=Math.PI/180;
+      const dLat=(lat2-lat1)*toRad, dLng=(lng2-lng1)*toRad;
+      const a=Math.sin(dLat/2)**2 + Math.cos(lat1*toRad)*Math.cos(lat2*toRad)*Math.sin(dLng/2)**2;
+      return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    };
+    const SEUIL_FUSION_M = 40; // même nom + moins de 40m = même arrêt physique
+    const { data: arretsExistants } = await supabaseClient.from("arrets").select("id,nom,lat,lng");
+
+    async function trouverOuCreerArret(st){
+      const cle = clePoint(st);
+      if(arretCache[cle]) return arretCache[cle];
+
+      const nomCible = normNom(st.nom);
+      const trouve = (arretsExistants||[]).find(a =>
+        normNom(a.nom) === nomCible && distanceMetres(st.lat, st.lng, a.lat, a.lng) <= SEUIL_FUSION_M
+      );
+      if(trouve){
+        arretCache[cle] = trouve.id;
+        return trouve.id;
+      }
+
+      const { data: a, error: ea } = await supabaseClient.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng, lieu_nom: st.lieu || null }).select("id").single();
+      if(ea) throw ea;
+      arretCache[cle] = a.id;
+      arretsExistants.push({ id: a.id, nom: st.nom, lat: st.lat, lng: st.lng }); // visible pour la suite de cette même sauvegarde
+      return a.id;
+    }
+
     for(const s of ["aller","retour"]){
       if(!stops[s].length) continue;
       const arretsOnly = stops[s].filter(st => st.type !== "passage");
       const arretIds = [];
       for(const st of arretsOnly){
-        const { data: a, error: ea } = await supabaseClient.from("arrets").insert({ nom: st.nom, lat: st.lat, lng: st.lng, lieu_nom: st.lieu || null }).select("id").single();
-        if(ea) throw ea;
-        arretIds.push(a.id);
+        arretIds.push(await trouverOuCreerArret(st));
       }
       if(arretIds.length){
         const laRows = arretIds.map((id, idx) => ({ ligne_code: code, arret_id: id, sens: s, ordre: idx, temps_depuis_precedent: arretsOnly[idx].temps||0 }));
