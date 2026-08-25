@@ -213,10 +213,12 @@ async function loadStopsAndFreqs(){
   const { data: las } = await supabaseClient.from("ligne_arrets").select("*, arrets(*)").eq("ligne_code", CODE).order("ordre");
   ["aller","retour"].forEach(s => {
     let cumul = 0;
-    stopsByS[s] = (las||[]).filter(x=>x.sens===s).map(x => {
-      cumul += x.temps_depuis_precedent||0;
-      return { ...x.arrets, _cumulMin: cumul };
-    });
+    stopsByS[s] = (las||[])
+      .filter(x => x.sens===s && x.arrets) // ignore une éventuelle liaison orpheline (arrêt supprimé) au lieu de faire planter la carte
+      .map(x => {
+        cumul += x.temps_depuis_precedent||0;
+        return { ...x.arrets, _cumulMin: cumul };
+      });
   });
 
   const allStopIds = [...new Set((las||[]).map(x=>x.arret_id))];
@@ -287,23 +289,41 @@ function afficherDeuxSens(){
 }
 
 function jourType(){ const j=new Date().getDay(); return j===6?"samedi":j===0?"dimanche":"semaine"; }
-function nextDeparture(f, nowMin){
+
+// Calcule le prochain départ pour un créneau de fréquence donné.
+// Renvoie soit { mins } si un bus circule bien maintenant (ou passera avant la fin du créneau),
+// soit { reprise: "HH:MM" } si on est avant le début du service (le service n'a pas encore commencé
+// aujourd'hui pour ce créneau — ce n'est PAS un problème de fréquence, juste une plage horaire),
+// soit null si ce créneau ne peut plus rien donner aujourd'hui (fin de service dépassée).
+function calculerDepart(f, nowMin){
   const [dh,dm]=f.heure_debut.split(":").map(Number), [fh,fm]=f.heure_fin.split(":").map(Number);
-  const debut=dh*60+dm, fin=fh*60+fm, itv=f.intervalle_minutes;
-  if(nowMin<debut) return debut-nowMin;
-  if(nowMin>fin) return null;
-  const nextOffset = Math.ceil((nowMin-debut)/itv)*itv;
+  let debut=dh*60+dm, fin=fh*60+fm;
+  const itv=f.intervalle_minutes;
+  const chevaucheMinuit = fin < debut; // ex: service de 22:00 à 01:00
+  if(chevaucheMinuit) fin += 1440;
+  let t = nowMin;
+  if(chevaucheMinuit && t < debut) t += 1440; // on se replace après minuit sur la même échelle continue
+
+  if(t < debut) return { reprise: f.heure_debut.slice(0,5) };
+  if(t > fin) return null;
+  const nextOffset = Math.ceil((t-debut)/itv)*itv;
   const nextMin = debut+nextOffset;
-  return nextMin>fin ? null : nextMin-nowMin;
+  return nextMin>fin ? null : { mins: nextMin-t };
 }
 
 function prochainPourSens(s){
   const jour = jourType();
   const nowMin = new Date().getHours()*60 + new Date().getMinutes();
   const relevantFreqs = freqsByS[s].filter(f=>f.jour===jour);
-  let nextMins = null;
-  relevantFreqs.forEach(f=>{ const n=nextDeparture(f,nowMin); if(n!==null && (nextMins===null||n<nextMins)) nextMins=n; });
-  return nextMins;
+  let meilleur = null; // le plus petit temps d'attente pour un vrai passage
+  let reprise = null;  // sinon, la reprise de service la plus proche
+  relevantFreqs.forEach(f=>{
+    const r = calculerDepart(f, nowMin);
+    if(!r) return;
+    if(r.mins!==undefined){ if(meilleur===null || r.mins<meilleur) meilleur=r.mins; }
+    else if(r.reprise){ if(reprise===null || r.reprise<reprise) reprise=r.reprise; }
+  });
+  return meilleur!==null ? { mins: meilleur } : (reprise ? { reprise } : null);
 }
 
 function renderThermoAll(){
