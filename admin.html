@@ -285,6 +285,11 @@ h2{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1.5rem}
       <div class="pn" id="pn-arrets">
         <h2>Arrêts</h2>
         <div class="ib"><strong>Tous les arrêts du réseau</strong> — modifiez l'adresse, le statut, l'anecdote ou le lieu notable de n'importe quel arrêt. La suppression d'un arrêt le retire aussi des lignes qui le desservent.</div>
+        <div class="fd" style="display:flex;gap:8px;align-items:center">
+          <button class="bgh" onclick="detecterDoublons()">🔎 Détecter les doublons</button>
+          <span id="doublons-statut" style="font-size:12px;color:var(--txs)"></span>
+        </div>
+        <div id="doublons-list"></div>
         <div class="fd"><input type="text" id="arrets-search" placeholder="🔍 Rechercher un arrêt par nom..." oninput="renderArrets()"></div>
         <div id="arrets-list"></div>
       </div>
@@ -929,6 +934,94 @@ async function delArret(id){
   const {error}=await supabaseClient.from("arrets").delete().eq("id",id);
   if(error){toast("Erreur : "+error.message,true);return;}
   log("Arrêt supprimé");renderArrets();toast("Arrêt supprimé.");
+}
+
+// ── DOUBLONS D'ARRÊTS ─────────────────────────────────────────────────
+// Un même arrêt physique a pu être enregistré plusieurs fois (ex : une ligne créée avant
+// la correction du sens Aller/Retour). On les regroupe par nom normalisé pour proposer une fusion.
+function normNomArret(nom){
+  return (nom||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
+}
+function scoreArret(a){
+  let s=0;
+  if(a.adresse) s++;
+  if(a.lieu_nom) s++;
+  if(a.anecdote) s++;
+  if(a.statut_detail) s++;
+  if(a.statut && a.statut!=="normal") s++;
+  return s;
+}
+async function detecterDoublons(){
+  const statutEl=document.getElementById("doublons-statut");
+  const listEl=document.getElementById("doublons-list");
+  statutEl.textContent="Recherche en cours...";
+  const {data,error}=await supabaseClient.from("arrets").select("*").order("nom");
+  if(error){statutEl.textContent="Erreur de recherche.";return;}
+  window._supaDoublonsData=data||[];
+  const groupes={};
+  (data||[]).forEach(function(a){
+    const cle=normNomArret(a.nom);
+    if(!cle) return;
+    if(!groupes[cle]) groupes[cle]=[];
+    groupes[cle].push(a);
+  });
+  const doublons=Object.values(groupes).filter(function(g){return g.length>1;});
+  if(!doublons.length){
+    statutEl.textContent="Aucun doublon trouvé.";
+    listEl.innerHTML="";
+    return;
+  }
+  statutEl.textContent=doublons.length+" arrêt"+(doublons.length>1?"s":"")+" en double détecté"+(doublons.length>1?"s":"");
+  listEl.innerHTML=doublons.map(function(g){
+    const ids=g.map(function(a){return a.id;});
+    return '<div class="fc" style="margin-bottom:10px;border-color:#c0392b55">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+      +'<strong style="font-size:14px;color:var(--tx)">🚏 '+g[0].nom+' <span style="color:var(--txs);font-weight:400">— '+g.length+' entrées</span></strong>'
+      +'<button class="bgh" onclick=\'fusionnerGroupe('+JSON.stringify(ids)+')\'>🔗 Fusionner en une seule</button>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--txs)">'+g.map(function(a){return (a.lat!=null&&a.lng!=null)?a.lat.toFixed(5)+", "+a.lng.toFixed(5):"coordonnées inconnues";}).join(" · ")+'</div>'
+      +'</div>';
+  }).join("");
+}
+async function fusionnerGroupe(ids){
+  if(!ids||ids.length<2) return;
+  if(!confirm("Fusionner ces "+ids.length+" arrêts en un seul ? Toutes les lignes qui les desservent seront rattachées à l'arrêt conservé."))return;
+  const arrets=(window._supaDoublonsData||[]).filter(function(a){return ids.indexOf(a.id)!==-1;});
+  if(arrets.length<2) return;
+  arrets.sort(function(a,b){ return scoreArret(b)-scoreArret(a) || String(a.id).localeCompare(String(b.id)); });
+  const principal=arrets[0];
+  const autres=arrets.slice(1);
+
+  try{
+    for(const dup of autres){
+      const {data:las}=await supabaseClient.from("ligne_arrets").select("*").eq("arret_id",dup.id);
+      for(const la of (las||[])){
+        const {data:existant}=await supabaseClient.from("ligne_arrets").select("id").eq("arret_id",principal.id).eq("ligne_code",la.ligne_code).eq("sens",la.sens).maybeSingle();
+        if(existant){
+          // Le principal dessert déjà cette ligne dans ce sens : on retire la liaison en doublon plutôt que de créer un conflit
+          await supabaseClient.from("ligne_arrets").delete().eq("id",la.id);
+        } else {
+          await supabaseClient.from("ligne_arrets").update({arret_id:principal.id}).eq("id",la.id);
+        }
+      }
+      const fill={};
+      if(!principal.adresse && dup.adresse) fill.adresse=dup.adresse;
+      if(!principal.lieu_nom && dup.lieu_nom) fill.lieu_nom=dup.lieu_nom;
+      if(!principal.anecdote && dup.anecdote) fill.anecdote=dup.anecdote;
+      if(!principal.statut_detail && dup.statut_detail) fill.statut_detail=dup.statut_detail;
+      if(Object.keys(fill).length){
+        await supabaseClient.from("arrets").update(fill).eq("id",principal.id);
+        Object.assign(principal,fill);
+      }
+      await supabaseClient.from("arrets").delete().eq("id",dup.id);
+    }
+    log("Arrêts fusionnés : "+principal.nom+" ("+autres.length+" doublon"+(autres.length>1?"s":"")+" supprimé"+(autres.length>1?"s":"")+")");
+    toast("Doublons fusionnés !");
+  }catch(err){
+    toast("Erreur pendant la fusion : "+(err.message||JSON.stringify(err)),true);
+  }
+  detecterDoublons();
+  renderArrets();
 }
 
 // ── OFFRES D'EMPLOI ──────────────────────────────────────────────────
