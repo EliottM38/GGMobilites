@@ -265,6 +265,182 @@ function chercher(){
 }
 
 function jourType(){ const j=new Date().getDay(); return j===6?"samedi":j===0?"dimanche":"semaine"; }
+// Calcule le prochain départ pour un créneau de fréquence donné.
+// Renvoie { mins } si un bus circule bien maintenant, { reprise: "HH:MM" } si on est avant le
+// début du service pour ce créneau (donc PAS un souci de fréquence, juste hors plage horaire),
+// ou null si ce créneau ne peut plus rien donner aujourd'hui.
+function calculerDepart(f, nowMin){
+  const [dh,dm]=f.heure_debut.split(":").map(Number), [fh,fm]=f.heure_fin.split(":").map(Number);
+  let debut=dh*60+dm, fin=fh*60+fm;
+  const itv=f.intervalle_minutes;
+  const chevaucheMinuit = fin < debut; // ex: service de 22:00 à 01:00
+  if(chevaucheMinuit) fin += 1440;
+  let t = nowMin;
+  if(chevaucheMinuit && t < debut) t += 1440;
+
+  if(t < debut) return { reprise: f.heure_debut.slice(0,5) };
+  if(t > fin) return null;
+  const nextOffset = Math.ceil((t-debut)/itv)*itv;
+  const nextMin = debut+nextOffset;
+  return nextMin>fin ? null : { mins: nextMin-t };
+}
+function prochainPourFreqs(freqsList, nowMin){
+  let meilleur = null, reprise = null;
+  freqsList.forEach(f=>{
+    const r = calculerDepart(f, nowMin);
+    if(!r) return;
+    if(r.mins!==undefined){ if(meilleur===null || r.mins<meilleur) meilleur=r.mins; }
+    else if(r.reprise){ if(reprise===null || r.reprise<reprise) reprise=r.reprise; }
+  });
+  return meilleur!==null ? { mins: meilleur } : (reprise ? { reprise } : null);
+}
+
+async function chercherReel(){
+  const q = document.getElementById("main-search").value.trim();
+  const res = document.getElementById("results");
+  const hint = document.getElementById("hint");
+
+  if(q.length < 2){
+    res.innerHTML = '<div class="no-result"><div class="no-result-icon">🚏</div><div style="font-family:Inter, sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Recherchez un arrêt</div><div>Tapez le nom d\'un arrêt pour voir tous les passages en temps réel</div></div>';
+    hint.textContent = "Ex : Gares, Victor Hugo, Meylan Mairie...";
+    return;
+  }
+
+  if(!supabaseClient){ await initSupa(); }
+
+  const { data: arrets, error } = await supabaseClient.from("arrets").select("*").ilike("nom", "%"+q+"%").limit(8);
+  if(error){ res.innerHTML = '<div class="no-result">Erreur de recherche.</div>'; return; }
+
+  hint.textContent = (arrets?arrets.length:0) + " arrêt" + (arrets&&arrets.length>1?"s":"") + " trouvé" + (arrets&&arrets.length>1?"s":"");
+
+  if(!arrets || !arrets.length){
+    res.innerHTML = '<div class="no-result"><div class="no-result-icon">😕</div><div style="font-family:Inter, sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Aucun arrêt trouvé</div><div>Vérifiez l\'orthographe, ou le réseau est peut-être encore en construction</div></div>';
+    return;
+  }
+
+  const jour = jourType();
+  const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+  let html = "";
+
+  for(const arret of arrets){
+    const { data: las } = await supabaseClient.from("ligne_arrets").select("ligne_code, sens").eq("arret_id", arret.id);
+    const codes = [...new Set((las||[]).map(x=>x.ligne_code))];
+    const { data: lignes } = codes.length ? await supabaseClient.from("lignes").select("*").in("code", codes) : {data:[]};
+    const ligneByCode = Object.fromEntries((lignes||[]).map(l=>[l.code,l]));
+
+    html += `<div class="arret-card"><div class="arret-name-bar"><span style="font-size:20px">🚏</span><h3><a href="arret.html?id=${arret.id}" style="color:inherit;text-decoration:none">${arret.nom}</a></h3><span class="arret-count">${codes.length} ligne${codes.length>1?"s":""}</span><a href="arret.html?id=${arret.id}" class="voir-ligne">Voir l'arrêt ↗</a></div>`;
+
+    if(!codes.length){
+      html += '<div class="ligne-section"><span class="fin-svc">Aucune ligne ne dessert cet arrêt.</span></div>';
+    } else {
+      const { data: freqs } = await supabaseClient.from("frequences").select("*").in("ligne_code", codes).eq("jour", jour);
+      // Un même arrêt peut être desservi par une ligne dans les deux sens (Aller ET Retour) :
+      // on garde tous les sens présents, pas seulement le dernier lu.
+      const sensByLigne = {};
+      (las||[]).forEach(x => {
+        if(!sensByLigne[x.ligne_code]) sensByLigne[x.ligne_code] = [];
+        if(!sensByLigne[x.ligne_code].includes(x.sens)) sensByLigne[x.ligne_code].push(x.sens);
+      });
+
+      for(const code of codes){
+        const l = ligneByCode[code]; if(!l) continue;
+        const sensListe = sensByLigne[code] || ["aller"];
+
+        html += `<div class="ligne-section"><div class="ligne-header"><span class="lbadge" style="background:${l.couleur}">${code}</span><a href="ligne.html?code=${code}" class="voir-ligne">Voir la ligne ↗</a></div>`;
+
+        for(const sens of sensListe){
+          const freqsMatch = (freqs||[]).filter(x=>x.ligne_code===code && x.sens===sens);
+          let next = prochainPourFreqs(freqsMatch, nowMin);
+          if(next && next.mins!==undefined){
+            const { data: fullOrdered } = await supabaseClient.from("ligne_arrets").select("arret_id, temps_depuis_precedent").eq("ligne_code", code).eq("sens", sens).order("ordre");
+            let cumul = 0;
+            for(const row of (fullOrdered||[])){ cumul += row.temps_depuis_precedent||0; if(row.arret_id===arret.id) break; }
+            next = { mins: next.mins + cumul };
+          }
+          const terminus = sens==="aller" ? l.terminus_b : l.terminus_a;
+
+          html += `<div class="passages-next" style="margin-bottom:6px"><span class="ligne-dir">→ ${terminus}</span>`;
+          if(!next){
+            html += '<span class="fin-svc">Pas de passage prévu prochainement</span>';
+          } else if(next.reprise){
+            html += `<span class="fin-svc">Reprise du service à ${next.reprise}</span>`;
+          } else {
+            const cls = next.mins<=5 ? "proche" : "normal";
+            html += `<span class="pass-pill ${cls}">${next.mins<=0?"À l'arrêt":next.mins+" min"}</span>`;
+          }
+          html += '</div>';
+        }
+        html += '</div>';
+      }
+    }
+    html += '</div>';
+  }
+  res.innerHTML = html;
+}
+
+initSupa();
+setInterval(()=>{ if(document.getElementById("main-search").value.trim().length>=2) chercherReel(); }, 30000);
+</script>
+
+
+<footer><div class="accent-bar"></div><div style="padding:2.5rem 2rem"><div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</div><p class="footer-desc">Réseau de transport de Grenoble et sa région.</p></div><div class="footer-col"><h4>Le réseau</h4><a href="reseau.html">Toutes les lignes</a><a href="plan.html">Plan interactif</a></div><div class="footer-col"><h4>Tarifs</h4><a href="tarifs.html">Les titres</a></div><div class="footer-col"><h4>GG et vous</h4><a href="contact.html">Contact</a></div></div><div class="footer-bottom"><span>© 2026 GGMobilités · Grenoble</span><span>serviceclient@ggmobilites.fr</span></div></div></footer>
+<script src="transitions.js"></script>
+</body>
+</html>.arret-count{font-size:12px;color:var(--texte-sec);margin-left:auto}
+.voir-ligne{font-size:12px;color:var(--bleu);text-decoration:none;font-weight:600;margin-left:auto;padding:3px 8px;border-radius:6px;background:var(--bleu-pale)}
+.voir-ligne:hover{background:var(--bleu);color:white}
+.hint{font-size:12px;color:var(--texte-sec);margin-top:4px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
+      GGMobilités
+    </a>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a><a href="lignes-speciales.html"><strong>Lignes spéciales</strong><span>Événements, nature et lignes ponctuelles.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a><a href="combinez-transports.html"><strong>Combinez les transports</strong><span>Un même tarif pour tous vos modes de transport.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a><a href="nous-rejoindre.html"><strong>Nous rejoindre</strong><span>Nos offres d'emploi.</span></a></div></div></div>
+  </div>
+</nav>
+<div class="accent-bar"></div>
+
+<div class="page-header">
+  <h1>🚏 Horaires par arrêt</h1>
+  <p>Toutes les lignes passant par un arrêt avec les prochains passages en temps réel.</p>
+</div>
+
+<div class="search-wrap">
+  <div style="position:relative">
+    <span class="search-icon">🔍</span>
+    <input class="arret-search" id="main-search" placeholder="Tapez le nom d'un arrêt..." oninput="chercher()" autocomplete="off">
+  </div>
+  <div class="hint" id="hint">Ex : Gares, Victor Hugo, Meylan Mairie...</div>
+</div>
+
+<div class="results-wrap" id="results">
+  <div class="no-result">
+    <div class="no-result-icon">🚏</div>
+    <div style="font-family:Inter, sans-serif;font-weight:700;font-size:18px;color:var(--texte);margin-bottom:8px">Recherchez un arrêt</div>
+    <div>Tapez le nom d'un arrêt pour voir tous les passages en temps réel</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+let supabaseClient;
+let searchTimer;
+
+async function initSupa(){
+  const cfg = await fetch("/api/config").then(r=>r.json());
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+}
+
+function chercher(){
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(chercherReel, 250);
+}
+
+function jourType(){ const j=new Date().getDay(); return j===6?"samedi":j===0?"dimanche":"semaine"; }
 function nextDeparture(f, nowMin){
   const [dh,dm]=f.heure_debut.split(":").map(Number), [fh,fm]=f.heure_fin.split(":").map(Number);
   const debut=dh*60+dm, fin=fh*60+fm, itv=f.intervalle_minutes;
