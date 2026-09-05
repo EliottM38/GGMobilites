@@ -159,6 +159,195 @@ async function init(){
     Object.entries(freqsParGroupe).forEach(([key, freqsList])=>{
       const [code, sens] = key.split("|");
       const l = ligneByCode[code]; if(!l) return;
+      const cumul = cumulByLigneSens[key] || 0;
+      const mins = prochaineArriveeAuStop(freqsList, cumul, nowMin);
+      if(mins===null) return;
+      const terminus = sens==="aller" ? l.terminus_b : l.terminus_a;
+      results.push({code, sens, couleur:l.couleur, mins, terminus});
+    });
+    results.sort((a,b)=>a.mins-b.mins);
+    return results;
+  }
+
+  function renderResultats(){
+    const results = calculerResultats();
+    if(!results.length){
+      document.getElementById("a-passages").innerHTML = '<div style="color:var(--texte-sec,#888);font-size:12px">Pas de service pour le moment.</div>';
+    } else {
+      document.getElementById("a-passages").innerHTML = results.slice(0,10).map(r => `
+        <div class="pass-row">
+          <div class="pass-badge" style="background:${r.couleur}">${r.code}</div>
+          <div class="pass-dir">→ ${r.terminus}</div>
+          <div class="pass-time">${r.mins<=0?"À l'instant":r.mins+" min"}</div>
+        </div>`).join("");
+    }
+  }
+
+  renderResultats();
+  // Actualisation automatique chaque minute pour que les compteurs se décalent en temps réel.
+  setInterval(renderResultats, 60000);
+}
+
+function jourType(){ const j=new Date().getDay(); return j===6?"samedi":j===0?"dimanche":"semaine"; }
+// Génère la grille d'horaires réelle du jour à partir des créneaux de fréquence (comme une vraie
+// fiche horaire de réseau de transport : un départ à heure_debut, puis tous les intervalle_minutes).
+function genererDeparts(freqsList){
+  const set = new Set();
+  freqsList.forEach(f=>{
+    const [dh,dm]=f.heure_debut.split(":").map(Number), [fh,fm]=f.heure_fin.split(":").map(Number);
+    let debut=dh*60+dm, fin=fh*60+fm;
+    const itv=f.intervalle_minutes;
+    if(!itv) return;
+    if(fin<debut) fin+=1440;
+    for(let t=debut; t<=fin; t+=itv) set.add(((t%1440)+1440)%1440);
+  });
+  return Array.from(set).sort((a,b)=>a-b);
+}
+// Prochaine arrivée réelle à un arrêt donné (temps de trajet cumulé = cumul), parmi TOUS les départs
+// de la journée — pas seulement le tout prochain départ du terminus (un bus déjà parti peut être
+// plus proche de cet arrêt qu'un bus qui vient tout juste de partir).
+function prochaineArriveeAuStop(freqsList, cumul, nowMin){
+  const departs = genererDeparts(freqsList);
+  if(!departs.length) return null;
+  let meilleure = null;
+  departs.forEach(t=>{
+    [t, t-1440].forEach(depart=>{
+      const arrivee = depart + cumul;
+      if(arrivee>=nowMin && (meilleure===null || arrivee<meilleure)) meilleure = arrivee;
+    });
+  });
+  return meilleure===null ? null : meilleure-nowMin;
+}
+
+init();
+</script>
+<script src="transitions.js"></script>
+</body>
+</html></head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités">
+      GGMobilités
+    </a>
+    <div class="nav-links"><a href="index.html">Accueil</a><div class="nav-dropdown"><a href="reseau.html" class="active">Le réseau ▾</a><div class="dropdown-menu"><a href="reseau.html"><strong>Toutes les lignes</strong><span>Explorez toutes les lignes du réseau GGMobilités.</span></a><a href="infotrafic.html"><strong>Infotrafic</strong><span>Suivez les perturbations en temps réel.</span></a><a href="horaires-arret.html"><strong>Horaires par arrêt</strong><span>Recherchez les prochains passages à un arrêt.</span></a><a href="bien-voyager.html"><strong>Bien voyager</strong><span>Les règles à respecter dans les transports.</span></a><a href="scolario.html"><strong>Scolario</strong><span>Le service scolaire.</span></a><a href="lignes-speciales.html"><strong>Lignes spéciales</strong><span>Événements, nature et lignes ponctuelles.</span></a></div></div><a href="itineraire.html">Itinéraires</a><a href="plan.html">Plan</a><div class="nav-dropdown"><a href="tarifs.html">Tarifs & vente ▾</a><div class="dropdown-menu"><a href="tarifs.html"><strong>Les titres</strong><span>Découvrez les tarifs et abonnements.</span></a><a href="ou-acheter.html"><strong>Où acheter ?</strong><span>Points de vente et agences proches de vous.</span></a><a href="agences.html"><strong>Agences</strong><span>Trouvez une agence de mobilité.</span></a><a href="regler-amende.html"><strong>Régler une amende</strong><span>Réglez une amende reçue à bord.</span></a><a href="combinez-transports.html"><strong>Combinez les transports</strong><span>Un même tarif pour tous vos modes de transport.</span></a></div></div><div class="nav-dropdown"><a href="contact.html">GG et vous ▾</a><div class="dropdown-menu"><a href="contact.html"><strong>Contact</strong><span>Une question, une remarque ? Écrivez-nous.</span></a><a href="objets-perdus.html"><strong>Objets perdus</strong><span>Retrouvez un objet égaré dans le réseau.</span></a><a href="actualites.html"><strong>Actualités</strong><span>Les dernières nouvelles du réseau.</span></a><a href="nous-rejoindre.html"><strong>Nous rejoindre</strong><span>Nos offres d'emploi.</span></a></div></div></div>
+  </div>
+</nav>
+<div class="accent-bar"></div>
+<div class="abanner">
+  <h1 id="a-nom">Chargement...</h1>
+  <div class="badges" id="a-badges"></div>
+</div>
+<div class="abody">
+  <div class="grid3">
+    <div class="box">
+      <div class="box-h">📍 Position</div>
+      <div id="minimap"></div>
+      <div class="box-c" id="a-adresse" style="font-size:12px;color:var(--texte-sec,#666)"></div>
+    </div>
+    <div class="box">
+      <div class="box-h">🕐 Prochains passages — toutes lignes</div>
+      <div class="box-c" id="a-passages"><div style="color:var(--texte-sec,#888);font-size:12px">Chargement...</div></div>
+    </div>
+    <div class="box">
+      <div class="box-h">ℹ️ État de l'arrêt</div>
+      <div class="box-c" id="a-statut"></div>
+    </div>
+  </div>
+  <div class="abar" id="a-anecdote-wrap" style="display:none">
+    <div class="abar-icon">💡</div>
+    <div><strong style="font-family:'Inter', sans-serif;font-size:13px">À savoir</strong><div id="a-anecdote" style="font-size:13px;color:var(--texte-sec,#555);margin-top:3px"></div></div>
+  </div>
+</div>
+<footer><div class="accent-bar"></div><div style="padding:2.5rem 2rem"><div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="https://seal.transport-manager.net/IsereSKI/wp-content/uploads/sites/549/2025/10/cropped-telechargement.png" alt="GGMobilités" style="background:transparent"> GGMobilités</div></div></div></div></footer>
+
+<script>
+const ID = new URLSearchParams(location.search).get("id");
+let supabaseClient;
+const STATUT_LABEL = {normal:"Fonctionne normalement", deplace:"Arrêt déplacé", supprime:"Arrêt fermé", travaux:"Travaux en cours", info:"Information"};
+
+async function init(){
+  if(!ID){ document.getElementById("a-nom").textContent="Arrêt introuvable"; return; }
+  const cfg = await fetch("/api/config").then(r=>r.json());
+  supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+  const { data: arret, error } = await supabaseClient.from("arrets").select("*").eq("id", ID).single();
+  if(error || !arret){ document.getElementById("a-nom").textContent="Arrêt introuvable"; return; }
+
+  document.getElementById("page-title").textContent = arret.nom + " — GGMobilités";
+  document.getElementById("a-nom").textContent = arret.nom;
+  document.getElementById("a-adresse").textContent = arret.adresse || "Adresse non renseignée.";
+
+  // Statut
+  const st = arret.statut || "normal";
+  document.getElementById("a-statut").innerHTML =
+    `<span class="statut-pill statut-${st}">${STATUT_LABEL[st]||st}</span>` +
+    (arret.statut_detail ? `<div style="margin-top:10px;font-size:12px;color:var(--texte-sec,#666)">${arret.statut_detail}</div>` : "");
+
+  // Anecdote / lieu notable
+  if(arret.anecdote || arret.lieu_nom){
+    document.getElementById("a-anecdote-wrap").style.display = "flex";
+    document.getElementById("a-anecdote").textContent = [arret.lieu_nom, arret.anecdote].filter(Boolean).join(" — ");
+  }
+
+  // Carte
+  const map = L.map("minimap", {zoomControl:false, dragging:false, scrollWheelZoom:false}).setView([arret.lat, arret.lng], 16);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'© OpenStreetMap'}).addTo(map);
+  L.circleMarker([arret.lat, arret.lng], {radius:9, color:"#fff", weight:3, fillColor:"#3B82F6", fillOpacity:1}).addTo(map);
+
+  // Lignes qui desservent cet arrêt
+  const { data: las } = await supabaseClient.from("ligne_arrets").select("ligne_code, sens").eq("arret_id", ID);
+  const codes = [...new Set((las||[]).map(l=>l.ligne_code))];
+  if(!codes.length){
+    document.getElementById("a-passages").innerHTML = '<div style="color:var(--texte-sec,#888);font-size:12px">Aucune ligne ne dessert cet arrêt.</div>';
+    return;
+  }
+  const { data: lignes } = await supabaseClient.from("lignes").select("*").in("code", codes);
+  const ligneByCode = Object.fromEntries((lignes||[]).map(l=>[l.code,l]));
+
+  document.getElementById("a-badges").innerHTML = codes.map(c => {
+    const l = ligneByCode[c]; if(!l) return "";
+    return `<a href="ligne.html?code=${encodeURIComponent(c)}" class="lbadge" style="background:${l.couleur}" title="${l.nom}">${c}</a>`;
+  }).join("");
+
+  if(st==="supprime"){
+    document.getElementById("a-passages").innerHTML = '<div style="color:var(--texte-sec,#888);font-size:12px">Arrêt fermé — pas de passages.</div>';
+    return;
+  }
+
+  // Calcule le décalage cumulé (minutes depuis le terminus) jusqu'à CET arrêt, pour chaque ligne/sens
+  const cumulByLigneSens = {};
+  for(const x of (las||[])){
+    const key = x.ligne_code+"|"+x.sens;
+    if(cumulByLigneSens[key] !== undefined) continue;
+    const { data: fullOrdered } = await supabaseClient.from("ligne_arrets").select("arret_id, temps_depuis_precedent").eq("ligne_code", x.ligne_code).eq("sens", x.sens).order("ordre");
+    let cumul = 0;
+    for(const row of (fullOrdered||[])){
+      cumul += row.temps_depuis_precedent||0;
+      if(row.arret_id === ID) break;
+    }
+    cumulByLigneSens[key] = cumul;
+  }
+
+  const { data: freqs } = await supabaseClient.from("frequences").select("*").in("ligne_code", codes);
+  const jour = jourType();
+
+  // On regroupe par ligne+sens : une ligne peut avoir plusieurs créneaux de fréquence dans la
+  // journée (pointe du matin, journée, soir...), il ne faut afficher qu'un seul "prochain passage"
+  // par ligne/sens (le plus proche parmi tous ses créneaux), pas une ligne par créneau.
+  const freqsParGroupe = {};
+  (freqs||[]).filter(f=>f.jour===jour).forEach(f=>{
+    const key = f.ligne_code+"|"+f.sens;
+    (freqsParGroupe[key] = freqsParGroupe[key]||[]).push(f);
+  });
+
+  function calculerResultats(){
+    const now = new Date(); const nowMin = now.getHours()*60+now.getMinutes();
+    const results = [];
+    Object.entries(freqsParGroupe).forEach(([key, freqsList])=>{
+      const [code, sens] = key.split("|");
+      const l = ligneByCode[code]; if(!l) return;
       const prochain = prochainPourFreqs(freqsList, nowMin);
       if(!prochain) return;
       const cumul = cumulByLigneSens[key] || 0;
