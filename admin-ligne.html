@@ -178,6 +178,17 @@ async function doLogin(){
 
 let EDIT_CODE = new URLSearchParams(location.search).get("code") || null;
 
+// Seuil utilisé partout où l'on doit reconnaître qu'un point correspond au même arrêt physique
+// qu'un autre : à la sauvegarde (anti-doublons), et au rechargement d'une ligne (associer un point
+// du tracé à son arrêt, même si l'arrêt réutilisé n'a pas EXACTEMENT les coordonnées du clic d'origine).
+const SEUIL_FUSION_M = 40;
+function distanceMetres(lat1,lng1,lat2,lng2){
+  const R=6371000, toRad=Math.PI/180;
+  const dLat=(lat2-lat1)*toRad, dLng=(lng2-lng1)*toRad;
+  const a=Math.sin(dLat/2)**2 + Math.cos(lat1*toRad)*Math.cos(lat2*toRad)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
 function showApp(){
   document.getElementById("login-gate").style.display="none";
   document.getElementById("topbar").style.display="flex";
@@ -216,10 +227,19 @@ async function loadExistingLigne(code){
     const arretsList = (las||[]).filter(x=>x.sens===s).map(x=>({ lat:x.arrets.lat, lng:x.arrets.lng, nom:x.arrets.nom, lieu:x.arrets.lieu_nom||"", type:"arret", temps:x.temps_depuis_precedent||0, _existingId:x.arret_id }));
     const trace = (traces||[]).find(t=>t.sens===s);
     if(trace && trace.points && trace.points.length){
-      // Reconstruit la liste complète (arrêts + points de passage) dans l'ordre du tracé
+      // Reconstruit la liste complète (arrêts + points de passage) dans l'ordre du tracé.
+      // On associe chaque point du tracé à son arrêt par proximité (pas égalité stricte des
+      // coordonnées) car un arrêt réutilisé/fusionné peut avoir des coordonnées légèrement
+      // différentes du clic d'origine sur CETTE ligne. Chaque arrêt n'est associé qu'une fois.
+      const arretsRestants = arretsList.slice();
       stops[s] = trace.points.map(p => {
-        const match = arretsList.find(a => Math.abs(a.lat-p.lat)<1e-9 && Math.abs(a.lng-p.lng)<1e-9);
-        return match || { lat:p.lat, lng:p.lng, type:"passage" };
+        let meilleurIdx = -1, meilleureDist = Infinity;
+        arretsRestants.forEach((a, idx) => {
+          const d = distanceMetres(a.lat, a.lng, p.lat, p.lng);
+          if(d <= SEUIL_FUSION_M && d < meilleureDist){ meilleureDist = d; meilleurIdx = idx; }
+        });
+        if(meilleurIdx !== -1) return arretsRestants.splice(meilleurIdx,1)[0];
+        return { lat:p.lat, lng:p.lng, type:"passage" };
       });
     } else {
       stops[s] = arretsList;
@@ -493,13 +513,6 @@ async function saveLigne(){
     const arretCache = {};
     const clePoint = (st) => st.lat.toFixed(6) + "," + st.lng.toFixed(6);
     const normNom = (nom) => (nom||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
-    const distanceMetres = (lat1,lng1,lat2,lng2) => {
-      const R=6371000, toRad=Math.PI/180;
-      const dLat=(lat2-lat1)*toRad, dLng=(lng2-lng1)*toRad;
-      const a=Math.sin(dLat/2)**2 + Math.cos(lat1*toRad)*Math.cos(lat2*toRad)*Math.sin(dLng/2)**2;
-      return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    };
-    const SEUIL_FUSION_M = 40; // même nom + moins de 40m = même arrêt physique
     const { data: arretsExistants } = await supabaseClient.from("arrets").select("id,nom,lat,lng");
 
     async function trouverOuCreerArret(st){
